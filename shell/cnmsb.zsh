@@ -11,16 +11,18 @@ autoload -Uz compinit && compinit -u -C
 PS1='%F{208}%n@%m%f:%F{blue}%~%f%F{208}%%%f '
 typeset -g zle_highlight=(default:fg=11,bold)
 
-# ================== 建议系统 ==================
+# ================== 状态 ==================
 
-typeset -ga _clist=() _cdesc=() _csuff=()
-typeset -g _cidx=0 _cmenu=0
+typeset -ga _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=()
+typeset -g _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_lastbuf="" _cnmsb_skip=0
 
-_cfetch() {
-    _clist=() _cdesc=() _csuff=() _cidx=0
+# ================== 核心函数 ==================
+
+_cnmsb_fetch() {
+    _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=() _cnmsb_idx=0
     [[ -z "$1" ]] && return
     
-    local comps curword
+    local comps curword count=0
     comps=$(cnmsb complete --line "$1" --cursor ${#1} --shell bash 2>/dev/null)
     [[ -z "$comps" ]] && return
     
@@ -30,210 +32,192 @@ _cfetch() {
     local text desc suf
     while IFS=$'\t' read -r text desc; do
         [[ -z "$text" ]] && continue
+        ((count++))
+        [[ $count -gt 10 ]] && break
+        
         if [[ -n "$curword" && "$text" == "$curword"* ]]; then
             suf="${text#$curword}"
-        elif [[ -z "$curword" || "$1" == *" " ]]; then
-            suf="$text"
         else
             suf="$text"
         fi
-        _clist+=("$text") _cdesc+=("$desc") _csuff+=("$suf")
+        _cnmsb_list+=("$text") _cnmsb_desc+=("$desc") _cnmsb_suff+=("$suf")
     done <<< "$comps"
     
-    [[ ${#_clist[@]} -gt 0 ]] && _cidx=1
+    [[ ${#_cnmsb_list[@]} -gt 0 ]] && _cnmsb_idx=1
 }
 
-# 清除显示
-_cclear() {
+_cnmsb_clear() {
     POSTDISPLAY=""
     region_highlight=()
 }
 
-# 显示内联预测（灰色后缀，不主动显示）
-_cshow_inline() {
-    _cclear
-    [[ ${#_clist[@]} -eq 0 || $_cidx -eq 0 ]] && return
+_cnmsb_show_inline() {
+    _cnmsb_clear
+    [[ ${#_cnmsb_list[@]} -eq 0 || $_cnmsb_idx -eq 0 ]] && return
     
-    local suf="${_csuff[$_cidx]}"
+    local suf="${_cnmsb_suff[$_cnmsb_idx]}"
     [[ -z "$suf" ]] && return
     
     POSTDISPLAY="$suf"
-    region_highlight+=("${#BUFFER} $((${#BUFFER}+${#suf})) fg=240")
+    region_highlight+=("${#BUFFER} $((${#BUFFER}+${#suf})) fg=245")
 }
 
-# 显示选择菜单
-_cshow_menu() {
-    _cclear
-    [[ ${#_clist[@]} -eq 0 ]] && return
+_cnmsb_show_menu() {
+    _cnmsb_clear
+    [[ ${#_cnmsb_list[@]} -eq 0 ]] && return
     
     local disp=$'\n'
     local i item desc
     
-    for ((i=1; i<=${#_clist[@]}; i++)); do
-        item="${_clist[$i]}"
-        desc="${_cdesc[$i]}"
+    for ((i=1; i<=${#_cnmsb_list[@]}; i++)); do
+        item="${_cnmsb_list[$i]}"
+        desc="${_cnmsb_desc[$i]}"
         
-        if [[ $i -eq $_cidx ]]; then
+        [[ ${#item} -gt 50 ]] && item="${item:0:47}..."
+        [[ ${#desc} -gt 30 ]] && desc="${desc:0:27}..."
+        
+        if [[ $i -eq $_cnmsb_idx ]]; then
             disp+="  > $item"
         else
             disp+="    $item"
         fi
-        
         [[ -n "$desc" ]] && disp+="  ($desc)"
         disp+=$'\n'
     done
     
-    disp+=$'\n'"  [Tab=确认 ↑↓=选择 Esc=取消]"
-    
+    disp+=$'\n'"  [Tab=确认  Ctrl+P/N或方向键=选择  Esc=取消]"
     POSTDISPLAY="$disp"
 }
 
-_creset() {
-    _cclear
-    _clist=() _cdesc=() _csuff=()
-    _cidx=0 _cmenu=0
+_cnmsb_reset() {
+    _cnmsb_clear
+    _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=()
+    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_lastbuf=""
 }
 
-# ================== 操作函数 ==================
+# ================== 钩子 ==================
 
-cnmsb-prev() {
-    if [[ $_cmenu -eq 1 && ${#_clist[@]} -gt 0 ]]; then
-        ((_cidx--))
-        [[ $_cidx -lt 1 ]] && _cidx=${#_clist[@]}
-        _cshow_menu
+_cnmsb_line_pre_redraw() {
+    [[ $_cnmsb_skip -eq 1 ]] && { _cnmsb_skip=0; return; }
+    
+    if [[ "$BUFFER" != "$_cnmsb_lastbuf" && $_cnmsb_menu -eq 0 ]]; then
+        _cnmsb_lastbuf="$BUFFER"
+        _cnmsb_fetch "$BUFFER"
+        _cnmsb_show_inline
+    fi
+}
+
+zle -N zle-line-pre-redraw _cnmsb_line_pre_redraw
+
+# ================== Widget 函数 ==================
+
+_cnmsb_prev() {
+    _cnmsb_skip=1
+    if [[ $_cnmsb_menu -eq 1 && ${#_cnmsb_list[@]} -gt 0 ]]; then
+        ((_cnmsb_idx--))
+        [[ $_cnmsb_idx -lt 1 ]] && _cnmsb_idx=${#_cnmsb_list[@]}
+        _cnmsb_show_menu
+        zle -R
     else
         zle .up-line-or-history
     fi
 }
 
-cnmsb-next() {
-    if [[ $_cmenu -eq 1 && ${#_clist[@]} -gt 0 ]]; then
-        ((_cidx++))
-        [[ $_cidx -gt ${#_clist[@]} ]] && _cidx=1
-        _cshow_menu
+_cnmsb_next() {
+    _cnmsb_skip=1
+    if [[ $_cnmsb_menu -eq 1 && ${#_cnmsb_list[@]} -gt 0 ]]; then
+        ((_cnmsb_idx++))
+        [[ $_cnmsb_idx -gt ${#_cnmsb_list[@]} ]] && _cnmsb_idx=1
+        _cnmsb_show_menu
+        zle -R
     else
         zle .down-line-or-history
     fi
 }
 
-cnmsb-tab() {
-    if [[ $_cmenu -eq 1 ]]; then
-        # 菜单已打开，第二次 Tab = 接受
-        if [[ ${#_clist[@]} -gt 0 && $_cidx -gt 0 ]]; then
-            local suf="${_csuff[$_cidx]}"
+_cnmsb_tab() {
+    _cnmsb_skip=1
+    if [[ $_cnmsb_menu -eq 1 ]]; then
+        if [[ ${#_cnmsb_list[@]} -gt 0 && $_cnmsb_idx -gt 0 ]]; then
+            local suf="${_cnmsb_suff[$_cnmsb_idx]}"
             [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
         fi
-        _creset
-        # 接受后重新获取建议（为下一次输入准备）
-        _cfetch "$BUFFER"
+        _cnmsb_reset
+        _cnmsb_lastbuf="$BUFFER"
+        _cnmsb_fetch "$BUFFER"
+        _cnmsb_show_inline
     else
-        # 第一次 Tab = 弹出选择器
-        _cfetch "$BUFFER"
-        if [[ ${#_clist[@]} -gt 0 ]]; then
-            _cmenu=1
-            _cshow_menu
+        _cnmsb_fetch "$BUFFER"
+        _cnmsb_lastbuf="$BUFFER"
+        if [[ ${#_cnmsb_list[@]} -gt 0 ]]; then
+            _cnmsb_menu=1
+            _cnmsb_show_menu
         else
             zle expand-or-complete
         fi
     fi
+    zle -R
 }
 
-cnmsb-accept-arrow() {
-    # 右箭头直接接受当前建议
-    if [[ $_cmenu -eq 1 && ${#_clist[@]} -gt 0 && $_cidx -gt 0 ]]; then
-        local suf="${_csuff[$_cidx]}"
+_cnmsb_accept() {
+    _cnmsb_skip=1
+    if [[ ${#_cnmsb_list[@]} -gt 0 && $_cnmsb_idx -gt 0 ]]; then
+        local suf="${_cnmsb_suff[$_cnmsb_idx]}"
         [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
-        _creset
-        _cfetch "$BUFFER"
-    elif [[ ${#_clist[@]} -gt 0 && $_cidx -gt 0 ]]; then
-        # 内联模式也可以用右箭头接受
-        local suf="${_csuff[$_cidx]}"
-        [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
-        _creset
-        _cfetch "$BUFFER"
+        _cnmsb_reset
+        _cnmsb_lastbuf="$BUFFER"
+        _cnmsb_fetch "$BUFFER"
+        _cnmsb_show_inline
     else
         zle .forward-char
     fi
+    zle -R
 }
 
-cnmsb-insert() { 
-    zle .self-insert
-    _cmenu=0
-    _cclear
-    # 输入时获取建议并显示内联预测
-    _cfetch "$BUFFER"
-    _cshow_inline
-}
-
-cnmsb-delete() { 
-    zle .backward-delete-char
-    _cmenu=0
-    _cclear
-    _cfetch "$BUFFER"
-    _cshow_inline
-}
-
-cnmsb-delword() { 
-    zle .backward-kill-word
-    _cmenu=0
-    _cclear
-    _cfetch "$BUFFER"
-    _cshow_inline
-}
-
-cnmsb-run() { 
-    _creset
+_cnmsb_run() {
+    _cnmsb_reset
     zle .accept-line
 }
 
-cnmsb-cancel() { 
-    _creset
-    BUFFER=""
-    zle .redisplay
-}
-
-cnmsb-escape() { 
-    if [[ $_cmenu -eq 1 ]]; then
-        _cmenu=0
-        _cshow_inline
+_cnmsb_escape() {
+    _cnmsb_skip=1
+    if [[ $_cnmsb_menu -eq 1 ]]; then
+        _cnmsb_menu=0
+        _cnmsb_show_inline
     else
-        _creset
-        zle .redisplay
+        _cnmsb_reset
     fi
+    zle -R
 }
 
 # ================== 注册 ==================
 
-zle -N cnmsb-prev
-zle -N cnmsb-next
-zle -N cnmsb-tab
-zle -N cnmsb-accept-arrow
-zle -N cnmsb-insert
-zle -N cnmsb-delete
-zle -N cnmsb-delword
-zle -N cnmsb-run
-zle -N cnmsb-cancel
-zle -N cnmsb-escape
+zle -N _cnmsb_prev
+zle -N _cnmsb_next
+zle -N _cnmsb_tab
+zle -N _cnmsb_accept
+zle -N _cnmsb_run
+zle -N _cnmsb_escape
 
 # ================== 按键绑定 ==================
 
-bindkey '^[[A' cnmsb-prev         # ↑
-bindkey '^[[B' cnmsb-next         # ↓
-bindkey '^I' cnmsb-tab            # Tab
-bindkey '^[[C' cnmsb-accept-arrow # →
-bindkey '^M' cnmsb-run            # Enter
-bindkey '^?' cnmsb-delete         # Backspace
-bindkey '^H' cnmsb-delete
-bindkey '^W' cnmsb-delword        # Ctrl+W
-bindkey '^C' cnmsb-cancel         # Ctrl+C
-bindkey '^[' cnmsb-escape         # Esc
+# 方向键
+bindkey '^[[A' _cnmsb_prev      # Up (CSI)
+bindkey '^[[B' _cnmsb_next      # Down (CSI)
+bindkey '^[OA' _cnmsb_prev      # Up (SS3)
+bindkey '^[OB' _cnmsb_next      # Down (SS3)
 
-# 字符输入
-local c; for c in {a..z} {A..Z} {0..9} ' ' '-' '_' '.' '/' ':' '=' '+' '@' '~' '"' "'" ',' ';' '!' '?' '*' '&' '|' '<' '>' '(' ')' '[' ']' '{' '}' '$' '#' '%' '^' '\\' '`'; do
-    bindkey "$c" cnmsb-insert 2>/dev/null
-done
+# Ctrl+P/N
+bindkey '^P' _cnmsb_prev
+bindkey '^N' _cnmsb_next
+
+bindkey '^I' _cnmsb_tab         # Tab
+bindkey '^[[C' _cnmsb_accept    # Right (CSI)
+bindkey '^[OC' _cnmsb_accept    # Right (SS3)
+bindkey '^M' _cnmsb_run         # Enter
+bindkey '^[' _cnmsb_escape      # Esc
 
 # ================== 完成 ==================
 
 print -P "%F{208}cnmsb%f 已加载"
-print -P "  %F{11}Tab%f=弹出选择  %F{11}Tab Tab%f=确认  %F{green}↑↓%f=切换  %F{green}→%f=直接接受"
+print -P "  %F{226}Tab%f=弹出/确认  %F{46}↑↓ Ctrl+P/N%f=选择  %F{51}→%f=直接接受  %F{196}Esc%f=取消"

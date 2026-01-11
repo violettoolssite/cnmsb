@@ -85,21 +85,27 @@ impl CompletionEngine {
         let parsed = self.parser.parse(line, cursor);
         let mut completions = Vec::new();
 
-        // 如果还没输入命令，补全命令名
+        // 如果还没输入命令，补全命令名和历史命令
         if parsed.current_word_index == 0 {
             completions.extend(self.command_completer.complete(&parsed.current_word));
+            // 只在命令位置显示历史命令
             completions.extend(self.history_completer.complete(&parsed.current_word));
         } else {
-            // 已有命令，根据上下文补全
+            // 已有命令，根据上下文补全参数/选项
             
-            // 1. 参数/选项补全
+            // 1. 参数/选项补全（优先）
             completions.extend(self.args_completer.complete(&parsed));
 
-            // 2. 文件路径补全
-            completions.extend(self.file_completer.complete(&parsed.current_word));
-
-            // 3. 历史命令补全
-            completions.extend(self.history_completer.complete(&parsed.current_word));
+            // 2. 如果当前词看起来像路径，补全文件
+            if parsed.current_word.is_empty() 
+                || parsed.current_word.starts_with('/')
+                || parsed.current_word.starts_with('.')
+                || parsed.current_word.starts_with('~')
+                || !parsed.current_word.starts_with('-') {
+                completions.extend(self.file_completer.complete(&parsed.current_word));
+            }
+            
+            // 不在参数位置显示历史命令（太干扰了）
         }
 
         // 模糊匹配过滤和排序
