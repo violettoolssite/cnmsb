@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cnmsb - 操你妈傻逼 | 命令行智能补全工具</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --accent: #c4ff00;
+            --accent-dim: #8fb300;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --orange: #ff6b35;
+            --red: #ff4757;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 背景效果 */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(196, 255, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 107, 53, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* 导航 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .github-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .github-link svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-dim);
+            transition: fill 0.3s;
+        }
+
+        .github-link:hover svg {
+            fill: var(--accent);
+        }
+
+        /* 主区域 */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(196, 255, 0, 0.1);
+            border: 1px solid rgba(196, 255, 0, 0.3);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 .accent {
+            color: var(--accent);
+        }
+
+        .hero h1 .orange {
+            color: var(--orange);
+        }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 500px;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dim);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .hero-terminal {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* 终端 */
+        .terminal {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 1rem 1.5rem;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .terminal-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-prompt {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+
+        .terminal-cmd {
+            color: #ffeb3b;
+            font-weight: bold;
+        }
+
+        .terminal-suggestion {
+            color: #666;
+        }
+
+        .terminal-comment {
+            color: #666;
+            font-style: italic;
+            margin-left: 1rem;
+        }
+
+        .terminal-arrow {
+            color: var(--orange);
+            margin: 0.5rem 0;
+        }
+
+        /* 特性 */
+        .section {
+            padding: 6rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .section-title .accent {
+            color: var(--accent);
+        }
+
+        .section-desc {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(196, 255, 0, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(196, 255, 0, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        /* 命令列表 */
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .command-tag {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--accent);
+            transition: all 0.3s;
+        }
+
+        .command-tag:hover {
+            border-color: var(--accent);
+            background: rgba(196, 255, 0, 0.05);
+        }
+
+        .command-tag span {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 0.5rem;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        /* 安装 */
+        .install-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 3rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .install-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .install-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .install-tab.active {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border-color: var(--accent);
+            font-weight: 700;
+        }
+
+        .code-block {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .code-block .comment {
+            color: #666;
+        }
+
+        .code-block .cmd {
+            color: var(--accent);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 8rem 0;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 3rem 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-copy {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 120px;
+            }
+
+            .hero-desc {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-terminal {
+                margin-top: 3rem;
+                justify-content: center;
+            }
+
+            .terminal {
+                max-width: 100%;
+            }
+
+            .install-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .install-tabs {
+                flex-wrap: wrap;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <nav>
+        <a href="#" class="logo">CNMSB</a>
+        <div class="nav-links">
+            <a href="#features">特性</a>
+            <a href="#demo">演示</a>
+            <a href="#commands">命令</a>
+            <a href="#install">安装</a>
+            <a href="https://github.com/violettoolssite/cnmsb" class="github-link" target="_blank">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="hero-badge">2026 · RUST 开发</div>
+                <h1>
+                    忘记参数?<br>
+                    <span class="orange">操你妈傻逼</span><br>
+                    <span class="accent">直接补全</span>
+                </h1>
+                <p class="hero-desc">
+                    cnmsb 是一个牛逼的命令行补全工具，敲命令的时候直接给你提示，不用再他妈的查文档。支持 50+ 常用命令，按 Tab 就完事。
+                </p>
+                <div class="hero-buttons">
+                    <a href="#install" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        立即安装
+                    </a>
+                    <a href="#demo" class="btn btn-secondary">查看演示</a>
+                </div>
+            </div>
+            <div class="hero-terminal">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                        <span class="terminal-title">Terminal</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cmd">git c</span><span class="terminal-suggestion">ommit</span>
+                        </div>
+                        <div class="terminal-arrow">↓ Tab</div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cmd">git commit</span>
+                            <span class="terminal-comment"># 补全了</span>
+                        </div>
+                        <br>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cmd">tar -</span><span class="terminal-suggestion">xvf</span>
+                        </div>
+                        <div class="terminal-arrow">↓ Tab</div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cmd">tar -xvf</span>
+                            <span class="terminal-comment"># 终于不用记了</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 特性 -->
+        <section class="section" id="features">
+            <h2 class="section-title">为什么用这<span class="accent">破玩意</span></h2>
+            <p class="section-desc">因为你他妈记不住那些狗屁参数，别装了。</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>实时预测</h3>
+                    <p>敲的时候直接显示灰色建议，不用按什么快捷键，不用等。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>智能匹配</h3>
+                    <p>模糊匹配，打错几个字也能找到。还会记住你常用的命令。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3>路径补全</h3>
+                    <p>文件路径也能补全，不用再 ls 来 ls 去。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>50+ 命令</h3>
+                    <p>git、docker、kubectl、systemctl... 常用的都有。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⌨️</div>
+                    <h3>方向键选择</h3>
+                    <p>多个建议？上下方向键切换，想选哪个选哪个。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Rust 写的</h3>
+                    <p>快，内存占用低，不会像 Python 那样卡半天。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 演示 -->
+        <section class="section" id="demo">
+            <h2 class="section-title">看看效果，<span class="accent">傻逼都会用</span></h2>
+            <p class="section-desc">灰色的是建议，按 Tab 或右箭头接受，就这么简单。</p>
+            <div class="terminal" style="max-width: 700px;">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                    <span class="terminal-title">zsh - cnmsb demo</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-cmd">docker r</span><span class="terminal-suggestion">un</span>
+                        <span class="terminal-comment"># 输入 docker r</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-cmd">docker run --</span><span class="terminal-suggestion">rm</span>
+                        <span class="terminal-comment"># 继续输入参数</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-cmd">kubectl get p</span><span class="terminal-suggestion">ods</span>
+                        <span class="terminal-comment"># k8s 也支持</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-cmd">systemctl sta</span><span class="terminal-suggestion">tus</span>
+                        <span class="terminal-comment"># 系统服务</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-cmd">grep -r</span><span class="terminal-suggestion">n</span>
+                        <span class="terminal-comment"># 文本搜索</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 支持的命令 -->
+        <section class="section" id="commands">
+            <h2 class="section-title">支持<span class="accent">这些命令</span></h2>
+            <p class="section-desc">不够用？自己加，都是 YAML 文件，看看就会了。</p>
+            <div class="commands-grid">
+                <div class="command-tag">git<span>版本控制</span></div>
+                <div class="command-tag">docker<span>容器管理</span></div>
+                <div class="command-tag">kubectl<span>K8s 操作</span></div>
+                <div class="command-tag">apt<span>包管理</span></div>
+                <div class="command-tag">systemctl<span>服务管理</span></div>
+                <div class="command-tag">tar<span>压缩归档</span></div>
+                <div class="command-tag">grep<span>文本搜索</span></div>
+                <div class="command-tag">find<span>文件查找</span></div>
+                <div class="command-tag">ssh<span>远程连接</span></div>
+                <div class="command-tag">curl<span>网络请求</span></div>
+                <div class="command-tag">chmod<span>权限修改</span></div>
+                <div class="command-tag">rsync<span>文件同步</span></div>
+            </div>
+        </section>
+
+        <!-- 安装 -->
+        <section class="section" id="install">
+            <div class="install-section">
+                <h2 class="section-title" style="margin-bottom: 0.5rem;">装上这<span class="accent">玩意</span></h2>
+                <p class="section-desc">别问其他发行版怎么装，自己想办法。</p>
+                
+                <div class="install-tabs">
+                    <button class="install-tab active" onclick="showTab('deb')">Debian/Ubuntu</button>
+                    <button class="install-tab" onclick="showTab('source')">源码编译</button>
+                    <button class="install-tab" onclick="showTab('config')">配置</button>
+                </div>
+
+                <div id="tab-deb" class="code-block">
+                    <button class="copy-btn" onclick="copyCode('deb')">复制</button>
+                    <code>
+<span class="comment"># 下载 deb 包</span>
+<span class="cmd">wget</span> https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
+
+<span class="comment"># 装上，会自动把你 shell 换成 zsh</span>
+<span class="cmd">sudo dpkg -i</span> cnmsb_0.1.0_amd64.deb
+
+<span class="comment"># 重新登录就生效了</span>
+                    </code>
+                </div>
+
+                <div id="tab-source" class="code-block" style="display: none;">
+                    <button class="copy-btn" onclick="copyCode('source')">复制</button>
+                    <code>
+<span class="comment"># 克隆仓库</span>
+<span class="cmd">git clone</span> https://github.com/violettoolssite/cnmsb.git
+<span class="cmd">cd</span> cnmsb/cnmsb-tool
+
+<span class="comment"># 编译，没装 Rust 自己去装</span>
+<span class="cmd">cargo build</span> --release
+
+<span class="comment"># 安装</span>
+<span class="cmd">sudo</span> ./install.sh
+                    </code>
+                </div>
+
+                <div id="tab-config" class="code-block" style="display: none;">
+                    <button class="copy-btn" onclick="copyCode('config')">复制</button>
+                    <code>
+<span class="comment"># 在 ~/.zshrc 里加这行</span>
+<span class="cmd">source</span> /usr/share/cnmsb/cnmsb.zsh
+
+<span class="comment"># 或者用 deb 装就不用管了，自动配置</span>
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <h2>准备好<span class="accent">告别忘参数</span>了吗?</h2>
+            <p>装上用，不好使来骂我。</p>
+            <a href="https://github.com/violettoolssite/cnmsb" class="btn btn-primary" target="_blank">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                在 GitHub 上查看
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://github.com/violettoolssite/cnmsb" target="_blank">GitHub</a>
+                <a href="https://github.com/violettoolssite/cnmsb/issues" target="_blank">问题反馈</a>
+                <a href="https://github.com/violettoolssite/cnmsb/blob/main/CONTRIBUTING.md" target="_blank">贡献指南</a>
+                <a href="https://github.com/violettoolssite/cnmsb/blob/main/LICENSE" target="_blank">MIT 许可证</a>
+            </div>
+            <div class="footer-copy">
+                © 2026 cnmsb. MIT License. 用 Rust 写的，快得很。
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function showTab(tab) {
+            document.querySelectorAll('.code-block').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.install-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tab).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        function copyCode(tab) {
+            const codeEl = document.getElementById('tab-' + tab).querySelector('code');
+            const text = codeEl.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                btn.textContent = '复制了!';
+                setTimeout(() => btn.textContent = '复制', 2000);
+            });
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
