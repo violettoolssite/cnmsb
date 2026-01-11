@@ -14,10 +14,10 @@ typeset -g zle_highlight=(default:fg=11,bold)
 # ================== 建议系统 ==================
 
 typeset -ga _clist=() _cdesc=() _csuff=()
-typeset -g _cidx=0 _csug="" _cmenu=0 _clastbuf=""
+typeset -g _cidx=0 _cmenu=0
 
 _cfetch() {
-    _clist=() _cdesc=() _csuff=() _cidx=0 _csug="" _cmenu=0
+    _clist=() _cdesc=() _csuff=() _cidx=0
     [[ -z "$1" ]] && return
     
     local comps curword
@@ -43,62 +43,55 @@ _cfetch() {
     [[ ${#_clist[@]} -gt 0 ]] && _cidx=1
 }
 
-# 显示内联预测（灰色后缀）
+# 清除显示
+_cclear() {
+    POSTDISPLAY=""
+    region_highlight=()
+}
+
+# 显示内联预测（灰色后缀，不主动显示）
 _cshow_inline() {
-    POSTDISPLAY="" region_highlight=() _csug=""
+    _cclear
     [[ ${#_clist[@]} -eq 0 || $_cidx -eq 0 ]] && return
     
     local suf="${_csuff[$_cidx]}"
-    _csug="$suf"
+    [[ -z "$suf" ]] && return
     
     POSTDISPLAY="$suf"
-    [[ -n "$suf" ]] && region_highlight+=("${#BUFFER} $((${#BUFFER}+${#suf})) fg=240")
+    region_highlight+=("${#BUFFER} $((${#BUFFER}+${#suf})) fg=240")
 }
 
-# 显示选择菜单（全部选项）
+# 显示选择菜单
 _cshow_menu() {
-    POSTDISPLAY="" region_highlight=()
+    _cclear
     [[ ${#_clist[@]} -eq 0 ]] && return
     
-    local disp="\n"
-    local i item desc marker
+    local disp=$'\n'
+    local i item desc
     
     for ((i=1; i<=${#_clist[@]}; i++)); do
         item="${_clist[$i]}"
         desc="${_cdesc[$i]}"
         
         if [[ $i -eq $_cidx ]]; then
-            marker="▸ "
-            disp+="  $marker\e[1;33m$item\e[0m"
+            disp+="  > $item"
         else
-            marker="  "
-            disp+="  $marker\e[37m$item\e[0m"
+            disp+="    $item"
         fi
         
-        [[ -n "$desc" ]] && disp+="  \e[90m$desc\e[0m"
-        disp+="\n"
+        [[ -n "$desc" ]] && disp+="  ($desc)"
+        disp+=$'\n'
     done
     
-    disp+="\n  \e[90m[↑↓选择 Tab确认 Esc取消]\e[0m"
+    disp+=$'\n'"  [Tab=确认 ↑↓=选择 Esc=取消]"
     
     POSTDISPLAY="$disp"
-    _csug="${_csuff[$_cidx]}"
-}
-
-_cupd() { 
-    _cfetch "$BUFFER"
-    _clastbuf="$BUFFER"
-    if [[ $_cmenu -eq 1 ]]; then
-        _cshow_menu
-    else
-        _cshow_inline
-    fi
 }
 
 _creset() {
-    POSTDISPLAY="" region_highlight=()
+    _cclear
     _clist=() _cdesc=() _csuff=()
-    _cidx=0 _csug="" _cmenu=0 _clastbuf=""
+    _cidx=0 _cmenu=0
 }
 
 # ================== 操作函数 ==================
@@ -107,7 +100,6 @@ cnmsb-prev() {
     if [[ $_cmenu -eq 1 && ${#_clist[@]} -gt 0 ]]; then
         ((_cidx--))
         [[ $_cidx -lt 1 ]] && _cidx=${#_clist[@]}
-        _csug="${_csuff[$_cidx]}"
         _cshow_menu
     else
         zle .up-line-or-history
@@ -118,7 +110,6 @@ cnmsb-next() {
     if [[ $_cmenu -eq 1 && ${#_clist[@]} -gt 0 ]]; then
         ((_cidx++))
         [[ $_cidx -gt ${#_clist[@]} ]] && _cidx=1
-        _csug="${_csuff[$_cidx]}"
         _cshow_menu
     else
         zle .down-line-or-history
@@ -126,38 +117,40 @@ cnmsb-next() {
 }
 
 cnmsb-tab() {
-    if [[ ${#_clist[@]} -eq 0 ]]; then
-        # 没有建议，获取建议
+    if [[ $_cmenu -eq 1 ]]; then
+        # 菜单已打开，第二次 Tab = 接受
+        if [[ ${#_clist[@]} -gt 0 && $_cidx -gt 0 ]]; then
+            local suf="${_csuff[$_cidx]}"
+            [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
+        fi
+        _creset
+        # 接受后重新获取建议（为下一次输入准备）
         _cfetch "$BUFFER"
-        _clastbuf="$BUFFER"
+    else
+        # 第一次 Tab = 弹出选择器
+        _cfetch "$BUFFER"
         if [[ ${#_clist[@]} -gt 0 ]]; then
             _cmenu=1
             _cshow_menu
         else
             zle expand-or-complete
         fi
-    elif [[ $_cmenu -eq 0 ]]; then
-        # 有建议但菜单未打开，打开菜单
-        _cmenu=1
-        _cshow_menu
-    else
-        # 菜单已打开，接受当前选择
-        if [[ -n "$_csug" ]]; then
-            BUFFER+="$_csug"
-            CURSOR=${#BUFFER}
-            _creset
-            _cupd
-        fi
     fi
 }
 
 cnmsb-accept-arrow() {
-    # 右箭头直接接受，不管菜单状态
-    if [[ -n "$_csug" ]]; then
-        BUFFER+="$_csug"
-        CURSOR=${#BUFFER}
+    # 右箭头直接接受当前建议
+    if [[ $_cmenu -eq 1 && ${#_clist[@]} -gt 0 && $_cidx -gt 0 ]]; then
+        local suf="${_csuff[$_cidx]}"
+        [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
         _creset
-        _cupd
+        _cfetch "$BUFFER"
+    elif [[ ${#_clist[@]} -gt 0 && $_cidx -gt 0 ]]; then
+        # 内联模式也可以用右箭头接受
+        local suf="${_csuff[$_cidx]}"
+        [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
+        _creset
+        _cfetch "$BUFFER"
     else
         zle .forward-char
     fi
@@ -165,20 +158,27 @@ cnmsb-accept-arrow() {
 
 cnmsb-insert() { 
     zle .self-insert
-    _cmenu=0  # 输入字符时关闭菜单，回到内联模式
-    _cupd
+    _cmenu=0
+    _cclear
+    # 输入时获取建议并显示内联预测
+    _cfetch "$BUFFER"
+    _cshow_inline
 }
 
 cnmsb-delete() { 
     zle .backward-delete-char
     _cmenu=0
-    _cupd
+    _cclear
+    _cfetch "$BUFFER"
+    _cshow_inline
 }
 
 cnmsb-delword() { 
     zle .backward-kill-word
     _cmenu=0
-    _cupd
+    _cclear
+    _cfetch "$BUFFER"
+    _cshow_inline
 }
 
 cnmsb-run() { 
@@ -194,11 +194,9 @@ cnmsb-cancel() {
 
 cnmsb-escape() { 
     if [[ $_cmenu -eq 1 ]]; then
-        # 菜单打开时按 Esc 关闭菜单，回到内联模式
         _cmenu=0
         _cshow_inline
     else
-        # 内联模式按 Esc 清除建议
         _creset
         zle .redisplay
     fi
@@ -238,4 +236,4 @@ done
 # ================== 完成 ==================
 
 print -P "%F{208}cnmsb%f 已加载"
-print -P "  %F{11}Tab%f=弹出选择器  %F{11}Tab Tab%f=接受  %F{green}↑↓%f=切换  %F{green}→%f=直接接受  %F{red}Esc%f=关闭"
+print -P "  %F{11}Tab%f=弹出选择  %F{11}Tab Tab%f=确认  %F{green}↑↓%f=切换  %F{green}→%f=直接接受"
