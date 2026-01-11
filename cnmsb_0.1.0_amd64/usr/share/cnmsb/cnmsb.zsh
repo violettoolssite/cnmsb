@@ -1,221 +1,241 @@
 #!/bin/zsh
 # cnmsb - Zsh 智能补全
+# https://github.com/violettoolssite/cnmsb
 
 (( $+commands[cnmsb] )) || return 0
 
 autoload -Uz compinit && compinit -u -C
 
-# ================== 提示符 ==================
+# ================== 配置 ==================
 
 PS1='%F{208}%n@%m%f:%F{blue}%~%f%F{208}%%%f '
-
-# ================== 输入颜色 ==================
-
-zle-line-init() { echoti smkx 2>/dev/null; zle reset-prompt; }
-zle-line-finish() { echoti rmkx 2>/dev/null; }
-zle -N zle-line-init
-zle -N zle-line-finish
-
 typeset -g zle_highlight=(default:fg=11,bold)
 
-# ================== 建议列表 ==================
+# ================== 建议系统 ==================
 
-typeset -ga _clist=()      # 建议列表 (完整文本)
-typeset -ga _cdesc=()      # 描述列表
-typeset -ga _csuff=()      # 后缀列表 (要追加的部分)
-typeset -g _cidx=0         # 当前选中索引
-typeset -g _csug=""        # 当前要追加的后缀
+typeset -ga _clist=() _cdesc=() _csuff=()
+typeset -g _cidx=0 _csug="" _cmenu=0 _clastbuf=""
 
-# 获取所有建议
 _cfetch() {
-    _clist=()
-    _cdesc=()
-    _csuff=()
-    _cidx=0
-    _csug=""
+    _clist=() _cdesc=() _csuff=() _cidx=0 _csug="" _cmenu=0
+    [[ -z "$1" ]] && return
     
-    local buf="$1"
-    [[ -z "$buf" ]] && return
-    
-    local comps
-    comps=$(cnmsb complete --line "$buf" --cursor ${#buf} --shell bash 2>/dev/null)
+    local comps curword
+    comps=$(cnmsb complete --line "$1" --cursor ${#1} --shell bash 2>/dev/null)
     [[ -z "$comps" ]] && return
     
-    # 获取当前词
-    local words=(${(z)buf})
-    local curword=""
-    if [[ "$buf" != *" " && ${#words[@]} -gt 0 ]]; then
-        curword="${words[-1]}"
-    fi
+    local words=(${(z)1})
+    [[ "$1" != *" " && ${#words[@]} -gt 0 ]] && curword="${words[-1]}"
     
+    local text desc suf
     while IFS=$'\t' read -r text desc; do
         [[ -z "$text" ]] && continue
-        
-        # 计算后缀
-        local suf=""
         if [[ -n "$curword" && "$text" == "$curword"* ]]; then
-            # 补全当前词
             suf="${text#$curword}"
-        elif [[ -z "$curword" || "$buf" == *" " ]]; then
-            # 新词
+        elif [[ -z "$curword" || "$1" == *" " ]]; then
             suf="$text"
         else
-            # 替换当前词
             suf="$text"
         fi
-        
-        _clist+=("$text")
-        _cdesc+=("$desc")
-        _csuff+=("$suf")
+        _clist+=("$text") _cdesc+=("$desc") _csuff+=("$suf")
     done <<< "$comps"
     
     [[ ${#_clist[@]} -gt 0 ]] && _cidx=1
 }
 
-# 显示当前建议
-_cshow() {
-    POSTDISPLAY=""
-    region_highlight=()
-    _csug=""
-    
-    if [[ ${#_clist[@]} -eq 0 || $_cidx -eq 0 ]]; then
-        return
-    fi
+# 显示内联预测（灰色后缀）
+_cshow_inline() {
+    POSTDISPLAY="" region_highlight=() _csug=""
+    [[ ${#_clist[@]} -eq 0 || $_cidx -eq 0 ]] && return
     
     local suf="${_csuff[$_cidx]}"
-    local desc="${_cdesc[$_cidx]}"
-    local comp="${_clist[$_cidx]}"
-    
     _csug="$suf"
     
-    # 显示: 后缀 [索引/总数] 描述
-    local display="$suf"
-    if [[ ${#_clist[@]} -gt 1 ]]; then
-        display+="  [${_cidx}/${#_clist[@]}]"
-    fi
-    if [[ -n "$desc" ]]; then
-        display+=" $desc"
-    fi
+    POSTDISPLAY="$suf"
+    [[ -n "$suf" ]] && region_highlight+=("${#BUFFER} $((${#BUFFER}+${#suf})) fg=240")
+}
+
+# 显示选择菜单（全部选项）
+_cshow_menu() {
+    POSTDISPLAY="" region_highlight=()
+    [[ ${#_clist[@]} -eq 0 ]] && return
     
-    POSTDISPLAY="$display"
-    local start=${#BUFFER}
-    local end=$((start + ${#POSTDISPLAY}))
-    region_highlight+=("$start $end fg=240")
+    local disp="\n"
+    local i item desc marker
+    
+    for ((i=1; i<=${#_clist[@]}; i++)); do
+        item="${_clist[$i]}"
+        desc="${_cdesc[$i]}"
+        
+        if [[ $i -eq $_cidx ]]; then
+            marker="▸ "
+            disp+="  $marker\e[1;33m$item\e[0m"
+        else
+            marker="  "
+            disp+="  $marker\e[37m$item\e[0m"
+        fi
+        
+        [[ -n "$desc" ]] && disp+="  \e[90m$desc\e[0m"
+        disp+="\n"
+    done
+    
+    disp+="\n  \e[90m[↑↓选择 Tab确认 Esc取消]\e[0m"
+    
+    POSTDISPLAY="$disp"
+    _csug="${_csuff[$_cidx]}"
 }
 
-# 更新建议
-_cupd() {
+_cupd() { 
     _cfetch "$BUFFER"
-    _cshow
+    _clastbuf="$BUFFER"
+    if [[ $_cmenu -eq 1 ]]; then
+        _cshow_menu
+    else
+        _cshow_inline
+    fi
 }
 
-# 上一个建议
-_cprev() {
-    if [[ ${#_clist[@]} -gt 1 ]]; then
-        (( _cidx-- ))
+_creset() {
+    POSTDISPLAY="" region_highlight=()
+    _clist=() _cdesc=() _csuff=()
+    _cidx=0 _csug="" _cmenu=0 _clastbuf=""
+}
+
+# ================== 操作函数 ==================
+
+cnmsb-prev() {
+    if [[ $_cmenu -eq 1 && ${#_clist[@]} -gt 0 ]]; then
+        ((_cidx--))
         [[ $_cidx -lt 1 ]] && _cidx=${#_clist[@]}
-        _cshow
-    elif [[ ${#_clist[@]} -eq 0 ]]; then
+        _csug="${_csuff[$_cidx]}"
+        _cshow_menu
+    else
         zle .up-line-or-history
     fi
 }
 
-# 下一个建议
-_cnext() {
-    if [[ ${#_clist[@]} -gt 1 ]]; then
-        (( _cidx++ ))
+cnmsb-next() {
+    if [[ $_cmenu -eq 1 && ${#_clist[@]} -gt 0 ]]; then
+        ((_cidx++))
         [[ $_cidx -gt ${#_clist[@]} ]] && _cidx=1
-        _cshow
-    elif [[ ${#_clist[@]} -eq 0 ]]; then
+        _csug="${_csuff[$_cidx]}"
+        _cshow_menu
+    else
         zle .down-line-or-history
     fi
 }
 
-# 接受当前建议
-_cacc() {
-    if [[ -n "$_csug" ]]; then
-        BUFFER+="$_csug"
-        CURSOR=${#BUFFER}
-        _clist=()
-        _cdesc=()
-        _csuff=()
-        _cidx=0
-        _csug=""
-        POSTDISPLAY=""
-        region_highlight=()
-        # 获取下一级建议
-        _cupd
+cnmsb-tab() {
+    if [[ ${#_clist[@]} -eq 0 ]]; then
+        # 没有建议，获取建议
+        _cfetch "$BUFFER"
+        _clastbuf="$BUFFER"
+        if [[ ${#_clist[@]} -gt 0 ]]; then
+            _cmenu=1
+            _cshow_menu
+        else
+            zle expand-or-complete
+        fi
+    elif [[ $_cmenu -eq 0 ]]; then
+        # 有建议但菜单未打开，打开菜单
+        _cmenu=1
+        _cshow_menu
     else
-        POSTDISPLAY=""
-        region_highlight=()
-        zle expand-or-complete
+        # 菜单已打开，接受当前选择
+        if [[ -n "$_csug" ]]; then
+            BUFFER+="$_csug"
+            CURSOR=${#BUFFER}
+            _creset
+            _cupd
+        fi
     fi
 }
 
-# 输入字符
-_cins() { zle .self-insert; _cupd; }
+cnmsb-accept-arrow() {
+    # 右箭头直接接受，不管菜单状态
+    if [[ -n "$_csug" ]]; then
+        BUFFER+="$_csug"
+        CURSOR=${#BUFFER}
+        _creset
+        _cupd
+    else
+        zle .forward-char
+    fi
+}
 
-# 删除
-_cdel() { zle .backward-delete-char; _cupd; }
-_cdelw() { zle .backward-kill-word; _cupd; }
+cnmsb-insert() { 
+    zle .self-insert
+    _cmenu=0  # 输入字符时关闭菜单，回到内联模式
+    _cupd
+}
 
-# 执行
-_crun() { 
-    POSTDISPLAY=""
-    region_highlight=()
-    _clist=(); _cdesc=(); _csuff=(); _cidx=0; _csug=""
+cnmsb-delete() { 
+    zle .backward-delete-char
+    _cmenu=0
+    _cupd
+}
+
+cnmsb-delword() { 
+    zle .backward-kill-word
+    _cmenu=0
+    _cupd
+}
+
+cnmsb-run() { 
+    _creset
     zle .accept-line
 }
 
-# 取消
-_cbrk() { 
-    POSTDISPLAY=""
-    region_highlight=()
-    _clist=(); _cdesc=(); _csuff=(); _cidx=0; _csug=""
+cnmsb-cancel() { 
+    _creset
     BUFFER=""
     zle .redisplay
 }
 
-# 清除建议但保留输入
-_cesc() {
-    POSTDISPLAY=""
-    region_highlight=()
-    _clist=(); _cdesc=(); _csuff=(); _cidx=0; _csug=""
-    zle .redisplay
+cnmsb-escape() { 
+    if [[ $_cmenu -eq 1 ]]; then
+        # 菜单打开时按 Esc 关闭菜单，回到内联模式
+        _cmenu=0
+        _cshow_inline
+    else
+        # 内联模式按 Esc 清除建议
+        _creset
+        zle .redisplay
+    fi
 }
 
-# 注册小部件
-zle -N cins _cins
-zle -N cdel _cdel
-zle -N cdelw _cdelw
-zle -N cacc _cacc
-zle -N crun _crun
-zle -N cbrk _cbrk
-zle -N cprev _cprev
-zle -N cnext _cnext
-zle -N cesc _cesc
+# ================== 注册 ==================
 
-# 按键绑定
-bindkey '^I' cacc           # Tab: 接受
-bindkey '^[[C' cacc         # 右箭头: 接受
-bindkey '^[[A' cprev        # 上箭头: 上一个
-bindkey '^[[B' cnext        # 下箭头: 下一个
-bindkey '^M' crun           # Enter: 执行
-bindkey '^?' cdel           # Backspace
-bindkey '^H' cdel
-bindkey '^C' cbrk           # Ctrl+C: 取消
-bindkey '^W' cdelw          # Ctrl+W
-bindkey '^[' cesc           # Esc: 关闭建议
+zle -N cnmsb-prev
+zle -N cnmsb-next
+zle -N cnmsb-tab
+zle -N cnmsb-accept-arrow
+zle -N cnmsb-insert
+zle -N cnmsb-delete
+zle -N cnmsb-delword
+zle -N cnmsb-run
+zle -N cnmsb-cancel
+zle -N cnmsb-escape
+
+# ================== 按键绑定 ==================
+
+bindkey '^[[A' cnmsb-prev         # ↑
+bindkey '^[[B' cnmsb-next         # ↓
+bindkey '^I' cnmsb-tab            # Tab
+bindkey '^[[C' cnmsb-accept-arrow # →
+bindkey '^M' cnmsb-run            # Enter
+bindkey '^?' cnmsb-delete         # Backspace
+bindkey '^H' cnmsb-delete
+bindkey '^W' cnmsb-delword        # Ctrl+W
+bindkey '^C' cnmsb-cancel         # Ctrl+C
+bindkey '^[' cnmsb-escape         # Esc
 
 # 字符输入
-for c ({a..z} {A..Z} {0..9} ' ' '-' '_' '.' '/' ':' '=' '+' '@' '~'); do
-    bindkey "$c" cins 2>/dev/null
+local c; for c in {a..z} {A..Z} {0..9} ' ' '-' '_' '.' '/' ':' '=' '+' '@' '~' '"' "'" ',' ';' '!' '?' '*' '&' '|' '<' '>' '(' ')' '[' ']' '{' '}' '$' '#' '%' '^' '\\' '`'; do
+    bindkey "$c" cnmsb-insert 2>/dev/null
 done
 
-# ================== 补全样式 ==================
-
-zstyle ':completion:*' menu select
-zstyle ':completion:*' list-colors 'ma=30;43'
+# ================== 完成 ==================
 
 print -P "%F{208}cnmsb%f 已加载"
-print -P "  %F{green}↑↓%f 切换建议  %F{green}Tab/→%f 接受  %F{green}Esc%f 关闭"
+print -P "  %F{11}Tab%f=弹出选择器  %F{11}Tab Tab%f=接受  %F{green}↑↓%f=切换  %F{green}→%f=直接接受  %F{red}Esc%f=关闭"
