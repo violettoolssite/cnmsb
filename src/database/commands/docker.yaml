@@ -1,0 +1,258 @@
+# Docker 容器命令
+# 贡献者可以在此添加更多 docker 子命令和选项
+
+docker:
+  name: docker
+  description: 容器管理平台
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    run:
+      name: run
+      description: 运行容器
+      options:
+        - short: "-d"
+          long: "--detach"
+          description: 后台运行
+        - short: "-i"
+          long: "--interactive"
+          description: 交互模式
+        - short: "-t"
+          long: "--tty"
+          description: 分配 TTY
+        - short: ""
+          long: "--rm"
+          description: 退出后删除
+        - short: "-p"
+          long: "--publish"
+          description: 端口映射
+          takes_value: true
+        - short: "-v"
+          long: "--volume"
+          description: 挂载卷
+          takes_value: true
+        - short: "-e"
+          long: "--env"
+          description: 环境变量
+          takes_value: true
+        - short: ""
+          long: "--name"
+          description: 容器名称
+          takes_value: true
+        - short: "-w"
+          long: "--workdir"
+          description: 工作目录
+          takes_value: true
+        - short: ""
+          long: "--network"
+          description: 网络
+          takes_value: true
+          values: ["bridge", "host", "none"]
+        - short: ""
+          long: "--restart"
+          description: 重启策略
+          takes_value: true
+          values: ["no", "always", "on-failure", "unless-stopped"]
+        - short: "-u"
+          long: "--user"
+          description: 用户
+          takes_value: true
+        - short: ""
+          long: "--privileged"
+          description: 特权模式
+    build:
+      name: build
+      description: 构建镜像
+      options:
+        - short: "-t"
+          long: "--tag"
+          description: 镜像标签
+          takes_value: true
+        - short: "-f"
+          long: "--file"
+          description: Dockerfile 路径
+          takes_value: true
+        - short: ""
+          long: "--no-cache"
+          description: 不使用缓存
+        - short: ""
+          long: "--pull"
+          description: 总是拉取基础镜像
+        - short: ""
+          long: "--build-arg"
+          description: 构建参数
+          takes_value: true
+        - short: ""
+          long: "--target"
+          description: 构建目标
+          takes_value: true
+    ps:
+      name: ps
+      description: 列出容器
+      options:
+        - short: "-a"
+          long: "--all"
+          description: 显示所有容器
+        - short: "-q"
+          long: "--quiet"
+          description: 仅显示 ID
+        - short: ""
+          long: "--format"
+          description: 格式化输出
+          takes_value: true
+        - short: "-f"
+          long: "--filter"
+          description: 过滤
+          takes_value: true
+    images:
+      name: images
+      description: 列出镜像
+      options:
+        - short: "-a"
+          long: "--all"
+          description: 显示所有镜像
+        - short: "-q"
+          long: "--quiet"
+          description: 仅显示 ID
+    pull:
+      name: pull
+      description: 拉取镜像
+      options:
+        - short: "-a"
+          long: "--all-tags"
+          description: 拉取所有标签
+    push:
+      name: push
+      description: 推送镜像
+      options:
+        - short: "-a"
+          long: "--all-tags"
+          description: 推送所有标签
+    exec:
+      name: exec
+      description: 在容器中执行命令
+      options:
+        - short: "-i"
+          long: "--interactive"
+          description: 交互模式
+        - short: "-t"
+          long: "--tty"
+          description: 分配 TTY
+        - short: "-d"
+          long: "--detach"
+          description: 后台执行
+        - short: "-e"
+          long: "--env"
+          description: 环境变量
+          takes_value: true
+        - short: "-u"
+          long: "--user"
+          description: 用户
+          takes_value: true
+        - short: "-w"
+          long: "--workdir"
+          description: 工作目录
+          takes_value: true
+    stop:
+      name: stop
+      description: 停止容器
+      options:
+        - short: "-t"
+          long: "--time"
+          description: 超时时间
+          takes_value: true
+    start:
+      name: start
+      description: 启动容器
+      options:
+        - short: "-a"
+          long: "--attach"
+          description: 附加输出
+        - short: "-i"
+          long: "--interactive"
+          description: 交互模式
+    restart:
+      name: restart
+      description: 重启容器
+      options:
+        - short: "-t"
+          long: "--time"
+          description: 超时时间
+          takes_value: true
+    rm:
+      name: rm
+      description: 删除容器
+      options:
+        - short: "-f"
+          long: "--force"
+          description: 强制删除
+        - short: "-v"
+          long: "--volumes"
+          description: 删除卷
+    rmi:
+      name: rmi
+      description: 删除镜像
+      options:
+        - short: "-f"
+          long: "--force"
+          description: 强制删除
+    logs:
+      name: logs
+      description: 查看日志
+      options:
+        - short: "-f"
+          long: "--follow"
+          description: 跟踪日志
+        - short: ""
+          long: "--tail"
+          description: 显示行数
+          takes_value: true
+        - short: "-t"
+          long: "--timestamps"
+          description: 显示时间戳
+        - short: ""
+          long: "--since"
+          description: 开始时间
+          takes_value: true
+    inspect:
+      name: inspect
+      description: 查看详情
+      options:
+        - short: "-f"
+          long: "--format"
+          description: 格式化输出
+          takes_value: true
+    network:
+      name: network
+      description: 网络管理
+      options: []
+    volume:
+      name: volume
+      description: 卷管理
+      options: []
+    compose:
+      name: compose
+      description: Docker Compose
+      options:
+        - short: "-f"
+          long: "--file"
+          description: 指定文件
+          takes_value: true
+    system:
+      name: system
+      description: 系统管理
+      options: []
+    tag:
+      name: tag
+      description: 标记镜像
+      options: []
+    cp:
+      name: cp
+      description: 复制文件
+      options: []
+

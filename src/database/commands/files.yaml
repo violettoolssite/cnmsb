@@ -1,0 +1,314 @@
+# 文件操作命令
+# 贡献者可以在此添加更多文件操作命令
+
+ls:
+  name: ls
+  description: 列出目录内容
+  options:
+    - short: "-l"
+      long: ""
+      description: 长格式显示
+    - short: "-a"
+      long: "--all"
+      description: 显示隐藏文件
+    - short: "-A"
+      long: "--almost-all"
+      description: 显示隐藏文件（不含 . 和 ..）
+    - short: "-h"
+      long: "--human-readable"
+      description: 人类可读大小
+    - short: "-r"
+      long: "--reverse"
+      description: 反向排序
+    - short: "-t"
+      long: ""
+      description: 按时间排序
+    - short: "-S"
+      long: ""
+      description: 按大小排序
+    - short: "-R"
+      long: "--recursive"
+      description: 递归列出
+    - short: "-d"
+      long: "--directory"
+      description: 只显示目录本身
+    - short: "-1"
+      long: ""
+      description: 每行一个文件
+    - short: ""
+      long: "--color"
+      description: 彩色输出
+      takes_value: true
+      values: ["auto", "always", "never"]
+  subcommands: {}
+
+cp:
+  name: cp
+  description: 复制文件或目录
+  options:
+    - short: "-r"
+      long: "--recursive"
+      description: 递归复制目录
+    - short: "-a"
+      long: "--archive"
+      description: 归档模式（保留属性）
+    - short: "-i"
+      long: "--interactive"
+      description: 覆盖前确认
+    - short: "-n"
+      long: "--no-clobber"
+      description: 不覆盖已存在文件
+    - short: "-u"
+      long: "--update"
+      description: 仅复制更新的文件
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-f"
+      long: "--force"
+      description: 强制覆盖
+    - short: "-p"
+      long: ""
+      description: 保留权限
+    - short: "-l"
+      long: "--link"
+      description: 创建硬链接
+    - short: "-s"
+      long: "--symbolic-link"
+      description: 创建符号链接
+  subcommands: {}
+
+mv:
+  name: mv
+  description: 移动或重命名文件
+  options:
+    - short: "-i"
+      long: "--interactive"
+      description: 覆盖前确认
+    - short: "-n"
+      long: "--no-clobber"
+      description: 不覆盖已存在文件
+    - short: "-u"
+      long: "--update"
+      description: 仅移动更新的文件
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-f"
+      long: "--force"
+      description: 强制覆盖
+  subcommands: {}
+
+rm:
+  name: rm
+  description: 删除文件或目录
+  options:
+    - short: "-r"
+      long: "--recursive"
+      description: 递归删除目录
+    - short: "-f"
+      long: "--force"
+      description: 强制删除
+    - short: "-i"
+      long: "--interactive"
+      description: 删除前确认
+    - short: "-I"
+      long: ""
+      description: 删除多个文件前确认
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-d"
+      long: "--dir"
+      description: 删除空目录
+  subcommands: {}
+
+mkdir:
+  name: mkdir
+  description: 创建目录
+  options:
+    - short: "-p"
+      long: "--parents"
+      description: 递归创建父目录
+    - short: "-m"
+      long: "--mode"
+      description: 设置权限
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+rmdir:
+  name: rmdir
+  description: 删除空目录
+  options:
+    - short: "-p"
+      long: "--parents"
+      description: 递归删除父目录
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+touch:
+  name: touch
+  description: 创建空文件或更新时间戳
+  options:
+    - short: "-a"
+      long: ""
+      description: 只更新访问时间
+    - short: "-m"
+      long: ""
+      description: 只更新修改时间
+    - short: "-c"
+      long: "--no-create"
+      description: 不创建文件
+    - short: "-t"
+      long: ""
+      description: 指定时间
+      takes_value: true
+  subcommands: {}
+
+ln:
+  name: ln
+  description: 创建链接
+  options:
+    - short: "-s"
+      long: "--symbolic"
+      description: 创建符号链接
+    - short: "-f"
+      long: "--force"
+      description: 强制覆盖
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+chmod:
+  name: chmod
+  description: 修改文件权限
+  options:
+    - short: "-R"
+      long: "--recursive"
+      description: 递归修改
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-c"
+      long: "--changes"
+      description: 仅显示修改
+    - short: "-f"
+      long: "--silent"
+      description: 静默模式
+  subcommands: {}
+
+chown:
+  name: chown
+  description: 修改文件所有者
+  options:
+    - short: "-R"
+      long: "--recursive"
+      description: 递归修改
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-c"
+      long: "--changes"
+      description: 仅显示修改
+    - short: "-h"
+      long: "--no-dereference"
+      description: 修改链接本身
+  subcommands: {}
+
+find:
+  name: find
+  description: 查找文件
+  options:
+    - short: ""
+      long: "-name"
+      description: 按名称查找
+      takes_value: true
+    - short: ""
+      long: "-iname"
+      description: 按名称查找（忽略大小写）
+      takes_value: true
+    - short: ""
+      long: "-type"
+      description: 按类型查找
+      takes_value: true
+      values: ["f", "d", "l", "s", "b", "c"]
+    - short: ""
+      long: "-size"
+      description: 按大小查找
+      takes_value: true
+    - short: ""
+      long: "-mtime"
+      description: 按修改时间查找
+      takes_value: true
+    - short: ""
+      long: "-user"
+      description: 按用户查找
+      takes_value: true
+    - short: ""
+      long: "-perm"
+      description: 按权限查找
+      takes_value: true
+    - short: ""
+      long: "-exec"
+      description: 执行命令
+      takes_value: true
+    - short: ""
+      long: "-delete"
+      description: 删除找到的文件
+    - short: ""
+      long: "-print"
+      description: 打印路径
+    - short: ""
+      long: "-maxdepth"
+      description: 最大深度
+      takes_value: true
+    - short: ""
+      long: "-mindepth"
+      description: 最小深度
+      takes_value: true
+  subcommands: {}
+
+tree:
+  name: tree
+  description: 树形显示目录结构
+  options:
+    - short: "-a"
+      long: ""
+      description: 显示隐藏文件
+    - short: "-d"
+      long: ""
+      description: 只显示目录
+    - short: "-L"
+      long: ""
+      description: 最大深度
+      takes_value: true
+    - short: "-h"
+      long: ""
+      description: 人类可读大小
+    - short: "-p"
+      long: ""
+      description: 显示权限
+    - short: "-u"
+      long: ""
+      description: 显示用户
+    - short: "-g"
+      long: ""
+      description: 显示组
+    - short: "-s"
+      long: ""
+      description: 显示大小
+    - short: ""
+      long: "--noreport"
+      description: 不显示统计
+    - short: "-I"
+      long: ""
+      description: 排除模式
+      takes_value: true
+  subcommands: {}
+

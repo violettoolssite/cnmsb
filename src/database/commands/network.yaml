@@ -1,0 +1,391 @@
+# 网络命令
+# 贡献者可以在此添加更多网络命令
+
+ssh:
+  name: ssh
+  description: 安全远程登录
+  options:
+    - short: "-p"
+      long: ""
+      description: 端口号
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 私钥文件
+      takes_value: true
+    - short: "-l"
+      long: ""
+      description: 用户名
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: SSH 选项
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-A"
+      long: ""
+      description: 转发认证代理
+    - short: "-X"
+      long: ""
+      description: 转发 X11
+    - short: "-N"
+      long: ""
+      description: 不执行命令
+    - short: "-f"
+      long: ""
+      description: 后台运行
+    - short: "-L"
+      long: ""
+      description: 本地端口转发
+      takes_value: true
+    - short: "-R"
+      long: ""
+      description: 远程端口转发
+      takes_value: true
+    - short: "-D"
+      long: ""
+      description: 动态端口转发
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 强制分配 TTY
+  subcommands: {}
+
+scp:
+  name: scp
+  description: 安全复制文件
+  options:
+    - short: "-r"
+      long: ""
+      description: 递归复制
+    - short: "-P"
+      long: ""
+      description: 端口号
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 私钥文件
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 保留属性
+    - short: "-q"
+      long: ""
+      description: 静默模式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-C"
+      long: ""
+      description: 压缩传输
+    - short: "-l"
+      long: ""
+      description: 带宽限制
+      takes_value: true
+  subcommands: {}
+
+rsync:
+  name: rsync
+  description: 远程同步工具
+  options:
+    - short: "-a"
+      long: "--archive"
+      description: 归档模式
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-z"
+      long: "--compress"
+      description: 压缩传输
+    - short: "-P"
+      long: ""
+      description: 显示进度和保留部分
+    - short: ""
+      long: "--progress"
+      description: 显示进度
+    - short: "-r"
+      long: "--recursive"
+      description: 递归
+    - short: "-n"
+      long: "--dry-run"
+      description: 试运行
+    - short: ""
+      long: "--delete"
+      description: 删除目标多余文件
+    - short: "-e"
+      long: ""
+      description: 指定远程 shell
+      takes_value: true
+    - short: ""
+      long: "--exclude"
+      description: 排除模式
+      takes_value: true
+    - short: ""
+      long: "--include"
+      description: 包含模式
+      takes_value: true
+    - short: "-u"
+      long: "--update"
+      description: 跳过更新的文件
+    - short: ""
+      long: "--bwlimit"
+      description: 带宽限制
+      takes_value: true
+  subcommands: {}
+
+curl:
+  name: curl
+  description: HTTP 客户端
+  options:
+    - short: "-o"
+      long: "--output"
+      description: 输出文件
+      takes_value: true
+    - short: "-O"
+      long: "--remote-name"
+      description: 使用远程文件名
+    - short: "-L"
+      long: "--location"
+      description: 跟随重定向
+    - short: "-s"
+      long: "--silent"
+      description: 静默模式
+    - short: "-S"
+      long: "--show-error"
+      description: 显示错误
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-i"
+      long: "--include"
+      description: 包含响应头
+    - short: "-I"
+      long: "--head"
+      description: 仅获取头部
+    - short: "-X"
+      long: "--request"
+      description: 请求方法
+      takes_value: true
+      values: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
+    - short: "-H"
+      long: "--header"
+      description: 请求头
+      takes_value: true
+    - short: "-d"
+      long: "--data"
+      description: POST 数据
+      takes_value: true
+    - short: ""
+      long: "--data-raw"
+      description: 原始 POST 数据
+      takes_value: true
+    - short: "-F"
+      long: "--form"
+      description: 表单数据
+      takes_value: true
+    - short: "-u"
+      long: "--user"
+      description: 用户认证
+      takes_value: true
+    - short: "-k"
+      long: "--insecure"
+      description: 忽略 SSL 错误
+    - short: "-b"
+      long: "--cookie"
+      description: Cookie
+      takes_value: true
+    - short: "-c"
+      long: "--cookie-jar"
+      description: 保存 Cookie
+      takes_value: true
+    - short: "-A"
+      long: "--user-agent"
+      description: User-Agent
+      takes_value: true
+    - short: ""
+      long: "--connect-timeout"
+      description: 连接超时
+      takes_value: true
+    - short: "-m"
+      long: "--max-time"
+      description: 最大时间
+      takes_value: true
+    - short: ""
+      long: "--retry"
+      description: 重试次数
+      takes_value: true
+  subcommands: {}
+
+wget:
+  name: wget
+  description: 下载文件
+  options:
+    - short: "-O"
+      long: "--output-document"
+      description: 输出文件名
+      takes_value: true
+    - short: "-c"
+      long: "--continue"
+      description: 断点续传
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-b"
+      long: "--background"
+      description: 后台下载
+    - short: "-r"
+      long: "--recursive"
+      description: 递归下载
+    - short: "-np"
+      long: "--no-parent"
+      description: 不追溯父目录
+    - short: "-nd"
+      long: "--no-directories"
+      description: 不创建目录
+    - short: "-P"
+      long: "--directory-prefix"
+      description: 下载目录
+      takes_value: true
+    - short: ""
+      long: "--limit-rate"
+      description: 限速
+      takes_value: true
+    - short: ""
+      long: "--no-check-certificate"
+      description: 忽略 SSL 错误
+    - short: ""
+      long: "--user"
+      description: 用户名
+      takes_value: true
+    - short: ""
+      long: "--password"
+      description: 密码
+      takes_value: true
+    - short: "-t"
+      long: "--tries"
+      description: 重试次数
+      takes_value: true
+    - short: ""
+      long: "--timeout"
+      description: 超时时间
+      takes_value: true
+  subcommands: {}
+
+ping:
+  name: ping
+  description: 测试网络连通性
+  options:
+    - short: "-c"
+      long: ""
+      description: 发送次数
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 间隔时间
+      takes_value: true
+    - short: "-W"
+      long: ""
+      description: 超时时间
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 包大小
+      takes_value: true
+    - short: "-q"
+      long: ""
+      description: 静默模式
+  subcommands: {}
+
+ip:
+  name: ip
+  description: 网络配置
+  options:
+    - short: "-c"
+      long: ""
+      description: 彩色输出
+    - short: "-4"
+      long: ""
+      description: IPv4
+    - short: "-6"
+      long: ""
+      description: IPv6
+    - short: "-s"
+      long: ""
+      description: 统计信息
+  subcommands:
+    addr:
+      name: addr
+      description: 地址管理
+      options: []
+    link:
+      name: link
+      description: 链路管理
+      options: []
+    route:
+      name: route
+      description: 路由管理
+      options: []
+    neigh:
+      name: neigh
+      description: 邻居表
+      options: []
+
+ss:
+  name: ss
+  description: 套接字统计
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有套接字
+    - short: "-l"
+      long: "--listening"
+      description: 监听套接字
+    - short: "-t"
+      long: "--tcp"
+      description: TCP
+    - short: "-u"
+      long: "--udp"
+      description: UDP
+    - short: "-n"
+      long: "--numeric"
+      description: 数字显示
+    - short: "-p"
+      long: "--processes"
+      description: 显示进程
+    - short: "-s"
+      long: "--summary"
+      description: 统计摘要
+  subcommands: {}
+
+netstat:
+  name: netstat
+  description: 网络统计
+  options:
+    - short: "-a"
+      long: ""
+      description: 所有连接
+    - short: "-t"
+      long: ""
+      description: TCP
+    - short: "-u"
+      long: ""
+      description: UDP
+    - short: "-l"
+      long: ""
+      description: 监听
+    - short: "-n"
+      long: ""
+      description: 数字显示
+    - short: "-p"
+      long: ""
+      description: 显示进程
+    - short: "-r"
+      long: ""
+      description: 路由表
+  subcommands: {}
+

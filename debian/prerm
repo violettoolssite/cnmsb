@@ -1,0 +1,16 @@
+#!/bin/sh
+# cnmsb 卸载前脚本
+
+set -e
+
+case "$1" in
+    remove|upgrade|deconfigure)
+        echo "正在卸载 cnmsb..."
+        echo "请从你的 shell 配置文件中移除 cnmsb 相关配置。"
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0
+

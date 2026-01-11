@@ -1,0 +1,364 @@
+# 文本处理命令
+# 贡献者可以在此添加更多文本处理命令
+
+cat:
+  name: cat
+  description: 显示文件内容
+  options:
+    - short: "-n"
+      long: "--number"
+      description: 显示行号
+    - short: "-b"
+      long: "--number-nonblank"
+      description: 非空行显示行号
+    - short: "-s"
+      long: "--squeeze-blank"
+      description: 压缩空行
+    - short: "-E"
+      long: "--show-ends"
+      description: 显示行尾
+    - short: "-T"
+      long: "--show-tabs"
+      description: 显示制表符
+    - short: "-A"
+      long: "--show-all"
+      description: 显示所有控制字符
+  subcommands: {}
+
+head:
+  name: head
+  description: 显示文件开头
+  options:
+    - short: "-n"
+      long: "--lines"
+      description: 显示行数
+      takes_value: true
+    - short: "-c"
+      long: "--bytes"
+      description: 显示字节数
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 不显示文件名
+    - short: "-v"
+      long: "--verbose"
+      description: 总是显示文件名
+  subcommands: {}
+
+tail:
+  name: tail
+  description: 显示文件结尾
+  options:
+    - short: "-n"
+      long: "--lines"
+      description: 显示行数
+      takes_value: true
+    - short: "-c"
+      long: "--bytes"
+      description: 显示字节数
+      takes_value: true
+    - short: "-f"
+      long: "--follow"
+      description: 跟踪文件变化
+    - short: "-F"
+      long: ""
+      description: 跟踪并重试
+    - short: "-q"
+      long: "--quiet"
+      description: 不显示文件名
+    - short: "-v"
+      long: "--verbose"
+      description: 总是显示文件名
+  subcommands: {}
+
+less:
+  name: less
+  description: 分页查看文件
+  options:
+    - short: "-N"
+      long: ""
+      description: 显示行号
+    - short: "-S"
+      long: ""
+      description: 不换行
+    - short: "-i"
+      long: ""
+      description: 忽略大小写搜索
+    - short: "-F"
+      long: ""
+      description: 短文件不分页
+    - short: "-R"
+      long: ""
+      description: 处理颜色代码
+    - short: "-X"
+      long: ""
+      description: 不清屏
+  subcommands: {}
+
+grep:
+  name: grep
+  description: 搜索文本模式
+  options:
+    - short: "-r"
+      long: "--recursive"
+      description: 递归搜索
+    - short: "-i"
+      long: "--ignore-case"
+      description: 忽略大小写
+    - short: "-n"
+      long: "--line-number"
+      description: 显示行号
+    - short: "-v"
+      long: "--invert-match"
+      description: 反向匹配
+    - short: "-c"
+      long: "--count"
+      description: 只显示计数
+    - short: "-l"
+      long: "--files-with-matches"
+      description: 只显示文件名
+    - short: "-L"
+      long: "--files-without-match"
+      description: 显示不匹配的文件
+    - short: "-w"
+      long: "--word-regexp"
+      description: 整词匹配
+    - short: "-x"
+      long: "--line-regexp"
+      description: 整行匹配
+    - short: "-E"
+      long: "--extended-regexp"
+      description: 扩展正则
+    - short: "-P"
+      long: "--perl-regexp"
+      description: Perl 正则
+    - short: "-o"
+      long: "--only-matching"
+      description: 只显示匹配部分
+    - short: "-A"
+      long: "--after-context"
+      description: 显示后续行数
+      takes_value: true
+    - short: "-B"
+      long: "--before-context"
+      description: 显示前置行数
+      takes_value: true
+    - short: "-C"
+      long: "--context"
+      description: 显示上下文行数
+      takes_value: true
+    - short: ""
+      long: "--include"
+      description: 包含文件模式
+      takes_value: true
+    - short: ""
+      long: "--exclude"
+      description: 排除文件模式
+      takes_value: true
+    - short: ""
+      long: "--color"
+      description: 彩色输出
+      takes_value: true
+      values: ["auto", "always", "never"]
+  subcommands: {}
+
+sed:
+  name: sed
+  description: 流编辑器
+  options:
+    - short: "-i"
+      long: ""
+      description: 原地编辑
+    - short: "-e"
+      long: ""
+      description: 执行脚本
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 静默模式
+    - short: "-r"
+      long: ""
+      description: 扩展正则
+    - short: "-E"
+      long: ""
+      description: 扩展正则
+  subcommands: {}
+
+awk:
+  name: awk
+  description: 文本处理工具
+  options:
+    - short: "-F"
+      long: ""
+      description: 字段分隔符
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 定义变量
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 脚本文件
+      takes_value: true
+  subcommands: {}
+
+sort:
+  name: sort
+  description: 排序文本行
+  options:
+    - short: "-r"
+      long: "--reverse"
+      description: 反向排序
+    - short: "-n"
+      long: "--numeric-sort"
+      description: 数值排序
+    - short: "-k"
+      long: "--key"
+      description: 排序键
+      takes_value: true
+    - short: "-t"
+      long: "--field-separator"
+      description: 字段分隔符
+      takes_value: true
+    - short: "-u"
+      long: "--unique"
+      description: 去重
+    - short: "-h"
+      long: "--human-numeric-sort"
+      description: 人类可读数值排序
+  subcommands: {}
+
+uniq:
+  name: uniq
+  description: 去除重复行
+  options:
+    - short: "-c"
+      long: "--count"
+      description: 显示计数
+    - short: "-d"
+      long: "--repeated"
+      description: 只显示重复行
+    - short: "-u"
+      long: "--unique"
+      description: 只显示唯一行
+    - short: "-i"
+      long: "--ignore-case"
+      description: 忽略大小写
+  subcommands: {}
+
+wc:
+  name: wc
+  description: 统计行数、单词数、字符数
+  options:
+    - short: "-l"
+      long: "--lines"
+      description: 只统计行数
+    - short: "-w"
+      long: "--words"
+      description: 只统计单词数
+    - short: "-c"
+      long: "--bytes"
+      description: 只统计字节数
+    - short: "-m"
+      long: "--chars"
+      description: 只统计字符数
+  subcommands: {}
+
+cut:
+  name: cut
+  description: 按列切分文本
+  options:
+    - short: "-d"
+      long: "--delimiter"
+      description: 分隔符
+      takes_value: true
+    - short: "-f"
+      long: "--fields"
+      description: 字段
+      takes_value: true
+    - short: "-c"
+      long: "--characters"
+      description: 字符
+      takes_value: true
+    - short: "-b"
+      long: "--bytes"
+      description: 字节
+      takes_value: true
+  subcommands: {}
+
+tr:
+  name: tr
+  description: 字符转换
+  options:
+    - short: "-d"
+      long: ""
+      description: 删除字符
+    - short: "-s"
+      long: ""
+      description: 压缩重复字符
+    - short: "-c"
+      long: ""
+      description: 补集
+  subcommands: {}
+
+diff:
+  name: diff
+  description: 比较文件差异
+  options:
+    - short: "-u"
+      long: "--unified"
+      description: 统一格式
+    - short: "-c"
+      long: "--context"
+      description: 上下文格式
+    - short: "-r"
+      long: "--recursive"
+      description: 递归比较
+    - short: "-i"
+      long: "--ignore-case"
+      description: 忽略大小写
+    - short: "-w"
+      long: "--ignore-all-space"
+      description: 忽略空白
+    - short: "-q"
+      long: "--brief"
+      description: 简要输出
+    - short: ""
+      long: "--color"
+      description: 彩色输出
+      takes_value: true
+  subcommands: {}
+
+jq:
+  name: jq
+  description: 命令行 JSON 处理器
+  options:
+    - short: "-c"
+      long: "--compact-output"
+      description: 紧凑输出
+    - short: "-r"
+      long: "--raw-output"
+      description: 原始字符串输出
+    - short: "-s"
+      long: "--slurp"
+      description: 读取整个输入为数组
+    - short: "-e"
+      long: "--exit-status"
+      description: 设置退出状态
+    - short: "-S"
+      long: "--sort-keys"
+      description: 排序键
+    - short: "-C"
+      long: "--color-output"
+      description: 彩色输出
+    - short: "-M"
+      long: "--monochrome-output"
+      description: 无色输出
+    - short: "-n"
+      long: "--null-input"
+      description: 空输入
+    - short: ""
+      long: "--tab"
+      description: Tab 缩进
+  subcommands: {}
+

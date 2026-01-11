@@ -1,0 +1,31 @@
+[package]
+name = "cnmsb"
+version = "0.1.0"
+edition = "2021"
+authors = ["cnmsb contributors"]
+description = "操你妈傻逼 - Linux 命令行智能补全工具，提供类似 IDE 的补全体验"
+license = "MIT"
+repository = "https://github.com/cnmsb/cnmsb"
+keywords = ["shell", "completion", "cli", "bash", "zsh"]
+categories = ["command-line-utilities"]
+rust-version = "1.70"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9.25"
+dirs = "5.0"
+fuzzy-matcher = "0.3.7"
+once_cell = "1.18"
+
+# 锁定 indexmap 版本以兼容 Rust 1.75
+indexmap = "2.0"
+
+# Unix 终端控制
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true

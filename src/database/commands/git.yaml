@@ -1,0 +1,379 @@
+# Git 版本控制命令
+# 贡献者可以在此添加更多 git 子命令和选项
+
+git:
+  name: git
+  description: 分布式版本控制系统
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-C"
+      long: ""
+      description: 在指定目录运行
+      takes_value: true
+  subcommands:
+    init:
+      name: init
+      description: 初始化仓库
+      options:
+        - short: "-q"
+          long: "--quiet"
+          description: 静默模式
+        - short: ""
+          long: "--bare"
+          description: 创建裸仓库
+        - short: "-b"
+          long: "--initial-branch"
+          description: 初始分支名
+          takes_value: true
+    clone:
+      name: clone
+      description: 克隆仓库
+      options:
+        - short: "-b"
+          long: "--branch"
+          description: 指定分支
+          takes_value: true
+        - short: ""
+          long: "--depth"
+          description: 浅克隆深度
+          takes_value: true
+        - short: "-q"
+          long: "--quiet"
+          description: 静默模式
+        - short: ""
+          long: "--recursive"
+          description: 递归克隆子模块
+        - short: ""
+          long: "--single-branch"
+          description: 只克隆单个分支
+    add:
+      name: add
+      description: 添加文件到暂存区
+      options:
+        - short: "-A"
+          long: "--all"
+          description: 添加所有文件
+        - short: "-u"
+          long: "--update"
+          description: 更新已跟踪文件
+        - short: "-p"
+          long: "--patch"
+          description: 交互式选择
+        - short: "-n"
+          long: "--dry-run"
+          description: 仅显示将添加的文件
+        - short: "-f"
+          long: "--force"
+          description: 强制添加忽略的文件
+    commit:
+      name: commit
+      description: 提交更改
+      options:
+        - short: "-m"
+          long: "--message"
+          description: 提交信息
+          takes_value: true
+        - short: "-a"
+          long: "--all"
+          description: 自动暂存修改
+        - short: ""
+          long: "--amend"
+          description: 修改上次提交
+        - short: "-s"
+          long: "--signoff"
+          description: 添加签名
+        - short: ""
+          long: "--no-verify"
+          description: 跳过钩子
+        - short: "-v"
+          long: "--verbose"
+          description: 详细输出
+    push:
+      name: push
+      description: 推送到远程
+      options:
+        - short: "-u"
+          long: "--set-upstream"
+          description: 设置上游分支
+        - short: "-f"
+          long: "--force"
+          description: 强制推送
+        - short: ""
+          long: "--force-with-lease"
+          description: 安全强制推送
+        - short: ""
+          long: "--tags"
+          description: 推送标签
+        - short: ""
+          long: "--all"
+          description: 推送所有分支
+        - short: ""
+          long: "--delete"
+          description: 删除远程分支
+    pull:
+      name: pull
+      description: 拉取远程更改
+      options:
+        - short: "-r"
+          long: "--rebase"
+          description: 使用 rebase
+        - short: ""
+          long: "--no-rebase"
+          description: 使用 merge
+        - short: "-f"
+          long: "--force"
+          description: 强制拉取
+        - short: ""
+          long: "--all"
+          description: 拉取所有远程
+    fetch:
+      name: fetch
+      description: 获取远程更新
+      options:
+        - short: ""
+          long: "--all"
+          description: 获取所有远程
+        - short: "-p"
+          long: "--prune"
+          description: 清理已删除的远程分支
+        - short: ""
+          long: "--tags"
+          description: 获取标签
+    branch:
+      name: branch
+      description: 分支管理
+      options:
+        - short: "-a"
+          long: "--all"
+          description: 显示所有分支
+        - short: "-r"
+          long: "--remotes"
+          description: 显示远程分支
+        - short: "-d"
+          long: "--delete"
+          description: 删除分支
+        - short: "-D"
+          long: ""
+          description: 强制删除分支
+        - short: "-m"
+          long: "--move"
+          description: 重命名分支
+        - short: "-v"
+          long: "--verbose"
+          description: 详细信息
+    checkout:
+      name: checkout
+      description: 切换分支或恢复文件
+      options:
+        - short: "-b"
+          long: ""
+          description: 创建并切换分支
+        - short: "-B"
+          long: ""
+          description: 强制创建并切换
+        - short: "-f"
+          long: "--force"
+          description: 强制切换
+        - short: ""
+          long: "--track"
+          description: 跟踪远程分支
+    switch:
+      name: switch
+      description: 切换分支
+      options:
+        - short: "-c"
+          long: "--create"
+          description: 创建并切换
+        - short: "-C"
+          long: "--force-create"
+          description: 强制创建并切换
+        - short: ""
+          long: "--detach"
+          description: 分离 HEAD
+    merge:
+      name: merge
+      description: 合并分支
+      options:
+        - short: ""
+          long: "--no-ff"
+          description: 禁用快进合并
+        - short: ""
+          long: "--squash"
+          description: 压缩合并
+        - short: ""
+          long: "--abort"
+          description: 中止合并
+        - short: "-m"
+          long: "--message"
+          description: 合并信息
+          takes_value: true
+    rebase:
+      name: rebase
+      description: 变基操作
+      options:
+        - short: "-i"
+          long: "--interactive"
+          description: 交互式变基
+        - short: ""
+          long: "--continue"
+          description: 继续变基
+        - short: ""
+          long: "--abort"
+          description: 中止变基
+        - short: ""
+          long: "--skip"
+          description: 跳过当前提交
+    status:
+      name: status
+      description: 显示工作区状态
+      options:
+        - short: "-s"
+          long: "--short"
+          description: 简短格式
+        - short: "-b"
+          long: "--branch"
+          description: 显示分支信息
+        - short: ""
+          long: "--porcelain"
+          description: 机器可读格式
+    log:
+      name: log
+      description: 显示提交历史
+      options:
+        - short: ""
+          long: "--oneline"
+          description: 单行显示
+        - short: ""
+          long: "--graph"
+          description: 图形化显示
+        - short: "-n"
+          long: ""
+          description: 限制数量
+          takes_value: true
+        - short: ""
+          long: "--all"
+          description: 显示所有分支
+        - short: "-p"
+          long: "--patch"
+          description: 显示差异
+        - short: ""
+          long: "--stat"
+          description: 显示统计
+    diff:
+      name: diff
+      description: 显示差异
+      options:
+        - short: ""
+          long: "--staged"
+          description: 已暂存的差异
+        - short: ""
+          long: "--cached"
+          description: 已暂存的差异
+        - short: ""
+          long: "--stat"
+          description: 统计信息
+        - short: ""
+          long: "--name-only"
+          description: 仅显示文件名
+    stash:
+      name: stash
+      description: 暂存更改
+      options:
+        - short: "-u"
+          long: "--include-untracked"
+          description: 包含未跟踪文件
+        - short: "-m"
+          long: "--message"
+          description: 暂存信息
+          takes_value: true
+    reset:
+      name: reset
+      description: 重置更改
+      options:
+        - short: ""
+          long: "--soft"
+          description: 软重置
+        - short: ""
+          long: "--hard"
+          description: 硬重置
+        - short: ""
+          long: "--mixed"
+          description: 混合重置
+    remote:
+      name: remote
+      description: 远程仓库管理
+      options:
+        - short: "-v"
+          long: "--verbose"
+          description: 详细信息
+    tag:
+      name: tag
+      description: 标签管理
+      options:
+        - short: "-a"
+          long: "--annotate"
+          description: 创建注释标签
+        - short: "-d"
+          long: "--delete"
+          description: 删除标签
+        - short: "-l"
+          long: "--list"
+          description: 列出标签
+        - short: "-m"
+          long: "--message"
+          description: 标签信息
+          takes_value: true
+    cherry-pick:
+      name: cherry-pick
+      description: 摘取提交
+      options:
+        - short: "-n"
+          long: "--no-commit"
+          description: 不自动提交
+        - short: ""
+          long: "--abort"
+          description: 中止
+        - short: ""
+          long: "--continue"
+          description: 继续
+    bisect:
+      name: bisect
+      description: 二分查找
+      options: []
+    blame:
+      name: blame
+      description: 显示文件每行的修改者
+      options:
+        - short: "-L"
+          long: ""
+          description: 行范围
+          takes_value: true
+    show:
+      name: show
+      description: 显示对象
+      options:
+        - short: ""
+          long: "--stat"
+          description: 显示统计
+    clean:
+      name: clean
+      description: 清理工作目录
+      options:
+        - short: "-f"
+          long: "--force"
+          description: 强制清理
+        - short: "-d"
+          long: ""
+          description: 删除目录
+        - short: "-n"
+          long: "--dry-run"
+          description: 仅显示
+        - short: "-x"
+          long: ""
+          description: 删除忽略的文件
+

@@ -1,0 +1,37 @@
+#!/bin/sh
+# cnmsb 安装后脚本
+
+set -e
+
+case "$1" in
+    configure)
+        echo ""
+        echo "====================================="
+        echo "  cnmsb (操你妈傻逼) 安装成功！"
+        echo "====================================="
+        echo ""
+        echo "智能命令补全已安装。"
+        echo ""
+        echo "使用方法："
+        echo "  1. 重新登录或执行以下命令立即启用："
+        echo ""
+        echo "     Bash: source /usr/share/cnmsb/cnmsb.bash"
+        echo "     Zsh:  source /usr/share/cnmsb/cnmsb.zsh"
+        echo ""
+        echo "  2. 或者将以下内容添加到你的 shell 配置文件："
+        echo ""
+        echo "     Bash (~/.bashrc):"
+        echo "       eval \"\$(cnmsb init bash)\""
+        echo ""
+        echo "     Zsh (~/.zshrc):"
+        echo "       eval \"\$(cnmsb init zsh)\""
+        echo ""
+        echo "开始享受智能补全体验吧！"
+        echo ""
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0
+

@@ -1,0 +1,12 @@
+cnmsb (0.1.0-1) unstable; urgency=medium
+
+  * Initial release
+  * 支持命令名称补全
+  * 支持命令参数智能补全（50+ 常用命令）
+  * 支持文件路径补全
+  * 支持历史命令补全
+  * 支持模糊匹配
+  * 支持 Bash 和 Zsh
+
+ -- cnmsb contributors <cnmsb@example.com>  Sun, 11 Jan 2026 00:00:00 +0000
+

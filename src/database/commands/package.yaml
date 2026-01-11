@@ -1,0 +1,392 @@
+# 包管理命令
+# 贡献者可以在此添加更多包管理命令
+
+apt:
+  name: apt
+  description: Debian/Ubuntu 包管理器
+  options:
+    - short: "-y"
+      long: "--yes"
+      description: 自动确认
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+  subcommands:
+    update:
+      name: update
+      description: 更新包列表
+      options:
+        - short: "-q"
+          long: "--quiet"
+          description: 静默模式
+    upgrade:
+      name: upgrade
+      description: 升级所有包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+        - short: ""
+          long: "--no-install-recommends"
+          description: 不安装推荐包
+        - short: "-f"
+          long: "--fix-broken"
+          description: 修复依赖
+    remove:
+      name: remove
+      description: 删除包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+        - short: ""
+          long: "--purge"
+          description: 完全删除
+    autoremove:
+      name: autoremove
+      description: 删除不需要的包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+    search:
+      name: search
+      description: 搜索包
+      options: []
+    show:
+      name: show
+      description: 显示包信息
+      options: []
+    list:
+      name: list
+      description: 列出包
+      options:
+        - short: ""
+          long: "--installed"
+          description: 已安装的包
+        - short: ""
+          long: "--upgradable"
+          description: 可升级的包
+
+npm:
+  name: npm
+  description: Node.js 包管理器
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 全局安装
+        - short: "-D"
+          long: "--save-dev"
+          description: 开发依赖
+        - short: "-S"
+          long: "--save"
+          description: 生产依赖
+        - short: ""
+          long: "--save-exact"
+          description: 精确版本
+        - short: ""
+          long: "--legacy-peer-deps"
+          description: 忽略 peer 依赖
+    uninstall:
+      name: uninstall
+      description: 卸载包
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 全局卸载
+    update:
+      name: update
+      description: 更新包
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 全局更新
+    run:
+      name: run
+      description: 运行脚本
+      options: []
+    start:
+      name: start
+      description: 启动项目
+      options: []
+    test:
+      name: test
+      description: 运行测试
+      options: []
+    build:
+      name: build
+      description: 构建项目
+      options: []
+    init:
+      name: init
+      description: 初始化项目
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 使用默认值
+    publish:
+      name: publish
+      description: 发布包
+      options:
+        - short: ""
+          long: "--access"
+          description: 访问级别
+          takes_value: true
+          values: ["public", "restricted"]
+    list:
+      name: list
+      description: 列出包
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 全局包
+        - short: ""
+          long: "--depth"
+          description: 深度
+          takes_value: true
+
+pip:
+  name: pip
+  description: Python 包管理器
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+  subcommands:
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-r"
+          long: "--requirement"
+          description: requirements 文件
+          takes_value: true
+        - short: "-U"
+          long: "--upgrade"
+          description: 升级包
+        - short: "-e"
+          long: "--editable"
+          description: 可编辑安装
+          takes_value: true
+        - short: ""
+          long: "--user"
+          description: 用户安装
+        - short: ""
+          long: "--no-deps"
+          description: 不安装依赖
+        - short: "-i"
+          long: "--index-url"
+          description: 索引 URL
+          takes_value: true
+    uninstall:
+      name: uninstall
+      description: 卸载包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+    freeze:
+      name: freeze
+      description: 输出已安装包
+      options: []
+    list:
+      name: list
+      description: 列出已安装包
+      options:
+        - short: "-o"
+          long: "--outdated"
+          description: 过期的包
+        - short: "-u"
+          long: "--uptodate"
+          description: 最新的包
+    show:
+      name: show
+      description: 显示包信息
+      options: []
+
+cargo:
+  name: cargo
+  description: Rust 包管理器
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+  subcommands:
+    new:
+      name: new
+      description: 创建新项目
+      options:
+        - short: ""
+          long: "--lib"
+          description: 创建库
+        - short: ""
+          long: "--bin"
+          description: 创建二进制
+        - short: ""
+          long: "--name"
+          description: 项目名称
+          takes_value: true
+    init:
+      name: init
+      description: 初始化项目
+      options:
+        - short: ""
+          long: "--lib"
+          description: 创建库
+        - short: ""
+          long: "--bin"
+          description: 创建二进制
+    build:
+      name: build
+      description: 构建项目
+      options:
+        - short: "-r"
+          long: "--release"
+          description: 发布模式
+        - short: ""
+          long: "--target"
+          description: 目标平台
+          takes_value: true
+        - short: "-j"
+          long: "--jobs"
+          description: 并行数
+          takes_value: true
+        - short: ""
+          long: "--all-features"
+          description: 启用所有特性
+        - short: "-p"
+          long: "--package"
+          description: 指定包
+          takes_value: true
+    run:
+      name: run
+      description: 运行项目
+      options:
+        - short: "-r"
+          long: "--release"
+          description: 发布模式
+        - short: ""
+          long: "--bin"
+          description: 运行二进制
+          takes_value: true
+        - short: ""
+          long: "--example"
+          description: 运行示例
+          takes_value: true
+    test:
+      name: test
+      description: 运行测试
+      options:
+        - short: "-r"
+          long: "--release"
+          description: 发布模式
+        - short: ""
+          long: "--no-run"
+          description: 仅编译
+        - short: ""
+          long: "--lib"
+          description: 仅库测试
+        - short: ""
+          long: "--doc"
+          description: 文档测试
+    check:
+      name: check
+      description: 检查项目
+      options:
+        - short: ""
+          long: "--all-features"
+          description: 启用所有特性
+    clippy:
+      name: clippy
+      description: 代码检查
+      options:
+        - short: ""
+          long: "--fix"
+          description: 自动修复
+    fmt:
+      name: fmt
+      description: 格式化代码
+      options:
+        - short: ""
+          long: "--check"
+          description: 仅检查
+    add:
+      name: add
+      description: 添加依赖
+      options:
+        - short: "-D"
+          long: "--dev"
+          description: 开发依赖
+        - short: "-B"
+          long: "--build"
+          description: 构建依赖
+        - short: ""
+          long: "--features"
+          description: 启用特性
+          takes_value: true
+    remove:
+      name: remove
+      description: 删除依赖
+      options:
+        - short: "-D"
+          long: "--dev"
+          description: 开发依赖
+    update:
+      name: update
+      description: 更新依赖
+      options:
+        - short: "-p"
+          long: "--package"
+          description: 指定包
+          takes_value: true
+    publish:
+      name: publish
+      description: 发布包
+      options:
+        - short: ""
+          long: "--dry-run"
+          description: 试运行
+    clean:
+      name: clean
+      description: 清理构建
+      options:
+        - short: "-r"
+          long: "--release"
+          description: 仅清理发布
+

@@ -1,0 +1,24 @@
+Source: cnmsb
+Section: utils
+Priority: optional
+Maintainer: cnmsb contributors <cnmsb@example.com>
+Build-Depends: debhelper (>= 11), cargo, rustc (>= 1.70)
+Standards-Version: 4.5.0
+Homepage: https://github.com/cnmsb/cnmsb
+
+Package: cnmsb
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: bash-completion
+Description: 操你妈傻逼 - Linux 命令行智能补全工具
+ cnmsb 是一个为 Linux 命令行提供类似 IDE 编辑器补全体验的工具。
+ .
+ 主要功能：
+  - 命令名称智能补全
+  - 命令参数和选项补全（支持 50+ 常用命令）
+  - 文件路径补全
+  - 历史命令补全
+  - 模糊匹配搜索
+ .
+ 支持 Bash 和 Zsh shell。
+

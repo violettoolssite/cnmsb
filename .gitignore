@@ -1,0 +1,24 @@
+# Rust 构建产物
+/target/
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Debian 构建
+/debian/cnmsb/
+/debian/.debhelper/
+/debian/debhelper-build-stamp
+/debian/files
+/debian/*.substvars
+/debian/cargo/
+/debian/rustup/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+

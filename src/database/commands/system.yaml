@@ -1,0 +1,353 @@
+# 系统管理命令
+# 贡献者可以在此添加更多系统管理命令
+
+systemctl:
+  name: systemctl
+  description: 系统服务管理
+  options:
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--user"
+      description: 用户服务
+    - short: ""
+      long: "--system"
+      description: 系统服务
+  subcommands:
+    start:
+      name: start
+      description: 启动服务
+      options: []
+    stop:
+      name: stop
+      description: 停止服务
+      options: []
+    restart:
+      name: restart
+      description: 重启服务
+      options: []
+    reload:
+      name: reload
+      description: 重载配置
+      options: []
+    status:
+      name: status
+      description: 查看状态
+      options:
+        - short: "-l"
+          long: "--full"
+          description: 完整输出
+    enable:
+      name: enable
+      description: 启用服务
+      options:
+        - short: ""
+          long: "--now"
+          description: 同时启动
+    disable:
+      name: disable
+      description: 禁用服务
+      options:
+        - short: ""
+          long: "--now"
+          description: 同时停止
+    is-active:
+      name: is-active
+      description: 检查是否活动
+      options: []
+    is-enabled:
+      name: is-enabled
+      description: 检查是否启用
+      options: []
+    list-units:
+      name: list-units
+      description: 列出单元
+      options:
+        - short: "-t"
+          long: "--type"
+          description: 单元类型
+          takes_value: true
+          values: ["service", "socket", "target", "timer"]
+        - short: ""
+          long: "--state"
+          description: 状态过滤
+          takes_value: true
+          values: ["running", "failed", "active", "inactive"]
+    daemon-reload:
+      name: daemon-reload
+      description: 重载 systemd
+      options: []
+
+journalctl:
+  name: journalctl
+  description: 查看系统日志
+  options:
+    - short: "-f"
+      long: "--follow"
+      description: 跟踪日志
+    - short: "-u"
+      long: "--unit"
+      description: 指定服务
+      takes_value: true
+    - short: "-n"
+      long: "--lines"
+      description: 显示行数
+      takes_value: true
+    - short: "-r"
+      long: "--reverse"
+      description: 反向显示
+    - short: "-p"
+      long: "--priority"
+      description: 优先级
+      takes_value: true
+      values: ["emerg", "alert", "crit", "err", "warning", "notice", "info", "debug"]
+    - short: "-b"
+      long: "--boot"
+      description: 当前启动
+    - short: ""
+      long: "--since"
+      description: 开始时间
+      takes_value: true
+    - short: ""
+      long: "--until"
+      description: 结束时间
+      takes_value: true
+    - short: "-k"
+      long: "--dmesg"
+      description: 内核消息
+    - short: "-o"
+      long: "--output"
+      description: 输出格式
+      takes_value: true
+      values: ["short", "json", "cat", "verbose"]
+    - short: ""
+      long: "--no-pager"
+      description: 不分页
+  subcommands: {}
+
+ps:
+  name: ps
+  description: 显示进程状态
+  options:
+    - short: "-e"
+      long: ""
+      description: 显示所有进程
+    - short: "-f"
+      long: ""
+      description: 完整格式
+    - short: "-u"
+      long: ""
+      description: 用户格式
+    - short: "aux"
+      long: ""
+      description: BSD 风格显示所有
+    - short: "-p"
+      long: ""
+      description: 指定 PID
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: 按命令名
+      takes_value: true
+    - short: ""
+      long: "--sort"
+      description: 排序
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 自定义输出
+      takes_value: true
+  subcommands: {}
+
+kill:
+  name: kill
+  description: 终止进程
+  options:
+    - short: "-9"
+      long: ""
+      description: 强制终止 (SIGKILL)
+    - short: "-15"
+      long: ""
+      description: 优雅终止 (SIGTERM)
+    - short: "-l"
+      long: ""
+      description: 列出信号
+    - short: "-s"
+      long: ""
+      description: 指定信号
+      takes_value: true
+      values: ["SIGTERM", "SIGKILL", "SIGINT", "SIGHUP", "SIGSTOP", "SIGCONT"]
+  subcommands: {}
+
+killall:
+  name: killall
+  description: 按名称终止进程
+  options:
+    - short: "-9"
+      long: ""
+      description: 强制终止
+    - short: "-i"
+      long: ""
+      description: 交互确认
+    - short: "-v"
+      long: ""
+      description: 详细输出
+  subcommands: {}
+
+top:
+  name: top
+  description: 动态显示进程
+  options:
+    - short: "-d"
+      long: ""
+      description: 刷新间隔
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 指定 PID
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: 指定用户
+      takes_value: true
+    - short: "-b"
+      long: ""
+      description: 批处理模式
+    - short: "-n"
+      long: ""
+      description: 刷新次数
+      takes_value: true
+  subcommands: {}
+
+htop:
+  name: htop
+  description: 交互式进程查看器
+  options:
+    - short: "-d"
+      long: "--delay"
+      description: 刷新延迟
+      takes_value: true
+    - short: "-u"
+      long: "--user"
+      description: 只显示用户进程
+      takes_value: true
+    - short: "-p"
+      long: "--pid"
+      description: 只显示指定 PID
+      takes_value: true
+    - short: "-s"
+      long: "--sort-key"
+      description: 排序键
+      takes_value: true
+    - short: "-t"
+      long: "--tree"
+      description: 树形显示
+  subcommands: {}
+
+df:
+  name: df
+  description: 显示磁盘使用
+  options:
+    - short: "-h"
+      long: "--human-readable"
+      description: 人类可读
+    - short: "-T"
+      long: "--print-type"
+      description: 显示类型
+    - short: "-i"
+      long: "--inodes"
+      description: 显示 inode
+    - short: "-a"
+      long: "--all"
+      description: 显示所有
+  subcommands: {}
+
+du:
+  name: du
+  description: 显示目录大小
+  options:
+    - short: "-h"
+      long: "--human-readable"
+      description: 人类可读
+    - short: "-s"
+      long: "--summarize"
+      description: 只显示总计
+    - short: "-a"
+      long: "--all"
+      description: 显示所有文件
+    - short: "-c"
+      long: "--total"
+      description: 显示总计
+    - short: "-d"
+      long: "--max-depth"
+      description: 最大深度
+      takes_value: true
+    - short: ""
+      long: "--exclude"
+      description: 排除模式
+      takes_value: true
+  subcommands: {}
+
+free:
+  name: free
+  description: 显示内存使用
+  options:
+    - short: "-h"
+      long: "--human"
+      description: 人类可读
+    - short: "-b"
+      long: "--bytes"
+      description: 字节显示
+    - short: "-m"
+      long: "--mega"
+      description: MB 显示
+    - short: "-g"
+      long: "--giga"
+      description: GB 显示
+    - short: "-s"
+      long: "--seconds"
+      description: 刷新间隔
+      takes_value: true
+    - short: "-t"
+      long: "--total"
+      description: 显示总计
+  subcommands: {}
+
+uptime:
+  name: uptime
+  description: 系统运行时间
+  options:
+    - short: "-p"
+      long: "--pretty"
+      description: 友好格式
+    - short: "-s"
+      long: "--since"
+      description: 启动时间
+  subcommands: {}
+
+sudo:
+  name: sudo
+  description: 以超级用户身份执行
+  options:
+    - short: "-u"
+      long: ""
+      description: 指定用户
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 登录 shell
+    - short: "-s"
+      long: ""
+      description: 执行 shell
+    - short: "-E"
+      long: ""
+      description: 保留环境
+    - short: "-k"
+      long: ""
+      description: 清除凭证
+    - short: "-l"
+      long: ""
+      description: 列出权限
+  subcommands: {}
+

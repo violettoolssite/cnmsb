@@ -1,0 +1,213 @@
+# 压缩和归档命令
+# 贡献者可以在此添加更多压缩归档命令
+
+tar:
+  name: tar
+  description: 打包/解包工具
+  options:
+    - short: "-c"
+      long: "--create"
+      description: 创建归档
+    - short: "-x"
+      long: "--extract"
+      description: 解压归档
+    - short: "-t"
+      long: "--list"
+      description: 列出内容
+    - short: "-f"
+      long: "--file"
+      description: 归档文件
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-z"
+      long: "--gzip"
+      description: gzip 压缩
+    - short: "-j"
+      long: "--bzip2"
+      description: bzip2 压缩
+    - short: "-J"
+      long: "--xz"
+      description: xz 压缩
+    - short: "-C"
+      long: "--directory"
+      description: 切换目录
+      takes_value: true
+    - short: ""
+      long: "--exclude"
+      description: 排除模式
+      takes_value: true
+    - short: "-p"
+      long: "--preserve-permissions"
+      description: 保留权限
+    - short: ""
+      long: "--strip-components"
+      description: 去除路径层级
+      takes_value: true
+  subcommands: {}
+
+gzip:
+  name: gzip
+  description: 压缩工具
+  options:
+    - short: "-d"
+      long: "--decompress"
+      description: 解压
+    - short: "-k"
+      long: "--keep"
+      description: 保留原文件
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-r"
+      long: "--recursive"
+      description: 递归处理
+    - short: "-1"
+      long: "--fast"
+      description: 快速压缩
+    - short: "-9"
+      long: "--best"
+      description: 最佳压缩
+    - short: "-c"
+      long: "--stdout"
+      description: 输出到标准输出
+  subcommands: {}
+
+gunzip:
+  name: gunzip
+  description: 解压工具
+  options:
+    - short: "-k"
+      long: "--keep"
+      description: 保留原文件
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-r"
+      long: "--recursive"
+      description: 递归处理
+    - short: "-c"
+      long: "--stdout"
+      description: 输出到标准输出
+  subcommands: {}
+
+zip:
+  name: zip
+  description: ZIP 压缩
+  options:
+    - short: "-r"
+      long: ""
+      description: 递归压缩
+    - short: "-q"
+      long: ""
+      description: 静默模式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-e"
+      long: ""
+      description: 加密
+    - short: "-x"
+      long: ""
+      description: 排除文件
+      takes_value: true
+    - short: "-9"
+      long: ""
+      description: 最佳压缩
+    - short: "-1"
+      long: ""
+      description: 快速压缩
+  subcommands: {}
+
+unzip:
+  name: unzip
+  description: ZIP 解压
+  options:
+    - short: "-l"
+      long: ""
+      description: 列出内容
+    - short: "-q"
+      long: ""
+      description: 静默模式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-o"
+      long: ""
+      description: 覆盖文件
+    - short: "-n"
+      long: ""
+      description: 不覆盖
+    - short: "-d"
+      long: ""
+      description: 解压目录
+      takes_value: true
+    - short: "-x"
+      long: ""
+      description: 排除文件
+      takes_value: true
+  subcommands: {}
+
+xz:
+  name: xz
+  description: XZ 压缩
+  options:
+    - short: "-d"
+      long: "--decompress"
+      description: 解压
+    - short: "-k"
+      long: "--keep"
+      description: 保留原文件
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-z"
+      long: "--compress"
+      description: 压缩
+    - short: "-0"
+      long: ""
+      description: 最快
+    - short: "-9"
+      long: ""
+      description: 最佳
+    - short: "-c"
+      long: "--stdout"
+      description: 输出到标准输出
+    - short: "-T"
+      long: "--threads"
+      description: 线程数
+      takes_value: true
+  subcommands: {}
+
+zstd:
+  name: zstd
+  description: Zstandard 压缩
+  options:
+    - short: "-d"
+      long: "--decompress"
+      description: 解压
+    - short: "-k"
+      long: "--keep"
+      description: 保留原文件
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-r"
+      long: "--recursive"
+      description: 递归处理
+    - short: "-1"
+      long: ""
+      description: 快速压缩
+    - short: "-19"
+      long: ""
+      description: 最佳压缩
+    - short: "-T"
+      long: "--threads"
+      description: 线程数
+      takes_value: true
+    - short: "-c"
+      long: "--stdout"
+      description: 输出到标准输出
+  subcommands: {}
+

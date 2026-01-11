@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+echo "正在卸载 cnmsb..."
+exit 0

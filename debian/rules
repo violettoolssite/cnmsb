@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+export CARGO_HOME = $(CURDIR)/debian/cargo
+export RUSTUP_HOME = $(CURDIR)/debian/rustup
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	cargo build --release
+
+override_dh_auto_install:
+	# 安装二进制文件
+	install -D -m 755 target/release/cnmsb $(CURDIR)/debian/cnmsb/usr/bin/cnmsb
+	
+	# 安装 shell 脚本
+	install -D -m 644 shell/cnmsb.bash $(CURDIR)/debian/cnmsb/usr/share/cnmsb/cnmsb.bash
+	install -D -m 644 shell/cnmsb.zsh $(CURDIR)/debian/cnmsb/usr/share/cnmsb/cnmsb.zsh
+	
+	# 安装 profile.d 启动脚本
+	install -D -m 644 debian/cnmsb.sh $(CURDIR)/debian/cnmsb/etc/profile.d/cnmsb.sh
+
+override_dh_auto_test:
+	cargo test --release
+
+override_dh_auto_clean:
+	cargo clean
+	rm -rf $(CARGO_HOME) $(RUSTUP_HOME)
+

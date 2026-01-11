@@ -1,0 +1,181 @@
+# Kubernetes 命令
+# 贡献者可以在此添加更多 kubectl 子命令和选项
+
+kubectl:
+  name: kubectl
+  description: Kubernetes 命令行工具
+  options:
+    - short: "-n"
+      long: "--namespace"
+      description: 命名空间
+      takes_value: true
+    - short: ""
+      long: "--context"
+      description: 上下文
+      takes_value: true
+    - short: ""
+      long: "--kubeconfig"
+      description: 配置文件
+      takes_value: true
+  subcommands:
+    get:
+      name: get
+      description: 获取资源
+      options:
+        - short: "-o"
+          long: "--output"
+          description: 输出格式
+          takes_value: true
+          values: ["json", "yaml", "wide", "name", "jsonpath"]
+        - short: "-A"
+          long: "--all-namespaces"
+          description: 所有命名空间
+        - short: "-w"
+          long: "--watch"
+          description: 监听变化
+        - short: "-l"
+          long: "--selector"
+          description: 标签选择器
+          takes_value: true
+        - short: ""
+          long: "--show-labels"
+          description: 显示标签
+    describe:
+      name: describe
+      description: 描述资源
+      options:
+        - short: "-A"
+          long: "--all-namespaces"
+          description: 所有命名空间
+    apply:
+      name: apply
+      description: 应用配置
+      options:
+        - short: "-f"
+          long: "--filename"
+          description: 配置文件
+          takes_value: true
+        - short: "-k"
+          long: "--kustomize"
+          description: Kustomize 目录
+          takes_value: true
+        - short: ""
+          long: "--dry-run"
+          description: 试运行
+          takes_value: true
+          values: ["none", "client", "server"]
+        - short: "-R"
+          long: "--recursive"
+          description: 递归处理
+    delete:
+      name: delete
+      description: 删除资源
+      options:
+        - short: "-f"
+          long: "--filename"
+          description: 配置文件
+          takes_value: true
+        - short: ""
+          long: "--all"
+          description: 删除所有
+        - short: ""
+          long: "--force"
+          description: 强制删除
+        - short: ""
+          long: "--grace-period"
+          description: 优雅期
+          takes_value: true
+    create:
+      name: create
+      description: 创建资源
+      options:
+        - short: "-f"
+          long: "--filename"
+          description: 配置文件
+          takes_value: true
+    logs:
+      name: logs
+      description: 查看日志
+      options:
+        - short: "-f"
+          long: "--follow"
+          description: 跟踪日志
+        - short: ""
+          long: "--tail"
+          description: 显示行数
+          takes_value: true
+        - short: "-c"
+          long: "--container"
+          description: 容器名
+          takes_value: true
+        - short: "-p"
+          long: "--previous"
+          description: 上一个容器
+        - short: ""
+          long: "--since"
+          description: 开始时间
+          takes_value: true
+    exec:
+      name: exec
+      description: 执行命令
+      options:
+        - short: "-i"
+          long: "--stdin"
+          description: 传递 stdin
+        - short: "-t"
+          long: "--tty"
+          description: 分配 TTY
+        - short: "-c"
+          long: "--container"
+          description: 容器名
+          takes_value: true
+    port-forward:
+      name: port-forward
+      description: 端口转发
+      options:
+        - short: ""
+          long: "--address"
+          description: 监听地址
+          takes_value: true
+    scale:
+      name: scale
+      description: 扩缩容
+      options:
+        - short: ""
+          long: "--replicas"
+          description: 副本数
+          takes_value: true
+    rollout:
+      name: rollout
+      description: 滚动更新管理
+      options: []
+    edit:
+      name: edit
+      description: 编辑资源
+      options: []
+    config:
+      name: config
+      description: 配置管理
+      options: []
+    top:
+      name: top
+      description: 资源使用
+      options: []
+    run:
+      name: run
+      description: 运行 Pod
+      options:
+        - short: ""
+          long: "--image"
+          description: 镜像
+          takes_value: true
+        - short: "-i"
+          long: "--stdin"
+          description: 交互模式
+        - short: "-t"
+          long: "--tty"
+          description: 分配 TTY
+        - short: ""
+          long: "--rm"
+          description: 退出后删除
+
