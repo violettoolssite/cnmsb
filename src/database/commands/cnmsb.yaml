@@ -101,6 +101,14 @@ cnmsb:
     version:
       name: version
       description: "显示版本信息"
+    edit:
+      name: edit
+      description: "打开操你他妈的编辑器（带智能补全）"
+      options:
+        - short: ""
+          long: ""
+          description: "要编辑的文件路径"
+          takes_value: true
 
 # cnmsb-sql 作为独立命令
 cnmsb-sql:
@@ -138,6 +146,24 @@ cnmsb-sql:
       name: sqlserver
       description: "连接 SQL Server 数据库"
 
+# cntmd - 操你他妈的编辑器
+cntmd:
+  name: cntmd
+  description: "操你他妈的 - 带智能补全的文本编辑器（cnmsb edit 的别名）"
+  options:
+    - short: "-h"
+      long: "--help"
+      description: "显示帮助信息"
+
+# 中文别名 - 编辑器
+操你他妈的:
+  name: 操你他妈的
+  description: "cntmd 编辑器的中文别名"
+  options:
+    - short: "-h"
+      long: "--help"
+      description: "显示帮助信息"
+
 # 中文别名
 操你妈傻逼:
   name: 操你妈傻逼
@@ -158,6 +184,9 @@ cnmsb-sql:
     sql:
       name: sql
       description: "启动 SQL 客户端"
+    edit:
+      name: edit
+      description: "打开编辑器"
     version:
       name: version
       description: "显示版本信息"

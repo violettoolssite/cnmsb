@@ -174,6 +174,7 @@ install_from_source() {
     sudo cp target/release/cnmsb /usr/bin/
     sudo chmod +x /usr/bin/cnmsb
     sudo ln -sf /usr/bin/cnmsb /usr/bin/cnmsb-sql
+    sudo ln -sf /usr/bin/cnmsb /usr/bin/cntmd
     sudo cp shell/cnmsb.zsh /usr/share/cnmsb/
     sudo cp shell/cnmsb.bash /usr/share/cnmsb/
     

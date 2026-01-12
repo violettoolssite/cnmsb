@@ -7,9 +7,11 @@ pub mod engine;
 pub mod parser;
 pub mod shell;
 pub mod sql;
+pub mod editor;
 
 pub use engine::{CompletionEngine, CompletionKind};
 pub use parser::CommandParser;
 pub use shell::CnmsbShell;
 pub use sql::{DatabaseType, SqlEngine, SqlShell};
+pub use editor::run_editor;
 

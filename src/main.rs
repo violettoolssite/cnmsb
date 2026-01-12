@@ -2,7 +2,8 @@
 //! Linux 命令行智能补全工具入口
 
 use clap::{Parser, Subcommand};
-use cnmsb::{CompletionEngine, CnmsbShell, SqlShell, DatabaseType};
+use cnmsb::{CompletionEngine, CnmsbShell, SqlShell, DatabaseType, run_editor};
+use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(name = "cnmsb")]
@@ -55,12 +56,18 @@ enum Commands {
         db_type: Option<String>,
     },
 
+    /// 编辑文件（操你他妈的编辑器，带智能补全）
+    Edit {
+        /// 要编辑的文件
+        file: Option<PathBuf>,
+    },
+
     /// 显示版本信息
     Version,
 }
 
 fn main() {
-    // 检测是否通过 cnmsb-sql 调用
+    // 检测是否通过别名调用
     let args: Vec<String> = std::env::args().collect();
     let prog_name = std::path::Path::new(&args[0])
         .file_name()
@@ -70,6 +77,13 @@ fn main() {
     // 如果通过 cnmsb-sql 调用，直接进入 SQL 模式
     if prog_name == "cnmsb-sql" || prog_name == "cnmsb-sql.exe" {
         run_sql_mode(None);
+        return;
+    }
+    
+    // 如果通过 cntmd 或 操你他妈的 调用，直接进入编辑器模式
+    if prog_name == "cntmd" || prog_name == "cntmd.exe" || prog_name == "操你他妈的" {
+        let file = args.get(1).map(PathBuf::from);
+        run_editor_mode(file);
         return;
     }
     
@@ -226,6 +240,18 @@ fn main() {
             println!("cnmsb (操你妈傻逼) v0.1.0");
             println!("Linux 命令行智能补全工具");
         }
+
+        Some(Commands::Edit { file }) => {
+            run_editor_mode(file);
+        }
+    }
+}
+
+/// 运行编辑器模式
+fn run_editor_mode(file: Option<PathBuf>) {
+    if let Err(e) = run_editor(file) {
+        eprintln!("编辑器错误: {}", e);
+        std::process::exit(1);
     }
 }
 
