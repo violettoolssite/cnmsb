@@ -80,6 +80,7 @@ impl HistoryCompleter {
                     description: format!("历史 #{}", i + 1),
                     score: 90 - i as i64,
                     kind: CompletionKind::History,
+                    match_indices: Vec::new(),
                 })
                 .collect();
         }
@@ -98,6 +99,7 @@ impl HistoryCompleter {
                     85 - i as i64
                 },
                 kind: CompletionKind::History,
+                match_indices: Vec::new(),
             })
             .collect()
     }

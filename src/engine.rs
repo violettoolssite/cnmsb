@@ -16,6 +16,8 @@ pub struct Completion {
     pub score: i64,
     /// 补全类型
     pub kind: CompletionKind,
+    /// 匹配位置（用于高亮）
+    pub match_indices: Vec<usize>,
 }
 
 /// 补全类型
@@ -76,7 +78,7 @@ impl CompletionEngine {
             file_completer: FileCompleter::new(),
             history_completer: HistoryCompleter::new(),
             args_completer: ArgsCompleter::new(),
-            matcher: SkimMatcherV2::default(),
+            matcher: SkimMatcherV2::default().ignore_case(),
         }
     }
 
@@ -119,30 +121,148 @@ impl CompletionEngine {
 
     /// 模糊匹配过滤和排序
     fn filter_and_rank(&self, completions: Vec<Completion>, pattern: &str) -> Vec<Completion> {
+        let pattern_lower = pattern.to_lowercase();
+        
         let mut scored: Vec<Completion> = completions
             .into_iter()
             .filter_map(|mut c| {
-                // 前缀匹配优先（确保组合参数如 -zc 能匹配 -z）
-                if c.text.starts_with(pattern) {
-                    // 精确匹配得最高分
-                    if c.text == pattern {
-                        c.score = 200;
-                    } else {
-                        // 前缀匹配
-                        c.score = 150;
-                    }
-                    Some(c)
-                } else if let Some(score) = self.matcher.fuzzy_match(&c.text, pattern) {
-                    c.score = score;
-                    Some(c)
-                } else {
-                    None
+                let text_lower = c.text.to_lowercase();
+                
+                // 1. 精确匹配（大小写不敏感）
+                if text_lower == pattern_lower {
+                    c.score = 300;
+                    c.match_indices = (0..c.text.len()).collect();
+                    return Some(c);
                 }
+                
+                // 2. 前缀匹配（大小写不敏感）
+                if text_lower.starts_with(&pattern_lower) {
+                    c.score = 200 + (100 - c.text.len() as i64).max(0);
+                    c.match_indices = (0..pattern.len()).collect();
+                    return Some(c);
+                }
+                
+                // 3. 包含匹配（大小写不敏感）
+                if let Some(pos) = text_lower.find(&pattern_lower) {
+                    c.score = 150 + (50 - pos as i64).max(0);
+                    c.match_indices = (pos..pos + pattern.len()).collect();
+                    return Some(c);
+                }
+                
+                // 4. 缩写匹配（首字母匹配，如 gco -> git checkout）
+                if let Some((score, indices)) = self.abbreviation_match(&c.text, pattern) {
+                    c.score = score;
+                    c.match_indices = indices;
+                    return Some(c);
+                }
+                
+                // 5. 模糊匹配
+                if let Some((score, indices)) = self.matcher.fuzzy_indices(&c.text, pattern) {
+                    c.score = score;
+                    c.match_indices = indices;
+                    return Some(c);
+                }
+                
+                // 6. 跳跃匹配（字符可以跳过，但顺序必须一致）
+                if let Some((score, indices)) = self.subsequence_match(&c.text, pattern) {
+                    c.score = score;
+                    c.match_indices = indices;
+                    return Some(c);
+                }
+                
+                None
             })
             .collect();
 
         scored.sort_by(|a, b| b.score.cmp(&a.score));
         scored
+    }
+
+    /// 缩写匹配：检查 pattern 是否是 text 中单词首字母的缩写
+    /// 例如：gco 匹配 "git checkout", sc 匹配 "systemctl"
+    fn abbreviation_match(&self, text: &str, pattern: &str) -> Option<(i64, Vec<usize>)> {
+        let pattern_chars: Vec<char> = pattern.to_lowercase().chars().collect();
+        let text_chars: Vec<char> = text.chars().collect();
+        
+        if pattern_chars.is_empty() {
+            return None;
+        }
+        
+        let mut indices = Vec::new();
+        let mut pattern_idx = 0;
+        let mut prev_was_separator = true;
+        
+        for (i, &ch) in text_chars.iter().enumerate() {
+            if pattern_idx >= pattern_chars.len() {
+                break;
+            }
+            
+            let is_separator = ch == '-' || ch == '_' || ch == ' ' || ch == '/';
+            
+            // 匹配首字母或分隔符后的第一个字符
+            if prev_was_separator || ch.is_uppercase() {
+                if ch.to_lowercase().next() == Some(pattern_chars[pattern_idx]) {
+                    indices.push(i);
+                    pattern_idx += 1;
+                }
+            }
+            
+            prev_was_separator = is_separator;
+        }
+        
+        if pattern_idx == pattern_chars.len() {
+            // 缩写匹配成功，给予较高分数
+            let score = 120 + (pattern_chars.len() as i64 * 10);
+            Some((score, indices))
+        } else {
+            None
+        }
+    }
+
+    /// 子序列匹配：pattern 中的字符按顺序出现在 text 中
+    fn subsequence_match(&self, text: &str, pattern: &str) -> Option<(i64, Vec<usize>)> {
+        let pattern_chars: Vec<char> = pattern.to_lowercase().chars().collect();
+        let text_chars: Vec<char> = text.to_lowercase().chars().collect();
+        
+        if pattern_chars.is_empty() {
+            return None;
+        }
+        
+        let mut indices = Vec::new();
+        let mut pattern_idx = 0;
+        
+        for (i, &ch) in text_chars.iter().enumerate() {
+            if pattern_idx >= pattern_chars.len() {
+                break;
+            }
+            
+            if ch == pattern_chars[pattern_idx] {
+                indices.push(i);
+                pattern_idx += 1;
+            }
+        }
+        
+        if pattern_idx == pattern_chars.len() {
+            // 计算分数：匹配的字符越连续，分数越高
+            let mut score = 50i64;
+            let mut consecutive_bonus = 0i64;
+            
+            for i in 1..indices.len() {
+                if indices[i] == indices[i - 1] + 1 {
+                    consecutive_bonus += 10;
+                }
+            }
+            
+            // 匹配位置越靠前越好
+            if !indices.is_empty() {
+                score += (20 - indices[0] as i64).max(0);
+            }
+            
+            score += consecutive_bonus;
+            Some((score, indices))
+        } else {
+            None
+        }
     }
 
     /// 去重并限制数量
@@ -154,6 +274,37 @@ impl CompletionEngine {
             .take(limit)
             .collect()
     }
+    
+    /// 获取带高亮的补全文本
+    pub fn highlight_match(text: &str, indices: &[usize], highlight_color: &str, reset_color: &str) -> String {
+        if indices.is_empty() {
+            return text.to_string();
+        }
+        
+        let chars: Vec<char> = text.chars().collect();
+        let mut result = String::new();
+        let mut in_highlight = false;
+        
+        for (i, &ch) in chars.iter().enumerate() {
+            let should_highlight = indices.contains(&i);
+            
+            if should_highlight && !in_highlight {
+                result.push_str(highlight_color);
+                in_highlight = true;
+            } else if !should_highlight && in_highlight {
+                result.push_str(reset_color);
+                in_highlight = false;
+            }
+            
+            result.push(ch);
+        }
+        
+        if in_highlight {
+            result.push_str(reset_color);
+        }
+        
+        result
+    }
 }
 
 impl Default for CompletionEngine {
@@ -161,4 +312,3 @@ impl Default for CompletionEngine {
         Self::new()
     }
 }
-

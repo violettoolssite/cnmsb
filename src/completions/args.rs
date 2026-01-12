@@ -51,6 +51,7 @@ impl ArgsCompleter {
                                 description: format!("追加 {} ({})", opt.short, opt.description),
                                 score: 90,
                                 kind: CompletionKind::Option,
+                                match_indices: Vec::new(),
                             });
                         }
                     }
@@ -76,6 +77,7 @@ impl ArgsCompleter {
                             description: opt.description.clone(),
                             score: 85,
                             kind: CompletionKind::Option,
+                            match_indices: Vec::new(),
                         });
                     }
 
@@ -86,6 +88,7 @@ impl ArgsCompleter {
                             description: opt.description.clone(),
                             score: 80,
                             kind: CompletionKind::Option,
+                            match_indices: Vec::new(),
                         });
                     }
                 }
@@ -102,6 +105,7 @@ impl ArgsCompleter {
                                 description: format!("{} 的值", opt.long),
                                 score: 90,
                                 kind: CompletionKind::Argument,
+                                match_indices: Vec::new(),
                             });
                         }
                     }
@@ -118,6 +122,7 @@ impl ArgsCompleter {
                             description: sub_desc,
                             score: 95,
                             kind: CompletionKind::Subcommand,
+                            match_indices: Vec::new(),
                         });
                     }
                 }
@@ -131,6 +136,7 @@ impl ArgsCompleter {
                                 description: sub_def.description.clone(),
                                 score: 95,
                                 kind: CompletionKind::Subcommand,
+                                match_indices: Vec::new(),
                             });
                         }
                     }

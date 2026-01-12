@@ -94,6 +94,7 @@ impl FileCompleter {
                     } else {
                         CompletionKind::File
                     },
+                    match_indices: Vec::new(),
                 });
             }
         }

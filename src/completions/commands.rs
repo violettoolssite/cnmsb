@@ -192,6 +192,7 @@ impl CommandCompleter {
                 description: desc.to_string(),
                 score: if cmd.starts_with(prefix) { 100 } else { 50 },
                 kind: CompletionKind::Command,
+                match_indices: Vec::new(),
             })
             .collect();
         
@@ -208,6 +209,7 @@ impl CommandCompleter {
                         description: cmd_def.description.clone(),
                         score: if cmd_name.starts_with(prefix) { 100 } else { 50 },
                         kind: CompletionKind::Command,
+                        match_indices: Vec::new(),
                     });
                 }
             }
