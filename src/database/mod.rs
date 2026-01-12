@@ -76,6 +76,11 @@ fn load_all_commands() -> HashMap<String, CommandDef> {
         include_str!("commands/info.yaml"),
         include_str!("commands/kernel.yaml"),
         include_str!("commands/cnmsb.yaml"),
+        include_str!("commands/multimedia.yaml"),
+        include_str!("commands/virtualization.yaml"),
+        include_str!("commands/monitoring.yaml"),
+        include_str!("commands/messaging.yaml"),
+        include_str!("commands/backup.yaml"),
     ];
     
     for yaml_content in files {

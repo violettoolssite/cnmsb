@@ -1,0 +1,630 @@
+# 消息队列工具命令
+
+kafka-topics:
+  name: kafka-topics
+  description: Kafka 主题管理
+  options:
+    - short: ""
+      long: "--bootstrap-server"
+      description: Kafka 服务器地址
+      takes_value: true
+    - short: ""
+      long: "--zookeeper"
+      description: ZooKeeper 地址 (旧版)
+      takes_value: true
+    - short: ""
+      long: "--command-config"
+      description: 命令配置文件
+      takes_value: true
+    - short: ""
+      long: "--create"
+      description: 创建主题
+    - short: ""
+      long: "--delete"
+      description: 删除主题
+    - short: ""
+      long: "--list"
+      description: 列出主题
+    - short: ""
+      long: "--describe"
+      description: 描述主题
+    - short: ""
+      long: "--alter"
+      description: 修改主题
+    - short: ""
+      long: "--topic"
+      description: 主题名称
+      takes_value: true
+    - short: ""
+      long: "--partitions"
+      description: 分区数
+      takes_value: true
+    - short: ""
+      long: "--replication-factor"
+      description: 副本因子
+      takes_value: true
+    - short: ""
+      long: "--config"
+      description: 主题配置
+      takes_value: true
+    - short: ""
+      long: "--if-exists"
+      description: 仅当存在时
+    - short: ""
+      long: "--if-not-exists"
+      description: 仅当不存在时
+  subcommands: {}
+
+kafka-console-producer:
+  name: kafka-console-producer
+  description: Kafka 控制台生产者
+  options:
+    - short: ""
+      long: "--bootstrap-server"
+      description: Kafka 服务器地址
+      takes_value: true
+    - short: ""
+      long: "--broker-list"
+      description: Broker 列表 (旧版)
+      takes_value: true
+    - short: ""
+      long: "--topic"
+      description: 主题名称
+      takes_value: true
+    - short: ""
+      long: "--producer-property"
+      description: 生产者属性
+      takes_value: true
+    - short: ""
+      long: "--producer.config"
+      description: 生产者配置文件
+      takes_value: true
+    - short: ""
+      long: "--property"
+      description: 属性
+      takes_value: true
+    - short: ""
+      long: "--compression-codec"
+      description: 压缩编解码器
+      takes_value: true
+      values: ["none", "gzip", "snappy", "lz4", "zstd"]
+    - short: ""
+      long: "--batch-size"
+      description: 批次大小
+      takes_value: true
+    - short: ""
+      long: "--timeout"
+      description: 超时时间
+      takes_value: true
+  subcommands: {}
+
+kafka-console-consumer:
+  name: kafka-console-consumer
+  description: Kafka 控制台消费者
+  options:
+    - short: ""
+      long: "--bootstrap-server"
+      description: Kafka 服务器地址
+      takes_value: true
+    - short: ""
+      long: "--topic"
+      description: 主题名称
+      takes_value: true
+    - short: ""
+      long: "--group"
+      description: 消费者组
+      takes_value: true
+    - short: ""
+      long: "--from-beginning"
+      description: 从头开始消费
+    - short: ""
+      long: "--max-messages"
+      description: 最大消息数
+      takes_value: true
+    - short: ""
+      long: "--timeout-ms"
+      description: 超时时间 (毫秒)
+      takes_value: true
+    - short: ""
+      long: "--partition"
+      description: 分区
+      takes_value: true
+    - short: ""
+      long: "--offset"
+      description: 偏移量
+      takes_value: true
+      values: ["earliest", "latest"]
+    - short: ""
+      long: "--consumer-property"
+      description: 消费者属性
+      takes_value: true
+    - short: ""
+      long: "--consumer.config"
+      description: 消费者配置文件
+      takes_value: true
+    - short: ""
+      long: "--formatter"
+      description: 消息格式化器
+      takes_value: true
+    - short: ""
+      long: "--property"
+      description: 属性
+      takes_value: true
+    - short: ""
+      long: "--key-deserializer"
+      description: 键反序列化器
+      takes_value: true
+    - short: ""
+      long: "--value-deserializer"
+      description: 值反序列化器
+      takes_value: true
+  subcommands: {}
+
+kafka-consumer-groups:
+  name: kafka-consumer-groups
+  description: Kafka 消费者组管理
+  options:
+    - short: ""
+      long: "--bootstrap-server"
+      description: Kafka 服务器地址
+      takes_value: true
+    - short: ""
+      long: "--command-config"
+      description: 命令配置文件
+      takes_value: true
+    - short: ""
+      long: "--list"
+      description: 列出消费者组
+    - short: ""
+      long: "--describe"
+      description: 描述消费者组
+    - short: ""
+      long: "--delete"
+      description: 删除消费者组
+    - short: ""
+      long: "--reset-offsets"
+      description: 重置偏移量
+    - short: ""
+      long: "--group"
+      description: 消费者组名称
+      takes_value: true
+    - short: ""
+      long: "--topic"
+      description: 主题
+      takes_value: true
+    - short: ""
+      long: "--all-topics"
+      description: 所有主题
+    - short: ""
+      long: "--to-earliest"
+      description: 重置到最早
+    - short: ""
+      long: "--to-latest"
+      description: 重置到最新
+    - short: ""
+      long: "--to-offset"
+      description: 重置到指定偏移量
+      takes_value: true
+    - short: ""
+      long: "--execute"
+      description: 执行
+    - short: ""
+      long: "--dry-run"
+      description: 模拟运行
+  subcommands: {}
+
+rabbitmqctl:
+  name: rabbitmqctl
+  description: RabbitMQ 管理工具
+  options:
+    - short: "-n"
+      long: "--node"
+      description: 节点名称
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 安静模式
+    - short: "-t"
+      long: "--timeout"
+      description: 超时时间
+      takes_value: true
+    - short: ""
+      long: "--formatter"
+      description: 输出格式
+      takes_value: true
+      values: ["table", "json", "pretty_table", "csv"]
+  subcommands:
+    status:
+      name: status
+      description: 节点状态
+      options: []
+    stop:
+      name: stop
+      description: 停止节点
+      options: []
+    start_app:
+      name: start_app
+      description: 启动应用
+      options: []
+    stop_app:
+      name: stop_app
+      description: 停止应用
+      options: []
+    reset:
+      name: reset
+      description: 重置节点
+      options: []
+    force_reset:
+      name: force_reset
+      description: 强制重置
+      options: []
+    list_queues:
+      name: list_queues
+      description: 列出队列
+      options:
+        - short: "-p"
+          long: ""
+          description: 虚拟主机
+          takes_value: true
+    list_exchanges:
+      name: list_exchanges
+      description: 列出交换机
+      options:
+        - short: "-p"
+          long: ""
+          description: 虚拟主机
+          takes_value: true
+    list_bindings:
+      name: list_bindings
+      description: 列出绑定
+      options:
+        - short: "-p"
+          long: ""
+          description: 虚拟主机
+          takes_value: true
+    list_connections:
+      name: list_connections
+      description: 列出连接
+      options: []
+    list_channels:
+      name: list_channels
+      description: 列出通道
+      options: []
+    list_consumers:
+      name: list_consumers
+      description: 列出消费者
+      options:
+        - short: "-p"
+          long: ""
+          description: 虚拟主机
+          takes_value: true
+    list_users:
+      name: list_users
+      description: 列出用户
+      options: []
+    list_vhosts:
+      name: list_vhosts
+      description: 列出虚拟主机
+      options: []
+    add_user:
+      name: add_user
+      description: 添加用户
+      options: []
+    delete_user:
+      name: delete_user
+      description: 删除用户
+      options: []
+    change_password:
+      name: change_password
+      description: 修改密码
+      options: []
+    set_user_tags:
+      name: set_user_tags
+      description: 设置用户标签
+      options: []
+    add_vhost:
+      name: add_vhost
+      description: 添加虚拟主机
+      options: []
+    delete_vhost:
+      name: delete_vhost
+      description: 删除虚拟主机
+      options: []
+    set_permissions:
+      name: set_permissions
+      description: 设置权限
+      options:
+        - short: "-p"
+          long: ""
+          description: 虚拟主机
+          takes_value: true
+    clear_permissions:
+      name: clear_permissions
+      description: 清除权限
+      options:
+        - short: "-p"
+          long: ""
+          description: 虚拟主机
+          takes_value: true
+    purge_queue:
+      name: purge_queue
+      description: 清空队列
+      options:
+        - short: "-p"
+          long: ""
+          description: 虚拟主机
+          takes_value: true
+    delete_queue:
+      name: delete_queue
+      description: 删除队列
+      options:
+        - short: "-p"
+          long: ""
+          description: 虚拟主机
+          takes_value: true
+
+rabbitmq-plugins:
+  name: rabbitmq-plugins
+  description: RabbitMQ 插件管理
+  options:
+    - short: "-n"
+      long: "--node"
+      description: 节点名称
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 安静模式
+  subcommands:
+    list:
+      name: list
+      description: 列出插件
+      options:
+        - short: "-e"
+          long: "--enabled"
+          description: 仅显示启用的
+        - short: "-E"
+          long: "--implicitly-enabled"
+          description: 包含隐式启用的
+        - short: "-m"
+          long: "--minimal"
+          description: 最小输出
+    enable:
+      name: enable
+      description: 启用插件
+      options:
+        - short: ""
+          long: "--offline"
+          description: 离线模式
+    disable:
+      name: disable
+      description: 禁用插件
+      options:
+        - short: ""
+          long: "--offline"
+          description: 离线模式
+    set:
+      name: set
+      description: 设置启用的插件
+      options:
+        - short: ""
+          long: "--offline"
+          description: 离线模式
+
+mosquitto_pub:
+  name: mosquitto_pub
+  description: MQTT 消息发布
+  options:
+    - short: "-h"
+      long: "--host"
+      description: 服务器地址
+      takes_value: true
+    - short: "-p"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-t"
+      long: "--topic"
+      description: 主题
+      takes_value: true
+    - short: "-m"
+      long: "--message"
+      description: 消息内容
+      takes_value: true
+    - short: "-f"
+      long: "--file"
+      description: 从文件读取消息
+      takes_value: true
+    - short: "-n"
+      long: "--null-message"
+      description: 发送空消息
+    - short: "-q"
+      long: "--qos"
+      description: QoS 等级
+      takes_value: true
+      values: ["0", "1", "2"]
+    - short: "-r"
+      long: "--retain"
+      description: 保留消息
+    - short: "-u"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-P"
+      long: "--pw"
+      description: 密码
+      takes_value: true
+    - short: "-i"
+      long: "--id"
+      description: 客户端 ID
+      takes_value: true
+    - short: "-l"
+      long: "--stdin-line"
+      description: 从标准输入读取
+    - short: "-d"
+      long: "--debug"
+      description: 调试模式
+    - short: ""
+      long: "--cafile"
+      description: CA 证书文件
+      takes_value: true
+    - short: ""
+      long: "--cert"
+      description: 客户端证书
+      takes_value: true
+    - short: ""
+      long: "--key"
+      description: 客户端私钥
+      takes_value: true
+  subcommands: {}
+
+mosquitto_sub:
+  name: mosquitto_sub
+  description: MQTT 消息订阅
+  options:
+    - short: "-h"
+      long: "--host"
+      description: 服务器地址
+      takes_value: true
+    - short: "-p"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-t"
+      long: "--topic"
+      description: 主题
+      takes_value: true
+    - short: "-q"
+      long: "--qos"
+      description: QoS 等级
+      takes_value: true
+      values: ["0", "1", "2"]
+    - short: "-u"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-P"
+      long: "--pw"
+      description: 密码
+      takes_value: true
+    - short: "-i"
+      long: "--id"
+      description: 客户端 ID
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-C"
+      long: "--msg-count"
+      description: 接收消息数
+      takes_value: true
+    - short: "-E"
+      long: ""
+      description: 收到消息后退出
+    - short: "-d"
+      long: "--debug"
+      description: 调试模式
+    - short: "-N"
+      long: "--nodelay"
+      description: 禁用 Nagle
+    - short: "-R"
+      long: ""
+      description: 不显示保留消息
+    - short: "-F"
+      long: ""
+      description: 输出格式
+      takes_value: true
+    - short: ""
+      long: "--cafile"
+      description: CA 证书文件
+      takes_value: true
+  subcommands: {}
+
+nats:
+  name: nats
+  description: NATS 消息系统客户端
+  options:
+    - short: "-s"
+      long: "--server"
+      description: NATS 服务器
+      takes_value: true
+    - short: ""
+      long: "--user"
+      description: 用户名
+      takes_value: true
+    - short: ""
+      long: "--password"
+      description: 密码
+      takes_value: true
+    - short: ""
+      long: "--creds"
+      description: 凭证文件
+      takes_value: true
+    - short: ""
+      long: "--tlscert"
+      description: TLS 证书
+      takes_value: true
+    - short: ""
+      long: "--tlskey"
+      description: TLS 私钥
+      takes_value: true
+    - short: ""
+      long: "--tlsca"
+      description: TLS CA
+      takes_value: true
+  subcommands:
+    pub:
+      name: pub
+      description: 发布消息
+      options:
+        - short: "-H"
+          long: "--header"
+          description: 消息头
+          takes_value: true
+        - short: "-r"
+          long: "--reply"
+          description: 回复主题
+          takes_value: true
+    sub:
+      name: sub
+      description: 订阅消息
+      options:
+        - short: ""
+          long: "--queue"
+          description: 队列组
+          takes_value: true
+        - short: ""
+          long: "--raw"
+          description: 原始输出
+    request:
+      name: request
+      description: 请求-响应
+      options:
+        - short: ""
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+    reply:
+      name: reply
+      description: 回复服务
+      options:
+        - short: ""
+          long: "--queue"
+          description: 队列组
+          takes_value: true
+    stream:
+      name: stream
+      description: JetStream 流管理
+      options: []
+    consumer:
+      name: consumer
+      description: JetStream 消费者管理
+      options: []
+    account:
+      name: account
+      description: 账户信息
+      options: []
+    server:
+      name: server
+      description: 服务器信息
+      options: []
+

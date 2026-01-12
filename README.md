@@ -65,25 +65,30 @@ $ tar ?
 
 ## 支持哪些命令
 
-妈的支持 200+ 命令，基本上 Ubuntu 能用的都有：
+妈的支持 300+ 命令，基本上 Linux 能用的都有：
 
 | 分类 | 命令（部分） |
 |------|-------------|
 | **版本控制** | git（这玩意参数最他妈多） |
-| **容器** | docker, docker-compose, kubectl, podman |
-| **包管理** | apt, dpkg, snap, pip, npm, yarn, cargo |
-| **文件操作** | ls, cp, mv, rm, mkdir, chmod, chown, find, locate, tree |
-| **文本处理** | grep, sed, awk, cat, head, tail, less, sort, uniq, wc, cut |
-| **网络** | curl, wget, ssh, scp, rsync, netstat, ss, ping, traceroute, nmap |
-| **系统** | systemctl, journalctl, ps, top, htop, kill, df, du, free, uname |
+| **容器** | docker, docker-compose, kubectl, podman, helm |
+| **包管理** | apt, dpkg, snap, pip, npm, yarn, cargo, go |
+| **文件操作** | ls, cp, mv, rm, mkdir, chmod, chown, find, locate, tree, ln |
+| **文本处理** | grep, sed, awk, cat, head, tail, less, sort, uniq, wc, cut, tr |
+| **网络** | curl, wget, ssh, scp, rsync, netstat, ss, ping, traceroute, nmap, tcpdump, dig |
+| **系统** | systemctl, journalctl, ps, top, htop, kill, df, du, free, uname, who |
 | **压缩** | tar, zip, unzip, gzip, gunzip, bzip2, xz, 7z |
 | **编辑器** | vim, vi, nano, emacs |
-| **Shell** | echo, printf, read, test, source, eval, xargs, watch, nohup, screen, tmux |
+| **Shell** | echo, printf, read, test, source, eval, xargs, watch, nohup, screen, tmux, tee |
 | **硬件** | lscpu, lsmem, lspci, lsusb, lsblk, hdparm, smartctl |
 | **安全** | sudo, su, passwd, ssh-keygen, gpg, openssl, ufw, iptables |
-| **开发工具** | make, cmake, gcc, g++, python, node, java, go, rustc |
+| **开发工具** | make, cmake, gcc, g++, python, node, java, go, rustc, cargo |
 | **数据库** | mysql, psql, sqlite3, redis-cli, mongo |
-| **云服务** | aws, gcloud, az, terraform, ansible, kubectl |
+| **云服务** | aws, gcloud, az, terraform, ansible |
+| **多媒体** | ffmpeg, ffprobe, convert, sox, mpv, yt-dlp, vlc |
+| **虚拟化** | qemu, virsh, vagrant, VBoxManage, multipass |
+| **监控** | sar, iostat, vmstat, dstat, glances, iftop, iotop, nethogs |
+| **消息队列** | kafka, rabbitmq, mosquitto, nats |
+| **备份** | borg, restic, rclone, duplicity, dd |
 
 ## 安装
 
@@ -91,7 +96,7 @@ $ tar ?
 
 ```bash
 # 下载 deb 包
-wget https://github.com/user/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
+wget https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
 
 # 装上
 sudo dpkg -i cnmsb_0.1.0_amd64.deb
@@ -102,7 +107,7 @@ sudo dpkg -i cnmsb_0.1.0_amd64.deb
 ### 手动安装
 
 ```bash
-git clone https://github.com/user/cnmsb.git
+git clone https://github.com/violettoolssite/cnmsb.git
 cd cnmsb/cnmsb-tool
 cargo build --release
 sudo ./install.sh
@@ -160,6 +165,8 @@ mycommand:
       description: 子命令1
 ```
 
+详细贡献指南见 CONTRIBUTING.md
+
 ## 依赖
 
 - Rust 1.70+（编译用的）
@@ -168,6 +175,10 @@ mycommand:
 ## 协议
 
 MIT，爱用用，不用滚。
+
+## 项目地址
+
+https://github.com/violettoolssite/cnmsb
 
 ---
 
@@ -207,33 +218,42 @@ MIT，爱用用，不用滚。
 
 ## 支持命令
 
-支持 200+ 常用 Linux 命令，涵盖：
+支持 300+ 常用 Linux 命令，涵盖：
 
 - 版本控制（Git）
-- 容器管理（Docker、Kubernetes）
-- 包管理（apt、npm、pip、cargo）
+- 容器管理（Docker、Kubernetes、Podman）
+- 包管理（apt、npm、pip、cargo、go）
 - 文件操作
 - 文本处理
 - 网络工具
 - 系统管理
 - 压缩归档
+- 编辑器（vim、nano、emacs）
+- Shell 工具
+- 硬件信息
+- 安全工具
 - 开发工具
 - 数据库客户端
 - 云服务 CLI
+- 多媒体工具（ffmpeg、ImageMagick）
+- 虚拟化（QEMU、Vagrant、VirtualBox）
+- 监控工具
+- 消息队列（Kafka、RabbitMQ）
+- 备份工具（Borg、Restic、Rclone）
 
 ## 安装方法
 
 ### 使用 deb 包安装（Debian/Ubuntu）
 
 ```bash
-wget https://github.com/user/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
+wget https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
 sudo dpkg -i cnmsb_0.1.0_amd64.deb
 ```
 
 ### 从源码编译
 
 ```bash
-git clone https://github.com/user/cnmsb.git
+git clone https://github.com/violettoolssite/cnmsb.git
 cd cnmsb/cnmsb-tool
 cargo build --release
 sudo ./install.sh
@@ -258,7 +278,7 @@ source /usr/share/cnmsb/cnmsb.zsh
 
 ## 自定义命令
 
-命令定义文件位于 `src/database/commands/` 目录，使用 YAML 格式。
+命令定义文件位于 `src/database/commands/` 目录，使用 YAML 格式。详见 CONTRIBUTING.md
 
 ## 系统要求
 
@@ -272,4 +292,4 @@ MIT License
 
 ## 项目地址
 
-https://github.com/user/cnmsb
+https://github.com/violettoolssite/cnmsb

@@ -1,0 +1,640 @@
+# 系统监控工具命令
+
+sar:
+  name: sar
+  description: 系统活动报告
+  options:
+    - short: "-u"
+      long: ""
+      description: CPU 使用率
+    - short: "-r"
+      long: ""
+      description: 内存使用率
+    - short: "-b"
+      long: ""
+      description: I/O 和传输速率
+    - short: "-d"
+      long: ""
+      description: 块设备活动
+    - short: "-n"
+      long: ""
+      description: 网络统计
+      takes_value: true
+      values: ["DEV", "EDEV", "NFS", "NFSD", "SOCK", "IP", "TCP", "UDP"]
+    - short: "-q"
+      long: ""
+      description: 队列长度和负载
+    - short: "-w"
+      long: ""
+      description: 上下文切换
+    - short: "-B"
+      long: ""
+      description: 分页统计
+    - short: "-S"
+      long: ""
+      description: 交换空间
+    - short: "-A"
+      long: ""
+      description: 所有报告
+    - short: "-f"
+      long: ""
+      description: 从文件读取
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 写入文件
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 开始时间
+      takes_value: true
+    - short: "-e"
+      long: ""
+      description: 结束时间
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 显示设备名
+  subcommands: {}
+
+iostat:
+  name: iostat
+  description: CPU 和 I/O 统计
+  options:
+    - short: "-c"
+      long: ""
+      description: 仅显示 CPU
+    - short: "-d"
+      long: ""
+      description: 仅显示设备
+    - short: "-x"
+      long: ""
+      description: 扩展统计
+    - short: "-k"
+      long: ""
+      description: 以 KB 显示
+    - short: "-m"
+      long: ""
+      description: 以 MB 显示
+    - short: "-p"
+      long: ""
+      description: 显示分区
+    - short: "-t"
+      long: ""
+      description: 显示时间戳
+    - short: "-z"
+      long: ""
+      description: 忽略无活动设备
+    - short: "-N"
+      long: ""
+      description: 显示 LVM 名称
+    - short: "-h"
+      long: ""
+      description: 人类可读格式
+    - short: "-o"
+      long: ""
+      description: 输出格式
+      takes_value: true
+      values: ["JSON"]
+  subcommands: {}
+
+vmstat:
+  name: vmstat
+  description: 虚拟内存统计
+  options:
+    - short: "-a"
+      long: ""
+      description: 活动/非活动内存
+    - short: "-d"
+      long: ""
+      description: 磁盘统计
+    - short: "-D"
+      long: ""
+      description: 磁盘汇总
+    - short: "-f"
+      long: ""
+      description: fork 统计
+    - short: "-m"
+      long: ""
+      description: slabinfo
+    - short: "-n"
+      long: ""
+      description: 仅显示一次头部
+    - short: "-p"
+      long: ""
+      description: 分区统计
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 内存统计表
+    - short: "-t"
+      long: ""
+      description: 添加时间戳
+    - short: "-w"
+      long: ""
+      description: 宽输出模式
+    - short: "-S"
+      long: ""
+      description: 单位
+      takes_value: true
+      values: ["k", "K", "m", "M"]
+  subcommands: {}
+
+mpstat:
+  name: mpstat
+  description: 多处理器统计
+  options:
+    - short: "-A"
+      long: ""
+      description: 所有 CPU 和中断
+    - short: "-I"
+      long: ""
+      description: 中断统计
+      takes_value: true
+      values: ["SUM", "CPU", "SCPU", "ALL"]
+    - short: "-P"
+      long: ""
+      description: 指定 CPU
+      takes_value: true
+      values: ["ALL", "ON"]
+    - short: "-u"
+      long: ""
+      description: CPU 使用率
+    - short: "-o"
+      long: ""
+      description: 输出格式
+      takes_value: true
+      values: ["JSON"]
+  subcommands: {}
+
+dstat:
+  name: dstat
+  description: 系统资源统计
+  options:
+    - short: "-c"
+      long: "--cpu"
+      description: CPU 统计
+    - short: "-d"
+      long: "--disk"
+      description: 磁盘统计
+    - short: "-m"
+      long: "--mem"
+      description: 内存统计
+    - short: "-n"
+      long: "--net"
+      description: 网络统计
+    - short: "-g"
+      long: "--page"
+      description: 分页统计
+    - short: "-s"
+      long: "--swap"
+      description: 交换空间
+    - short: "-y"
+      long: "--sys"
+      description: 系统统计
+    - short: "-p"
+      long: "--proc"
+      description: 进程统计
+    - short: "-l"
+      long: "--load"
+      description: 负载均衡
+    - short: "-a"
+      long: "--all"
+      description: 所有统计
+    - short: "-f"
+      long: "--full"
+      description: 完整统计
+    - short: "-t"
+      long: "--time"
+      description: 显示时间
+    - short: "-T"
+      long: "--epoch"
+      description: 显示时间戳
+    - short: "-o"
+      long: "--output"
+      description: 输出到文件
+      takes_value: true
+    - short: ""
+      long: "--nocolor"
+      description: 禁用颜色
+    - short: ""
+      long: "--noheaders"
+      description: 不显示头部
+    - short: "-C"
+      long: ""
+      description: 指定 CPU
+      takes_value: true
+    - short: "-D"
+      long: ""
+      description: 指定磁盘
+      takes_value: true
+    - short: "-N"
+      long: ""
+      description: 指定网卡
+      takes_value: true
+  subcommands: {}
+
+glances:
+  name: glances
+  description: 系统监控工具
+  options:
+    - short: "-1"
+      long: ""
+      description: 每个 CPU 单独显示
+    - short: "-2"
+      long: ""
+      description: 左侧边栏禁用
+    - short: "-3"
+      long: ""
+      description: 快速查看禁用
+    - short: "-4"
+      long: ""
+      description: 禁用所有端口
+    - short: "-c"
+      long: "--client"
+      description: 客户端模式
+      takes_value: true
+    - short: "-s"
+      long: "--server"
+      description: 服务器模式
+    - short: "-p"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-w"
+      long: "--webserver"
+      description: Web 服务器模式
+    - short: "-t"
+      long: "--time"
+      description: 刷新间隔
+      takes_value: true
+    - short: "-B"
+      long: "--byte"
+      description: 字节显示
+    - short: "-b"
+      long: "--percpu"
+      description: 每个 CPU 百分比
+    - short: "-f"
+      long: "--process-filter"
+      description: 进程过滤
+      takes_value: true
+    - short: ""
+      long: "--export"
+      description: 导出格式
+      takes_value: true
+      values: ["csv", "json", "influxdb", "prometheus"]
+    - short: "-C"
+      long: "--config"
+      description: 配置文件
+      takes_value: true
+    - short: ""
+      long: "--theme-white"
+      description: 白色主题
+  subcommands: {}
+
+nmon:
+  name: nmon
+  description: 性能监控工具
+  options:
+    - short: "-f"
+      long: ""
+      description: 写入文件
+    - short: "-F"
+      long: ""
+      description: 指定输出文件
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 刷新间隔 (秒)
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 采集次数
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 包含进程信息
+    - short: "-T"
+      long: ""
+      description: 顶级进程
+    - short: "-d"
+      long: ""
+      description: 磁盘统计
+    - short: "-m"
+      long: ""
+      description: 内存统计
+    - short: "-n"
+      long: ""
+      description: 网络统计
+    - short: "-r"
+      long: ""
+      description: 运行队列
+    - short: "-x"
+      long: ""
+      description: 扩展统计
+  subcommands: {}
+
+atop:
+  name: atop
+  description: 高级系统进程监控
+  options:
+    - short: "-a"
+      long: ""
+      description: 所有进程
+    - short: "-c"
+      long: ""
+      description: 命令行
+    - short: "-d"
+      long: ""
+      description: 磁盘信息
+    - short: "-g"
+      long: ""
+      description: 进程组
+    - short: "-m"
+      long: ""
+      description: 内存信息
+    - short: "-n"
+      long: ""
+      description: 网络信息
+    - short: "-s"
+      long: ""
+      description: 调度信息
+    - short: "-u"
+      long: ""
+      description: 用户信息
+    - short: "-v"
+      long: ""
+      description: 详细信息
+    - short: "-y"
+      long: ""
+      description: 线程信息
+    - short: "-1"
+      long: ""
+      description: 每个 CPU 单独显示
+    - short: "-r"
+      long: ""
+      description: 读取文件
+      takes_value: true
+    - short: "-w"
+      long: ""
+      description: 写入文件
+      takes_value: true
+    - short: "-S"
+      long: ""
+      description: 采样间隔
+      takes_value: true
+  subcommands: {}
+
+iftop:
+  name: iftop
+  description: 网络带宽监控
+  options:
+    - short: "-i"
+      long: ""
+      description: 监听接口
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 过滤表达式
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 不解析主机名
+    - short: "-N"
+      long: ""
+      description: 不解析端口名
+    - short: "-p"
+      long: ""
+      description: 混杂模式
+    - short: "-P"
+      long: ""
+      description: 显示端口
+    - short: "-B"
+      long: ""
+      description: 字节模式
+    - short: "-b"
+      long: ""
+      description: 不显示条形图
+    - short: "-t"
+      long: ""
+      description: 文本模式
+    - short: "-s"
+      long: ""
+      description: 运行秒数
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 排序方式
+      takes_value: true
+      values: ["2s", "10s", "40s", "source", "destination"]
+  subcommands: {}
+
+iotop:
+  name: iotop
+  description: I/O 监控
+  options:
+    - short: "-o"
+      long: "--only"
+      description: 仅显示活动进程
+    - short: "-b"
+      long: "--batch"
+      description: 批处理模式
+    - short: "-n"
+      long: ""
+      description: 迭代次数
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 刷新间隔
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 监控进程
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: 监控用户
+      takes_value: true
+    - short: "-P"
+      long: "--processes"
+      description: 仅显示进程
+    - short: "-a"
+      long: "--accumulated"
+      description: 累积模式
+    - short: "-k"
+      long: "--kilobytes"
+      description: KB 显示
+    - short: "-t"
+      long: "--time"
+      description: 显示时间
+    - short: "-q"
+      long: "--quiet"
+      description: 安静模式
+  subcommands: {}
+
+nethogs:
+  name: nethogs
+  description: 按进程网络带宽监控
+  options:
+    - short: "-d"
+      long: ""
+      description: 刷新间隔
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 显示模式
+      takes_value: true
+      values: ["0", "1", "2", "3"]
+    - short: "-c"
+      long: ""
+      description: 刷新次数
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 跟踪模式
+    - short: "-p"
+      long: ""
+      description: 混杂模式
+    - short: "-s"
+      long: ""
+      description: 按发送排序
+    - short: "-a"
+      long: ""
+      description: 监控所有设备
+  subcommands: {}
+
+pidstat:
+  name: pidstat
+  description: 进程统计
+  options:
+    - short: "-u"
+      long: ""
+      description: CPU 统计
+    - short: "-r"
+      long: ""
+      description: 内存统计
+    - short: "-d"
+      long: ""
+      description: I/O 统计
+    - short: "-s"
+      long: ""
+      description: 栈使用
+    - short: "-v"
+      long: ""
+      description: 任务切换
+    - short: "-w"
+      long: ""
+      description: 上下文切换
+    - short: "-t"
+      long: ""
+      description: 显示线程
+    - short: "-p"
+      long: ""
+      description: 进程 ID
+      takes_value: true
+      values: ["ALL"]
+    - short: "-C"
+      long: ""
+      description: 命令过滤
+      takes_value: true
+    - short: "-G"
+      long: ""
+      description: 进程组名
+      takes_value: true
+    - short: "-l"
+      long: ""
+      description: 显示完整命令
+    - short: "-h"
+      long: ""
+      description: 水平显示
+  subcommands: {}
+
+promtool:
+  name: promtool
+  description: Prometheus 工具
+  options: []
+  subcommands:
+    check:
+      name: check
+      description: 检查配置
+      options: []
+    query:
+      name: query
+      description: 查询 Prometheus
+      options: []
+    debug:
+      name: debug
+      description: 调试信息
+      options: []
+    tsdb:
+      name: tsdb
+      description: TSDB 操作
+      options: []
+    test:
+      name: test
+      description: 测试规则
+      options: []
+
+grafana-cli:
+  name: grafana-cli
+  description: Grafana 命令行
+  options:
+    - short: ""
+      long: "--homepath"
+      description: Grafana 主目录
+      takes_value: true
+    - short: ""
+      long: "--config"
+      description: 配置文件
+      takes_value: true
+    - short: ""
+      long: "--pluginsDir"
+      description: 插件目录
+      takes_value: true
+  subcommands:
+    plugins:
+      name: plugins
+      description: 插件管理
+      options: []
+    admin:
+      name: admin
+      description: 管理操作
+      options: []
+
+telegraf:
+  name: telegraf
+  description: 指标收集代理
+  options:
+    - short: ""
+      long: "--config"
+      description: 配置文件
+      takes_value: true
+    - short: ""
+      long: "--config-directory"
+      description: 配置目录
+      takes_value: true
+    - short: ""
+      long: "--test"
+      description: 测试模式
+    - short: ""
+      long: "--once"
+      description: 仅运行一次
+    - short: ""
+      long: "--debug"
+      description: 调试模式
+    - short: ""
+      long: "--quiet"
+      description: 安静模式
+    - short: ""
+      long: "--sample-config"
+      description: 示例配置
+    - short: ""
+      long: "--input-filter"
+      description: 输入过滤
+      takes_value: true
+    - short: ""
+      long: "--output-filter"
+      description: 输出过滤
+      takes_value: true
+  subcommands: {}
+

@@ -1,0 +1,910 @@
+# 备份工具命令
+
+borg:
+  name: borg
+  description: BorgBackup 去重备份
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-p"
+      long: "--progress"
+      description: 显示进度
+    - short: ""
+      long: "--debug"
+      description: 调试模式
+    - short: ""
+      long: "--log-json"
+      description: JSON 日志
+  subcommands:
+    init:
+      name: init
+      description: 初始化仓库
+      options:
+        - short: "-e"
+          long: "--encryption"
+          description: 加密模式
+          takes_value: true
+          values: ["none", "repokey", "keyfile", "repokey-blake2", "keyfile-blake2", "authenticated", "authenticated-blake2"]
+        - short: ""
+          long: "--append-only"
+          description: 仅追加模式
+        - short: ""
+          long: "--storage-quota"
+          description: 存储配额
+          takes_value: true
+    create:
+      name: create
+      description: 创建备份
+      options:
+        - short: "-e"
+          long: "--exclude"
+          description: 排除模式
+          takes_value: true
+        - short: ""
+          long: "--exclude-from"
+          description: 排除文件
+          takes_value: true
+        - short: "-C"
+          long: "--compression"
+          description: 压缩算法
+          takes_value: true
+          values: ["none", "lz4", "zstd", "zlib", "lzma", "auto"]
+        - short: ""
+          long: "--one-file-system"
+          description: 不跨文件系统
+        - short: ""
+          long: "--numeric-ids"
+          description: 使用数字 ID
+        - short: ""
+          long: "--stats"
+          description: 显示统计
+        - short: ""
+          long: "--list"
+          description: 列出文件
+        - short: ""
+          long: "--filter"
+          description: 过滤器
+          takes_value: true
+        - short: ""
+          long: "--checkpoint-interval"
+          description: 检查点间隔
+          takes_value: true
+    extract:
+      name: extract
+      description: 提取备份
+      options:
+        - short: ""
+          long: "--list"
+          description: 列出文件
+        - short: "-n"
+          long: "--dry-run"
+          description: 模拟运行
+        - short: ""
+          long: "--numeric-ids"
+          description: 使用数字 ID
+        - short: ""
+          long: "--strip-components"
+          description: 剥离路径层级
+          takes_value: true
+        - short: "-e"
+          long: "--exclude"
+          description: 排除模式
+          takes_value: true
+    list:
+      name: list
+      description: 列出内容
+      options:
+        - short: ""
+          long: "--short"
+          description: 简短输出
+        - short: ""
+          long: "--format"
+          description: 输出格式
+          takes_value: true
+        - short: ""
+          long: "--json"
+          description: JSON 输出
+        - short: "--prefix"
+          long: ""
+          description: 前缀过滤
+          takes_value: true
+    info:
+      name: info
+      description: 仓库/归档信息
+      options:
+        - short: ""
+          long: "--json"
+          description: JSON 输出
+    delete:
+      name: delete
+      description: 删除归档
+      options:
+        - short: "-n"
+          long: "--dry-run"
+          description: 模拟运行
+        - short: "-s"
+          long: "--stats"
+          description: 显示统计
+        - short: ""
+          long: "--cache-only"
+          description: 仅删除缓存
+        - short: "-a"
+          long: "--glob-archives"
+          description: 通配符匹配
+          takes_value: true
+    prune:
+      name: prune
+      description: 清理旧备份
+      options:
+        - short: "-n"
+          long: "--dry-run"
+          description: 模拟运行
+        - short: "-s"
+          long: "--stats"
+          description: 显示统计
+        - short: ""
+          long: "--keep-last"
+          description: 保留最近 N 个
+          takes_value: true
+        - short: ""
+          long: "--keep-hourly"
+          description: 保留每小时 N 个
+          takes_value: true
+        - short: ""
+          long: "--keep-daily"
+          description: 保留每天 N 个
+          takes_value: true
+        - short: ""
+          long: "--keep-weekly"
+          description: 保留每周 N 个
+          takes_value: true
+        - short: ""
+          long: "--keep-monthly"
+          description: 保留每月 N 个
+          takes_value: true
+        - short: ""
+          long: "--keep-yearly"
+          description: 保留每年 N 个
+          takes_value: true
+        - short: "-a"
+          long: "--glob-archives"
+          description: 通配符匹配
+          takes_value: true
+    mount:
+      name: mount
+      description: 挂载备份
+      options:
+        - short: "-f"
+          long: "--foreground"
+          description: 前台运行
+        - short: "-o"
+          long: ""
+          description: FUSE 选项
+          takes_value: true
+    check:
+      name: check
+      description: 检查仓库
+      options:
+        - short: ""
+          long: "--repository-only"
+          description: 仅检查仓库
+        - short: ""
+          long: "--archives-only"
+          description: 仅检查归档
+        - short: ""
+          long: "--verify-data"
+          description: 验证数据
+        - short: ""
+          long: "--repair"
+          description: 修复
+
+restic:
+  name: restic
+  description: 快速安全的备份工具
+  options:
+    - short: "-r"
+      long: "--repo"
+      description: 仓库路径
+      takes_value: true
+    - short: "-p"
+      long: "--password-file"
+      description: 密码文件
+      takes_value: true
+    - short: ""
+      long: "--password-command"
+      description: 密码命令
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-q"
+      long: "--quiet"
+      description: 安静模式
+    - short: ""
+      long: "--json"
+      description: JSON 输出
+    - short: ""
+      long: "--no-cache"
+      description: 禁用缓存
+    - short: ""
+      long: "--cache-dir"
+      description: 缓存目录
+      takes_value: true
+  subcommands:
+    init:
+      name: init
+      description: 初始化仓库
+      options:
+        - short: ""
+          long: "--repository-version"
+          description: 仓库版本
+          takes_value: true
+    backup:
+      name: backup
+      description: 创建备份
+      options:
+        - short: "-e"
+          long: "--exclude"
+          description: 排除模式
+          takes_value: true
+        - short: ""
+          long: "--exclude-file"
+          description: 排除文件
+          takes_value: true
+        - short: ""
+          long: "--files-from"
+          description: 文件列表
+          takes_value: true
+        - short: ""
+          long: "--one-file-system"
+          description: 不跨文件系统
+        - short: ""
+          long: "--tag"
+          description: 标签
+          takes_value: true
+        - short: ""
+          long: "--host"
+          description: 主机名
+          takes_value: true
+        - short: "-n"
+          long: "--dry-run"
+          description: 模拟运行
+    restore:
+      name: restore
+      description: 恢复备份
+      options:
+        - short: "-t"
+          long: "--target"
+          description: 目标目录
+          takes_value: true
+        - short: "-i"
+          long: "--include"
+          description: 包含模式
+          takes_value: true
+        - short: "-e"
+          long: "--exclude"
+          description: 排除模式
+          takes_value: true
+        - short: ""
+          long: "--verify"
+          description: 验证
+    snapshots:
+      name: snapshots
+      description: 列出快照
+      options:
+        - short: ""
+          long: "--host"
+          description: 主机过滤
+          takes_value: true
+        - short: ""
+          long: "--tag"
+          description: 标签过滤
+          takes_value: true
+        - short: ""
+          long: "--path"
+          description: 路径过滤
+          takes_value: true
+        - short: "-g"
+          long: "--group-by"
+          description: 分组
+          takes_value: true
+          values: ["host", "paths", "tags"]
+        - short: "-c"
+          long: "--compact"
+          description: 紧凑输出
+    ls:
+      name: ls
+      description: 列出文件
+      options:
+        - short: "-l"
+          long: "--long"
+          description: 长格式
+        - short: ""
+          long: "--recursive"
+          description: 递归
+    forget:
+      name: forget
+      description: 删除快照
+      options:
+        - short: "-n"
+          long: "--dry-run"
+          description: 模拟运行
+        - short: ""
+          long: "--prune"
+          description: 同时清理数据
+        - short: "-l"
+          long: "--keep-last"
+          description: 保留最近 N 个
+          takes_value: true
+        - short: "-H"
+          long: "--keep-hourly"
+          description: 保留每小时 N 个
+          takes_value: true
+        - short: "-d"
+          long: "--keep-daily"
+          description: 保留每天 N 个
+          takes_value: true
+        - short: "-w"
+          long: "--keep-weekly"
+          description: 保留每周 N 个
+          takes_value: true
+        - short: "-m"
+          long: "--keep-monthly"
+          description: 保留每月 N 个
+          takes_value: true
+        - short: "-y"
+          long: "--keep-yearly"
+          description: 保留每年 N 个
+          takes_value: true
+        - short: ""
+          long: "--keep-tag"
+          description: 保留标签
+          takes_value: true
+    prune:
+      name: prune
+      description: 清理未使用数据
+      options:
+        - short: "-n"
+          long: "--dry-run"
+          description: 模拟运行
+        - short: ""
+          long: "--max-unused"
+          description: 最大未使用
+          takes_value: true
+        - short: ""
+          long: "--max-repack-size"
+          description: 最大重打包
+          takes_value: true
+    check:
+      name: check
+      description: 检查仓库
+      options:
+        - short: ""
+          long: "--read-data"
+          description: 读取数据
+        - short: ""
+          long: "--read-data-subset"
+          description: 读取数据子集
+          takes_value: true
+    mount:
+      name: mount
+      description: 挂载仓库
+      options:
+        - short: ""
+          long: "--allow-other"
+          description: 允许其他用户
+        - short: ""
+          long: "--no-default-permissions"
+          description: 不检查权限
+    diff:
+      name: diff
+      description: 比较快照
+      options:
+        - short: ""
+          long: "--metadata"
+          description: 包含元数据
+    stats:
+      name: stats
+      description: 统计信息
+      options:
+        - short: ""
+          long: "--mode"
+          description: 统计模式
+          takes_value: true
+          values: ["restore-size", "files-by-contents", "blobs-per-file", "raw-data"]
+
+rclone:
+  name: rclone
+  description: 云存储同步工具
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-q"
+      long: "--quiet"
+      description: 安静模式
+    - short: "-n"
+      long: "--dry-run"
+      description: 模拟运行
+    - short: "-P"
+      long: "--progress"
+      description: 显示进度
+    - short: ""
+      long: "--stats"
+      description: 统计间隔
+      takes_value: true
+    - short: ""
+      long: "--stats-one-line"
+      description: 单行统计
+    - short: ""
+      long: "--transfers"
+      description: 并行传输数
+      takes_value: true
+    - short: ""
+      long: "--checkers"
+      description: 检查器数
+      takes_value: true
+    - short: ""
+      long: "--bwlimit"
+      description: 带宽限制
+      takes_value: true
+    - short: ""
+      long: "--config"
+      description: 配置文件
+      takes_value: true
+    - short: ""
+      long: "--log-file"
+      description: 日志文件
+      takes_value: true
+    - short: ""
+      long: "--log-level"
+      description: 日志级别
+      takes_value: true
+      values: ["DEBUG", "INFO", "NOTICE", "ERROR"]
+  subcommands:
+    config:
+      name: config
+      description: 配置管理
+      options: []
+    copy:
+      name: copy
+      description: 复制文件
+      options:
+        - short: ""
+          long: "--update"
+          description: 仅更新新文件
+        - short: ""
+          long: "--ignore-existing"
+          description: 忽略已存在
+        - short: ""
+          long: "--max-age"
+          description: 最大年龄
+          takes_value: true
+        - short: ""
+          long: "--min-age"
+          description: 最小年龄
+          takes_value: true
+        - short: ""
+          long: "--max-size"
+          description: 最大大小
+          takes_value: true
+        - short: ""
+          long: "--min-size"
+          description: 最小大小
+          takes_value: true
+        - short: ""
+          long: "--include"
+          description: 包含模式
+          takes_value: true
+        - short: ""
+          long: "--exclude"
+          description: 排除模式
+          takes_value: true
+    sync:
+      name: sync
+      description: 同步目录
+      options:
+        - short: ""
+          long: "--update"
+          description: 仅更新新文件
+        - short: ""
+          long: "--delete-before"
+          description: 传输前删除
+        - short: ""
+          long: "--delete-during"
+          description: 传输中删除
+        - short: ""
+          long: "--delete-after"
+          description: 传输后删除
+        - short: ""
+          long: "--track-renames"
+          description: 跟踪重命名
+    move:
+      name: move
+      description: 移动文件
+      options:
+        - short: ""
+          long: "--delete-empty-src-dirs"
+          description: 删除空源目录
+    ls:
+      name: ls
+      description: 列出文件
+      options: []
+    lsl:
+      name: lsl
+      description: 列出详细信息
+      options: []
+    lsd:
+      name: lsd
+      description: 列出目录
+      options: []
+    lsf:
+      name: lsf
+      description: 列出格式化
+      options:
+        - short: "-R"
+          long: "--recursive"
+          description: 递归
+        - short: ""
+          long: "--format"
+          description: 格式
+          takes_value: true
+    lsjson:
+      name: lsjson
+      description: JSON 格式列出
+      options:
+        - short: "-R"
+          long: "--recursive"
+          description: 递归
+    delete:
+      name: delete
+      description: 删除文件
+      options: []
+    purge:
+      name: purge
+      description: 删除目录及内容
+      options: []
+    mkdir:
+      name: mkdir
+      description: 创建目录
+      options: []
+    rmdir:
+      name: rmdir
+      description: 删除目录
+      options: []
+    check:
+      name: check
+      description: 检查一致性
+      options:
+        - short: ""
+          long: "--one-way"
+          description: 单向检查
+        - short: ""
+          long: "--download"
+          description: 下载检查
+    size:
+      name: size
+      description: 计算大小
+      options:
+        - short: ""
+          long: "--json"
+          description: JSON 输出
+    mount:
+      name: mount
+      description: 挂载远程
+      options:
+        - short: ""
+          long: "--allow-other"
+          description: 允许其他用户
+        - short: ""
+          long: "--vfs-cache-mode"
+          description: VFS 缓存模式
+          takes_value: true
+          values: ["off", "minimal", "writes", "full"]
+        - short: ""
+          long: "--vfs-cache-max-size"
+          description: 缓存大小限制
+          takes_value: true
+    serve:
+      name: serve
+      description: 文件服务
+      options: []
+    ncdu:
+      name: ncdu
+      description: 交互式浏览器
+      options: []
+    tree:
+      name: tree
+      description: 树形列出
+      options: []
+
+duplicity:
+  name: duplicity
+  description: 加密增量备份
+  options:
+    - short: "-v"
+      long: "--verbosity"
+      description: 详细级别
+      takes_value: true
+    - short: ""
+      long: "--encrypt-key"
+      description: 加密密钥
+      takes_value: true
+    - short: ""
+      long: "--sign-key"
+      description: 签名密钥
+      takes_value: true
+    - short: ""
+      long: "--no-encryption"
+      description: 不加密
+    - short: ""
+      long: "--full-if-older-than"
+      description: 超时后全量备份
+      takes_value: true
+    - short: ""
+      long: "--include"
+      description: 包含
+      takes_value: true
+    - short: ""
+      long: "--exclude"
+      description: 排除
+      takes_value: true
+    - short: ""
+      long: "--include-filelist"
+      description: 包含文件列表
+      takes_value: true
+    - short: ""
+      long: "--exclude-filelist"
+      description: 排除文件列表
+      takes_value: true
+    - short: ""
+      long: "--progress"
+      description: 显示进度
+    - short: "-n"
+      long: "--dry-run"
+      description: 模拟运行
+    - short: ""
+      long: "--force"
+      description: 强制执行
+    - short: ""
+      long: "--archive-dir"
+      description: 归档目录
+      takes_value: true
+    - short: "-t"
+      long: "--time"
+      description: 恢复时间点
+      takes_value: true
+  subcommands:
+    full:
+      name: full
+      description: 全量备份
+      options: []
+    incr:
+      name: incr
+      description: 增量备份
+      options: []
+    restore:
+      name: restore
+      description: 恢复备份
+      options: []
+    verify:
+      name: verify
+      description: 验证备份
+      options: []
+    collection-status:
+      name: collection-status
+      description: 集合状态
+      options: []
+    list-current-files:
+      name: list-current-files
+      description: 列出当前文件
+      options: []
+    remove-older-than:
+      name: remove-older-than
+      description: 删除旧备份
+      options: []
+    remove-all-but-n-full:
+      name: remove-all-but-n-full
+      description: 保留 N 个全量
+      options: []
+    cleanup:
+      name: cleanup
+      description: 清理
+      options: []
+
+dd:
+  name: dd
+  description: 磁盘/文件复制
+  options:
+    - short: "if"
+      long: ""
+      description: 输入文件
+      takes_value: true
+    - short: "of"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: "bs"
+      long: ""
+      description: 块大小
+      takes_value: true
+    - short: "ibs"
+      long: ""
+      description: 输入块大小
+      takes_value: true
+    - short: "obs"
+      long: ""
+      description: 输出块大小
+      takes_value: true
+    - short: "count"
+      long: ""
+      description: 块数量
+      takes_value: true
+    - short: "skip"
+      long: ""
+      description: 跳过输入块
+      takes_value: true
+    - short: "seek"
+      long: ""
+      description: 跳过输出块
+      takes_value: true
+    - short: "conv"
+      long: ""
+      description: 转换选项
+      takes_value: true
+      values: ["ascii", "ebcdic", "ibm", "block", "unblock", "lcase", "ucase", "sparse", "swab", "sync", "excl", "nocreat", "notrunc", "noerror", "fdatasync", "fsync"]
+    - short: "status"
+      long: ""
+      description: 状态输出
+      takes_value: true
+      values: ["none", "noxfer", "progress"]
+    - short: "iflag"
+      long: ""
+      description: 输入标志
+      takes_value: true
+      values: ["direct", "dsync", "sync", "fullblock", "nonblock", "noatime", "nocache", "noctty", "nofollow"]
+    - short: "oflag"
+      long: ""
+      description: 输出标志
+      takes_value: true
+      values: ["direct", "dsync", "sync", "append", "nonblock", "noatime", "nocache", "noctty", "nofollow"]
+  subcommands: {}
+
+dump:
+  name: dump
+  description: 文件系统备份
+  options:
+    - short: "-0"
+      long: ""
+      description: 级别 0 (全量)
+    - short: "-1"
+      long: ""
+      description: 级别 1-9 (增量)
+    - short: "-u"
+      long: ""
+      description: 更新 dumpdates
+    - short: "-f"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: "-L"
+      long: ""
+      description: 标签
+      takes_value: true
+    - short: "-B"
+      long: ""
+      description: 块数
+      takes_value: true
+    - short: "-b"
+      long: ""
+      description: 块大小
+      takes_value: true
+    - short: "-a"
+      long: ""
+      description: 自动大小
+    - short: "-z"
+      long: ""
+      description: gzip 压缩
+    - short: "-j"
+      long: ""
+      description: bzip2 压缩
+    - short: "-M"
+      long: ""
+      description: 多卷备份
+    - short: "-S"
+      long: ""
+      description: 预估大小
+    - short: "-W"
+      long: ""
+      description: 显示备份信息
+  subcommands: {}
+
+restore:
+  name: restore
+  description: 文件系统恢复
+  options:
+    - short: "-r"
+      long: ""
+      description: 完整恢复
+    - short: "-t"
+      long: ""
+      description: 列出内容
+    - short: "-i"
+      long: ""
+      description: 交互模式
+    - short: "-x"
+      long: ""
+      description: 提取文件
+    - short: "-f"
+      long: ""
+      description: 输入文件
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: 比较模式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-N"
+      long: ""
+      description: 不写入文件
+    - short: "-M"
+      long: ""
+      description: 多卷
+    - short: "-h"
+      long: ""
+      description: 提取挂载点
+  subcommands: {}
+
+rdiff-backup:
+  name: rdiff-backup
+  description: 增量备份工具
+  options:
+    - short: "-v"
+      long: "--verbosity"
+      description: 详细级别
+      takes_value: true
+    - short: ""
+      long: "--backup-mode"
+      description: 备份模式
+    - short: "-r"
+      long: "--restore-as-of"
+      description: 恢复时间点
+      takes_value: true
+    - short: "-l"
+      long: "--list-increments"
+      description: 列出增量
+    - short: ""
+      long: "--list-increment-sizes"
+      description: 列出增量大小
+    - short: ""
+      long: "--list-at-time"
+      description: 列出时间点文件
+      takes_value: true
+    - short: ""
+      long: "--compare"
+      description: 比较
+    - short: ""
+      long: "--compare-hash"
+      description: 比较哈希
+    - short: ""
+      long: "--compare-full"
+      description: 完整比较
+    - short: ""
+      long: "--remove-older-than"
+      description: 删除旧增量
+      takes_value: true
+    - short: ""
+      long: "--include"
+      description: 包含
+      takes_value: true
+    - short: ""
+      long: "--exclude"
+      description: 排除
+      takes_value: true
+    - short: ""
+      long: "--force"
+      description: 强制执行
+  subcommands: {}
+

@@ -1,0 +1,709 @@
+# 虚拟化工具命令
+
+qemu-system-x86_64:
+  name: qemu-system-x86_64
+  description: QEMU x86_64 虚拟机
+  options:
+    - short: "-m"
+      long: ""
+      description: 内存大小
+      takes_value: true
+    - short: "-smp"
+      long: ""
+      description: CPU 核心数
+      takes_value: true
+    - short: "-cpu"
+      long: ""
+      description: CPU 类型
+      takes_value: true
+      values: ["host", "max", "qemu64", "kvm64", "Skylake-Client", "EPYC"]
+    - short: "-hda"
+      long: ""
+      description: 主硬盘镜像
+      takes_value: true
+    - short: "-hdb"
+      long: ""
+      description: 第二硬盘镜像
+      takes_value: true
+    - short: "-cdrom"
+      long: ""
+      description: CDROM 镜像
+      takes_value: true
+    - short: "-boot"
+      long: ""
+      description: 启动顺序
+      takes_value: true
+      values: ["c", "d", "n", "order=dc", "order=cd"]
+    - short: "-enable-kvm"
+      long: ""
+      description: 启用 KVM 加速
+    - short: "-vnc"
+      long: ""
+      description: VNC 显示
+      takes_value: true
+    - short: "-nographic"
+      long: ""
+      description: 无图形界面
+    - short: "-serial"
+      long: ""
+      description: 串口
+      takes_value: true
+      values: ["stdio", "none", "pty"]
+    - short: "-net"
+      long: ""
+      description: 网络配置
+      takes_value: true
+    - short: "-nic"
+      long: ""
+      description: 网卡配置
+      takes_value: true
+    - short: "-drive"
+      long: ""
+      description: 磁盘驱动
+      takes_value: true
+    - short: "-device"
+      long: ""
+      description: 设备
+      takes_value: true
+    - short: "-snapshot"
+      long: ""
+      description: 快照模式
+    - short: "-daemonize"
+      long: ""
+      description: 后台运行
+    - short: "-monitor"
+      long: ""
+      description: 监控接口
+      takes_value: true
+    - short: "-bios"
+      long: ""
+      description: BIOS 文件
+      takes_value: true
+    - short: "-kernel"
+      long: ""
+      description: 内核文件
+      takes_value: true
+    - short: "-initrd"
+      long: ""
+      description: initrd 文件
+      takes_value: true
+    - short: "-append"
+      long: ""
+      description: 内核参数
+      takes_value: true
+  subcommands: {}
+
+qemu-img:
+  name: qemu-img
+  description: QEMU 磁盘镜像工具
+  options:
+    - short: "-f"
+      long: ""
+      description: 格式
+      takes_value: true
+      values: ["qcow2", "raw", "vmdk", "vdi", "vhdx"]
+    - short: "-o"
+      long: ""
+      description: 选项
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 显示进度
+    - short: "-q"
+      long: ""
+      description: 安静模式
+  subcommands:
+    create:
+      name: create
+      description: 创建镜像
+      options:
+        - short: "-f"
+          long: ""
+          description: 格式
+          takes_value: true
+          values: ["qcow2", "raw", "vmdk", "vdi"]
+        - short: "-o"
+          long: ""
+          description: 选项 (如 preallocation=metadata)
+          takes_value: true
+        - short: "-b"
+          long: ""
+          description: 后备镜像
+          takes_value: true
+    convert:
+      name: convert
+      description: 转换镜像
+      options:
+        - short: "-f"
+          long: ""
+          description: 源格式
+          takes_value: true
+        - short: "-O"
+          long: ""
+          description: 目标格式
+          takes_value: true
+        - short: "-c"
+          long: ""
+          description: 压缩
+        - short: "-p"
+          long: ""
+          description: 显示进度
+    resize:
+      name: resize
+      description: 调整大小
+      options:
+        - short: "-f"
+          long: ""
+          description: 格式
+          takes_value: true
+        - short: "--shrink"
+          long: ""
+          description: 允许缩小
+    info:
+      name: info
+      description: 查看信息
+      options:
+        - short: "-f"
+          long: ""
+          description: 格式
+          takes_value: true
+        - short: "--output"
+          long: ""
+          description: 输出格式
+          takes_value: true
+          values: ["human", "json"]
+    snapshot:
+      name: snapshot
+      description: 快照管理
+      options:
+        - short: "-c"
+          long: ""
+          description: 创建快照
+          takes_value: true
+        - short: "-d"
+          long: ""
+          description: 删除快照
+          takes_value: true
+        - short: "-l"
+          long: ""
+          description: 列出快照
+        - short: "-a"
+          long: ""
+          description: 应用快照
+          takes_value: true
+
+virsh:
+  name: virsh
+  description: libvirt 虚拟机管理
+  options:
+    - short: "-c"
+      long: "--connect"
+      description: 连接 URI
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 安静模式
+    - short: "-r"
+      long: "--readonly"
+      description: 只读模式
+  subcommands:
+    list:
+      name: list
+      description: 列出虚拟机
+      options:
+        - short: "--all"
+          long: ""
+          description: 显示所有
+        - short: "--inactive"
+          long: ""
+          description: 仅显示关闭的
+        - short: "--state-running"
+          long: ""
+          description: 仅显示运行中
+    start:
+      name: start
+      description: 启动虚拟机
+      options:
+        - short: "--console"
+          long: ""
+          description: 连接控制台
+        - short: "--paused"
+          long: ""
+          description: 启动后暂停
+    shutdown:
+      name: shutdown
+      description: 关闭虚拟机
+      options:
+        - short: "--mode"
+          long: ""
+          description: 关机模式
+          takes_value: true
+          values: ["acpi", "agent", "initctl", "signal"]
+    destroy:
+      name: destroy
+      description: 强制停止虚拟机
+      options: []
+    reboot:
+      name: reboot
+      description: 重启虚拟机
+      options: []
+    suspend:
+      name: suspend
+      description: 暂停虚拟机
+      options: []
+    resume:
+      name: resume
+      description: 恢复虚拟机
+      options: []
+    define:
+      name: define
+      description: 定义虚拟机
+      options: []
+    undefine:
+      name: undefine
+      description: 取消定义
+      options:
+        - short: "--remove-all-storage"
+          long: ""
+          description: 删除所有存储
+        - short: "--nvram"
+          long: ""
+          description: 删除 NVRAM
+    console:
+      name: console
+      description: 连接控制台
+      options:
+        - short: "--force"
+          long: ""
+          description: 强制连接
+    vncdisplay:
+      name: vncdisplay
+      description: 显示 VNC 地址
+      options: []
+    dumpxml:
+      name: dumpxml
+      description: 导出 XML 配置
+      options:
+        - short: "--inactive"
+          long: ""
+          description: 导出非活动配置
+    edit:
+      name: edit
+      description: 编辑虚拟机配置
+      options: []
+    dominfo:
+      name: dominfo
+      description: 虚拟机信息
+      options: []
+    domstate:
+      name: domstate
+      description: 虚拟机状态
+      options: []
+    snapshot-create:
+      name: snapshot-create
+      description: 创建快照
+      options:
+        - short: "--name"
+          long: ""
+          description: 快照名称
+          takes_value: true
+        - short: "--description"
+          long: ""
+          description: 描述
+          takes_value: true
+    snapshot-list:
+      name: snapshot-list
+      description: 列出快照
+      options:
+        - short: "--tree"
+          long: ""
+          description: 树形显示
+    snapshot-revert:
+      name: snapshot-revert
+      description: 恢复快照
+      options:
+        - short: "--running"
+          long: ""
+          description: 恢复后启动
+    snapshot-delete:
+      name: snapshot-delete
+      description: 删除快照
+      options: []
+
+virt-install:
+  name: virt-install
+  description: 创建虚拟机
+  options:
+    - short: "-n"
+      long: "--name"
+      description: 虚拟机名称
+      takes_value: true
+    - short: ""
+      long: "--memory"
+      description: 内存大小 (MB)
+      takes_value: true
+    - short: ""
+      long: "--vcpus"
+      description: CPU 数量
+      takes_value: true
+    - short: ""
+      long: "--disk"
+      description: 磁盘配置
+      takes_value: true
+    - short: ""
+      long: "--cdrom"
+      description: CDROM 镜像
+      takes_value: true
+    - short: ""
+      long: "--location"
+      description: 安装源位置
+      takes_value: true
+    - short: ""
+      long: "--os-variant"
+      description: 操作系统变体
+      takes_value: true
+    - short: ""
+      long: "--network"
+      description: 网络配置
+      takes_value: true
+    - short: ""
+      long: "--graphics"
+      description: 图形配置
+      takes_value: true
+      values: ["vnc", "spice", "none"]
+    - short: ""
+      long: "--console"
+      description: 控制台配置
+      takes_value: true
+    - short: ""
+      long: "--noautoconsole"
+      description: 不自动连接控制台
+    - short: ""
+      long: "--import"
+      description: 导入现有磁盘
+    - short: ""
+      long: "--boot"
+      description: 启动选项
+      takes_value: true
+    - short: ""
+      long: "--extra-args"
+      description: 额外内核参数
+      takes_value: true
+  subcommands: {}
+
+vagrant:
+  name: vagrant
+  description: Vagrant 虚拟环境管理
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    init:
+      name: init
+      description: 初始化 Vagrantfile
+      options:
+        - short: "-m"
+          long: "--minimal"
+          description: 最小化配置
+        - short: "-f"
+          long: "--force"
+          description: 覆盖现有文件
+        - short: "--box-version"
+          long: ""
+          description: Box 版本
+          takes_value: true
+    up:
+      name: up
+      description: 启动虚拟机
+      options:
+        - short: "--provision"
+          long: ""
+          description: 运行配置脚本
+        - short: "--no-provision"
+          long: ""
+          description: 不运行配置脚本
+        - short: "--provider"
+          long: ""
+          description: 提供者
+          takes_value: true
+          values: ["virtualbox", "libvirt", "vmware_desktop", "docker"]
+        - short: "--parallel"
+          long: ""
+          description: 并行启动
+    halt:
+      name: halt
+      description: 关闭虚拟机
+      options:
+        - short: "-f"
+          long: "--force"
+          description: 强制关闭
+    destroy:
+      name: destroy
+      description: 销毁虚拟机
+      options:
+        - short: "-f"
+          long: "--force"
+          description: 不确认
+        - short: "--parallel"
+          long: ""
+          description: 并行销毁
+    reload:
+      name: reload
+      description: 重新加载配置
+      options:
+        - short: "--provision"
+          long: ""
+          description: 运行配置脚本
+        - short: "--no-provision"
+          long: ""
+          description: 不运行配置脚本
+    ssh:
+      name: ssh
+      description: SSH 连接
+      options:
+        - short: "-c"
+          long: "--command"
+          description: 执行命令
+          takes_value: true
+        - short: "-p"
+          long: "--plain"
+          description: 简单模式
+    status:
+      name: status
+      description: 查看状态
+      options: []
+    global-status:
+      name: global-status
+      description: 全局状态
+      options:
+        - short: "--prune"
+          long: ""
+          description: 清理无效条目
+    provision:
+      name: provision
+      description: 运行配置脚本
+      options: []
+    suspend:
+      name: suspend
+      description: 暂停虚拟机
+      options: []
+    resume:
+      name: resume
+      description: 恢复虚拟机
+      options: []
+    snapshot:
+      name: snapshot
+      description: 快照管理
+      options: []
+    box:
+      name: box
+      description: Box 管理
+      options: []
+    plugin:
+      name: plugin
+      description: 插件管理
+      options: []
+
+VBoxManage:
+  name: VBoxManage
+  description: VirtualBox 命令行管理
+  options: []
+  subcommands:
+    list:
+      name: list
+      description: 列出对象
+      options:
+        - short: ""
+          long: "vms"
+          description: 列出虚拟机
+        - short: ""
+          long: "runningvms"
+          description: 列出运行中虚拟机
+        - short: ""
+          long: "ostypes"
+          description: 列出操作系统类型
+        - short: ""
+          long: "hostinfo"
+          description: 主机信息
+        - short: ""
+          long: "hdds"
+          description: 列出硬盘
+    createvm:
+      name: createvm
+      description: 创建虚拟机
+      options:
+        - short: "--name"
+          long: ""
+          description: 名称
+          takes_value: true
+        - short: "--ostype"
+          long: ""
+          description: 操作系统类型
+          takes_value: true
+        - short: "--register"
+          long: ""
+          description: 注册虚拟机
+        - short: "--basefolder"
+          long: ""
+          description: 基础目录
+          takes_value: true
+    modifyvm:
+      name: modifyvm
+      description: 修改虚拟机
+      options:
+        - short: "--memory"
+          long: ""
+          description: 内存大小
+          takes_value: true
+        - short: "--cpus"
+          long: ""
+          description: CPU 数量
+          takes_value: true
+        - short: "--nic1"
+          long: ""
+          description: 网卡1类型
+          takes_value: true
+          values: ["none", "nat", "bridged", "intnet", "hostonly"]
+    startvm:
+      name: startvm
+      description: 启动虚拟机
+      options:
+        - short: "--type"
+          long: ""
+          description: 启动类型
+          takes_value: true
+          values: ["gui", "headless", "separate"]
+    controlvm:
+      name: controlvm
+      description: 控制运行中虚拟机
+      options: []
+    clonevm:
+      name: clonevm
+      description: 克隆虚拟机
+      options:
+        - short: "--name"
+          long: ""
+          description: 新名称
+          takes_value: true
+        - short: "--mode"
+          long: ""
+          description: 克隆模式
+          takes_value: true
+          values: ["machine", "machineandchildren", "all"]
+        - short: "--register"
+          long: ""
+          description: 注册克隆
+    snapshot:
+      name: snapshot
+      description: 快照管理
+      options: []
+    unregistervm:
+      name: unregistervm
+      description: 取消注册虚拟机
+      options:
+        - short: "--delete"
+          long: ""
+          description: 同时删除文件
+
+multipass:
+  name: multipass
+  description: Ubuntu 虚拟机管理
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands:
+    launch:
+      name: launch
+      description: 创建并启动实例
+      options:
+        - short: "-n"
+          long: "--name"
+          description: 实例名称
+          takes_value: true
+        - short: "-c"
+          long: "--cpus"
+          description: CPU 数量
+          takes_value: true
+        - short: "-m"
+          long: "--memory"
+          description: 内存大小
+          takes_value: true
+        - short: "-d"
+          long: "--disk"
+          description: 磁盘大小
+          takes_value: true
+        - short: ""
+          long: "--cloud-init"
+          description: cloud-init 配置
+          takes_value: true
+    list:
+      name: list
+      description: 列出实例
+      options:
+        - short: "--format"
+          long: ""
+          description: 输出格式
+          takes_value: true
+          values: ["table", "json", "csv", "yaml"]
+    start:
+      name: start
+      description: 启动实例
+      options: []
+    stop:
+      name: stop
+      description: 停止实例
+      options:
+        - short: "-t"
+          long: "--time"
+          description: 延迟时间
+          takes_value: true
+    delete:
+      name: delete
+      description: 删除实例
+      options:
+        - short: "-p"
+          long: "--purge"
+          description: 彻底删除
+    recover:
+      name: recover
+      description: 恢复已删除实例
+      options: []
+    shell:
+      name: shell
+      description: 进入 Shell
+      options: []
+    exec:
+      name: exec
+      description: 执行命令
+      options: []
+    mount:
+      name: mount
+      description: 挂载目录
+      options: []
+    umount:
+      name: umount
+      description: 卸载目录
+      options: []
+    transfer:
+      name: transfer
+      description: 传输文件
+      options: []
+    info:
+      name: info
+      description: 实例信息
+      options:
+        - short: "--format"
+          long: ""
+          description: 输出格式
+          takes_value: true
+          values: ["table", "json", "csv", "yaml"]
+    find:
+      name: find
+      description: 查找可用镜像
+      options: []
+

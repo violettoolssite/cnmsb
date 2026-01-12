@@ -1,0 +1,666 @@
+# 多媒体工具命令
+
+ffmpeg:
+  name: ffmpeg
+  description: 音视频转换和处理工具
+  options:
+    - short: "-i"
+      long: ""
+      description: 输入文件
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: "-c"
+      long: "-codec"
+      description: 编解码器
+      takes_value: true
+    - short: "-c:v"
+      long: ""
+      description: 视频编解码器
+      takes_value: true
+      values: ["libx264", "libx265", "libvpx", "libvpx-vp9", "copy", "h264_nvenc", "hevc_nvenc"]
+    - short: "-c:a"
+      long: ""
+      description: 音频编解码器
+      takes_value: true
+      values: ["aac", "mp3", "libopus", "libvorbis", "copy", "flac", "pcm_s16le"]
+    - short: "-b:v"
+      long: ""
+      description: 视频比特率
+      takes_value: true
+    - short: "-b:a"
+      long: ""
+      description: 音频比特率
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 帧率
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 分辨率 (如 1920x1080)
+      takes_value: true
+    - short: "-ss"
+      long: ""
+      description: 开始时间
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 持续时间
+      takes_value: true
+    - short: "-to"
+      long: ""
+      description: 结束时间
+      takes_value: true
+    - short: "-vf"
+      long: ""
+      description: 视频滤镜
+      takes_value: true
+    - short: "-af"
+      long: ""
+      description: 音频滤镜
+      takes_value: true
+    - short: "-an"
+      long: ""
+      description: 禁用音频
+    - short: "-vn"
+      long: ""
+      description: 禁用视频
+    - short: "-y"
+      long: ""
+      description: 覆盖输出文件
+    - short: "-n"
+      long: ""
+      description: 不覆盖输出文件
+    - short: "-f"
+      long: ""
+      description: 强制格式
+      takes_value: true
+      values: ["mp4", "mkv", "avi", "webm", "gif", "mp3", "flac", "wav", "ogg"]
+    - short: "-preset"
+      long: ""
+      description: 编码预设
+      takes_value: true
+      values: ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow"]
+    - short: "-crf"
+      long: ""
+      description: 质量因子 (0-51, 越低质量越好)
+      takes_value: true
+    - short: "-map"
+      long: ""
+      description: 流映射
+      takes_value: true
+    - short: "-threads"
+      long: ""
+      description: 线程数
+      takes_value: true
+    - short: "-hwaccel"
+      long: ""
+      description: 硬件加速
+      takes_value: true
+      values: ["cuda", "vaapi", "qsv", "dxva2", "d3d11va"]
+  subcommands: {}
+
+ffprobe:
+  name: ffprobe
+  description: 多媒体流分析工具
+  options:
+    - short: "-v"
+      long: ""
+      description: 日志级别
+      takes_value: true
+      values: ["quiet", "panic", "fatal", "error", "warning", "info", "verbose", "debug"]
+    - short: "-show_format"
+      long: ""
+      description: 显示格式信息
+    - short: "-show_streams"
+      long: ""
+      description: 显示流信息
+    - short: "-show_frames"
+      long: ""
+      description: 显示帧信息
+    - short: "-show_packets"
+      long: ""
+      description: 显示包信息
+    - short: "-show_entries"
+      long: ""
+      description: 显示指定条目
+      takes_value: true
+    - short: "-of"
+      long: "-print_format"
+      description: 输出格式
+      takes_value: true
+      values: ["default", "json", "xml", "csv", "flat", "ini"]
+    - short: "-i"
+      long: ""
+      description: 输入文件
+      takes_value: true
+    - short: "-select_streams"
+      long: ""
+      description: 选择流
+      takes_value: true
+      values: ["v", "a", "s", "v:0", "a:0"]
+  subcommands: {}
+
+convert:
+  name: convert
+  description: ImageMagick 图像转换工具
+  options:
+    - short: "-resize"
+      long: ""
+      description: 调整大小
+      takes_value: true
+    - short: "-scale"
+      long: ""
+      description: 缩放
+      takes_value: true
+    - short: "-crop"
+      long: ""
+      description: 裁剪
+      takes_value: true
+    - short: "-rotate"
+      long: ""
+      description: 旋转角度
+      takes_value: true
+    - short: "-flip"
+      long: ""
+      description: 垂直翻转
+    - short: "-flop"
+      long: ""
+      description: 水平翻转
+    - short: "-quality"
+      long: ""
+      description: 质量 (1-100)
+      takes_value: true
+    - short: "-colorspace"
+      long: ""
+      description: 色彩空间
+      takes_value: true
+      values: ["RGB", "sRGB", "CMYK", "Gray", "HSL", "HSB"]
+    - short: "-depth"
+      long: ""
+      description: 位深度
+      takes_value: true
+      values: ["8", "16", "32"]
+    - short: "-blur"
+      long: ""
+      description: 模糊
+      takes_value: true
+    - short: "-sharpen"
+      long: ""
+      description: 锐化
+      takes_value: true
+    - short: "-brightness-contrast"
+      long: ""
+      description: 亮度对比度
+      takes_value: true
+    - short: "-strip"
+      long: ""
+      description: 移除元数据
+    - short: "-auto-orient"
+      long: ""
+      description: 自动旋转
+    - short: "-density"
+      long: ""
+      description: DPI 密度
+      takes_value: true
+    - short: "-background"
+      long: ""
+      description: 背景色
+      takes_value: true
+    - short: "-transparent"
+      long: ""
+      description: 透明色
+      takes_value: true
+    - short: "-append"
+      long: ""
+      description: 垂直拼接
+    - short: "+append"
+      long: ""
+      description: 水平拼接
+    - short: "-gravity"
+      long: ""
+      description: 重力位置
+      takes_value: true
+      values: ["NorthWest", "North", "NorthEast", "West", "Center", "East", "SouthWest", "South", "SouthEast"]
+  subcommands: {}
+
+identify:
+  name: identify
+  description: ImageMagick 图像信息查看
+  options:
+    - short: "-verbose"
+      long: ""
+      description: 详细信息
+    - short: "-format"
+      long: ""
+      description: 输出格式
+      takes_value: true
+    - short: "-ping"
+      long: ""
+      description: 快速识别
+    - short: "-quiet"
+      long: ""
+      description: 安静模式
+    - short: "-regard-warnings"
+      long: ""
+      description: 将警告作为错误
+  subcommands: {}
+
+mogrify:
+  name: mogrify
+  description: ImageMagick 批量图像处理
+  options:
+    - short: "-resize"
+      long: ""
+      description: 调整大小
+      takes_value: true
+    - short: "-format"
+      long: ""
+      description: 输出格式
+      takes_value: true
+      values: ["jpg", "png", "gif", "webp", "bmp", "tiff", "pdf"]
+    - short: "-path"
+      long: ""
+      description: 输出目录
+      takes_value: true
+    - short: "-quality"
+      long: ""
+      description: 质量
+      takes_value: true
+    - short: "-strip"
+      long: ""
+      description: 移除元数据
+    - short: "-auto-orient"
+      long: ""
+      description: 自动旋转
+    - short: "-rotate"
+      long: ""
+      description: 旋转
+      takes_value: true
+    - short: "-crop"
+      long: ""
+      description: 裁剪
+      takes_value: true
+  subcommands: {}
+
+sox:
+  name: sox
+  description: 音频处理瑞士军刀
+  options:
+    - short: "-r"
+      long: ""
+      description: 采样率
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 声道数
+      takes_value: true
+    - short: "-b"
+      long: ""
+      description: 位深度
+      takes_value: true
+      values: ["8", "16", "24", "32"]
+    - short: "-t"
+      long: ""
+      description: 文件类型
+      takes_value: true
+      values: ["wav", "mp3", "ogg", "flac", "aiff", "raw"]
+    - short: "-v"
+      long: ""
+      description: 音量
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 空输出
+    - short: "-m"
+      long: ""
+      description: 混合输入
+    - short: "-M"
+      long: ""
+      description: 合并声道
+    - short: "-G"
+      long: ""
+      description: 防削波
+    - short: "-S"
+      long: ""
+      description: 显示进度
+    - short: "-q"
+      long: ""
+      description: 安静模式
+  subcommands: {}
+
+mpv:
+  name: mpv
+  description: 媒体播放器
+  options:
+    - short: ""
+      long: "--fullscreen"
+      description: 全屏
+    - short: ""
+      long: "--no-video"
+      description: 禁用视频
+    - short: ""
+      long: "--no-audio"
+      description: 禁用音频
+    - short: ""
+      long: "--loop"
+      description: 循环播放
+      takes_value: true
+    - short: ""
+      long: "--loop-playlist"
+      description: 循环播放列表
+      takes_value: true
+    - short: ""
+      long: "--shuffle"
+      description: 随机播放
+    - short: ""
+      long: "--volume"
+      description: 音量 (0-100)
+      takes_value: true
+    - short: ""
+      long: "--speed"
+      description: 播放速度
+      takes_value: true
+    - short: ""
+      long: "--start"
+      description: 开始位置
+      takes_value: true
+    - short: ""
+      long: "--end"
+      description: 结束位置
+      takes_value: true
+    - short: ""
+      long: "--sub-file"
+      description: 字幕文件
+      takes_value: true
+    - short: ""
+      long: "--audio-file"
+      description: 音频文件
+      takes_value: true
+    - short: ""
+      long: "--playlist"
+      description: 播放列表
+      takes_value: true
+    - short: ""
+      long: "--vo"
+      description: 视频输出
+      takes_value: true
+      values: ["gpu", "gpu-next", "x11", "wayland", "drm", "null"]
+    - short: ""
+      long: "--ao"
+      description: 音频输出
+      takes_value: true
+      values: ["pulse", "alsa", "jack", "pipewire", "null"]
+    - short: ""
+      long: "--hwdec"
+      description: 硬件解码
+      takes_value: true
+      values: ["auto", "vaapi", "nvdec", "cuda", "vdpau", "no"]
+  subcommands: {}
+
+yt-dlp:
+  name: yt-dlp
+  description: 视频下载工具
+  options:
+    - short: "-f"
+      long: "--format"
+      description: 视频格式
+      takes_value: true
+      values: ["best", "bestvideo", "bestaudio", "worst", "bestvideo+bestaudio"]
+    - short: "-o"
+      long: "--output"
+      description: 输出模板
+      takes_value: true
+    - short: "-x"
+      long: "--extract-audio"
+      description: 仅提取音频
+    - short: ""
+      long: "--audio-format"
+      description: 音频格式
+      takes_value: true
+      values: ["mp3", "aac", "flac", "m4a", "opus", "vorbis", "wav"]
+    - short: ""
+      long: "--audio-quality"
+      description: 音频质量 (0-9)
+      takes_value: true
+    - short: ""
+      long: "--embed-thumbnail"
+      description: 嵌入缩略图
+    - short: ""
+      long: "--embed-subs"
+      description: 嵌入字幕
+    - short: ""
+      long: "--write-subs"
+      description: 下载字幕
+    - short: ""
+      long: "--sub-langs"
+      description: 字幕语言
+      takes_value: true
+    - short: "-F"
+      long: "--list-formats"
+      description: 列出可用格式
+    - short: "-j"
+      long: "--dump-json"
+      description: 输出 JSON 信息
+    - short: ""
+      long: "--playlist-start"
+      description: 播放列表起始
+      takes_value: true
+    - short: ""
+      long: "--playlist-end"
+      description: 播放列表结束
+      takes_value: true
+    - short: ""
+      long: "--download-archive"
+      description: 下载记录文件
+      takes_value: true
+    - short: ""
+      long: "--cookies"
+      description: Cookie 文件
+      takes_value: true
+    - short: ""
+      long: "--proxy"
+      description: 代理
+      takes_value: true
+    - short: "-N"
+      long: "--concurrent-fragments"
+      description: 并发下载数
+      takes_value: true
+    - short: "-r"
+      long: "--limit-rate"
+      description: 限速
+      takes_value: true
+    - short: "-U"
+      long: "--update"
+      description: 更新程序
+  subcommands: {}
+
+youtube-dl:
+  name: youtube-dl
+  description: 视频下载工具 (建议使用 yt-dlp)
+  options:
+    - short: "-f"
+      long: "--format"
+      description: 视频格式
+      takes_value: true
+    - short: "-o"
+      long: "--output"
+      description: 输出模板
+      takes_value: true
+    - short: "-x"
+      long: "--extract-audio"
+      description: 仅提取音频
+    - short: "-F"
+      long: "--list-formats"
+      description: 列出可用格式
+    - short: "-U"
+      long: "--update"
+      description: 更新程序
+  subcommands: {}
+
+vlc:
+  name: vlc
+  description: VLC 媒体播放器
+  options:
+    - short: "-f"
+      long: "--fullscreen"
+      description: 全屏
+    - short: ""
+      long: "--loop"
+      description: 循环
+    - short: ""
+      long: "--repeat"
+      description: 重复
+    - short: ""
+      long: "--no-video"
+      description: 禁用视频
+    - short: ""
+      long: "--no-audio"
+      description: 禁用音频
+    - short: ""
+      long: "--start-time"
+      description: 开始时间
+      takes_value: true
+    - short: ""
+      long: "--stop-time"
+      description: 停止时间
+      takes_value: true
+    - short: ""
+      long: "--rate"
+      description: 播放速度
+      takes_value: true
+    - short: "-I"
+      long: "--intf"
+      description: 界面
+      takes_value: true
+      values: ["dummy", "ncurses", "qt", "http"]
+    - short: ""
+      long: "--sout"
+      description: 流输出
+      takes_value: true
+  subcommands: {}
+
+aplay:
+  name: aplay
+  description: ALSA 音频播放
+  options:
+    - short: "-l"
+      long: "--list-devices"
+      description: 列出设备
+    - short: "-D"
+      long: "--device"
+      description: 设备名
+      takes_value: true
+    - short: "-c"
+      long: "--channels"
+      description: 声道数
+      takes_value: true
+    - short: "-r"
+      long: "--rate"
+      description: 采样率
+      takes_value: true
+    - short: "-f"
+      long: "--format"
+      description: 格式
+      takes_value: true
+      values: ["S16_LE", "S24_LE", "S32_LE", "FLOAT_LE"]
+    - short: "-d"
+      long: "--duration"
+      description: 播放时长
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 安静模式
+  subcommands: {}
+
+arecord:
+  name: arecord
+  description: ALSA 音频录制
+  options:
+    - short: "-l"
+      long: "--list-devices"
+      description: 列出设备
+    - short: "-D"
+      long: "--device"
+      description: 设备名
+      takes_value: true
+    - short: "-c"
+      long: "--channels"
+      description: 声道数
+      takes_value: true
+    - short: "-r"
+      long: "--rate"
+      description: 采样率
+      takes_value: true
+    - short: "-f"
+      long: "--format"
+      description: 格式
+      takes_value: true
+    - short: "-d"
+      long: "--duration"
+      description: 录制时长
+      takes_value: true
+    - short: "-t"
+      long: "--file-type"
+      description: 文件类型
+      takes_value: true
+      values: ["wav", "raw", "au"]
+  subcommands: {}
+
+pactl:
+  name: pactl
+  description: PulseAudio 控制
+  options:
+    - short: "-s"
+      long: "--server"
+      description: 服务器
+      takes_value: true
+    - short: "-n"
+      long: "--client-name"
+      description: 客户端名称
+      takes_value: true
+  subcommands:
+    list:
+      name: list
+      description: 列出对象
+      options:
+        - short: ""
+          long: "sinks"
+          description: 列出输出设备
+        - short: ""
+          long: "sources"
+          description: 列出输入设备
+        - short: ""
+          long: "sink-inputs"
+          description: 列出播放流
+        - short: ""
+          long: "source-outputs"
+          description: 列出录制流
+    set-sink-volume:
+      name: set-sink-volume
+      description: 设置输出音量
+      options: []
+    set-source-volume:
+      name: set-source-volume
+      description: 设置输入音量
+      options: []
+    set-sink-mute:
+      name: set-sink-mute
+      description: 静音输出
+      options: []
+    set-source-mute:
+      name: set-source-mute
+      description: 静音输入
+      options: []
+    set-default-sink:
+      name: set-default-sink
+      description: 设置默认输出
+      options: []
+    set-default-source:
+      name: set-default-source
+      description: 设置默认输入
+      options: []
+
