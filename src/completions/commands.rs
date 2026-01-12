@@ -184,13 +184,24 @@ impl CommandCompleter {
 
     /// 获取命令补全
     pub fn complete(&self, prefix: &str) -> Vec<Completion> {
+        let prefix_lower = prefix.to_lowercase();
+        
         let mut completions: Vec<Completion> = self.commands
             .iter()
-            .filter(|(cmd, _)| prefix.is_empty() || cmd.starts_with(prefix))
+            .filter(|(cmd, _)| {
+                if prefix.is_empty() {
+                    return true;
+                }
+                let cmd_lower = cmd.to_lowercase();
+                // 宽松匹配：前缀、包含、或者字符都在命令中（顺序匹配）
+                cmd_lower.starts_with(&prefix_lower) 
+                    || cmd_lower.contains(&prefix_lower)
+                    || Self::chars_match(&cmd_lower, &prefix_lower)
+            })
             .map(|(cmd, desc)| Completion {
                 text: cmd.to_string(),
                 description: desc.to_string(),
-                score: if cmd.starts_with(prefix) { 100 } else { 50 },
+                score: 50, // 让引擎来重新评分
                 kind: CompletionKind::Command,
                 match_indices: Vec::new(),
             })
@@ -202,12 +213,19 @@ impl CommandCompleter {
             if self.commands.contains_key(cmd_name) {
                 continue;
             }
-            if prefix.is_empty() || cmd_name.starts_with(prefix) {
+            
+            let cmd_lower = cmd_name.to_lowercase();
+            let should_include = prefix.is_empty() 
+                || cmd_lower.starts_with(&prefix_lower)
+                || cmd_lower.contains(&prefix_lower)
+                || Self::chars_match(&cmd_lower, &prefix_lower);
+            
+            if should_include {
                 if let Some(cmd_def) = self.database.get_command(cmd_name) {
                     completions.push(Completion {
                         text: cmd_name.to_string(),
                         description: cmd_def.description.clone(),
-                        score: if cmd_name.starts_with(prefix) { 100 } else { 50 },
+                        score: 50,
                         kind: CompletionKind::Command,
                         match_indices: Vec::new(),
                     });
@@ -216,6 +234,20 @@ impl CommandCompleter {
         }
         
         completions
+    }
+    
+    /// 检查 pattern 中的所有字符是否按顺序出现在 text 中
+    fn chars_match(text: &str, pattern: &str) -> bool {
+        let mut pattern_chars = pattern.chars().peekable();
+        for ch in text.chars() {
+            if pattern_chars.peek() == Some(&ch) {
+                pattern_chars.next();
+            }
+            if pattern_chars.peek().is_none() {
+                return true;
+            }
+        }
+        pattern_chars.peek().is_none()
     }
 
     /// 检查命令是否存在
