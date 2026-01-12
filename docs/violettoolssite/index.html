@@ -86,6 +86,22 @@
             z-index: 0;
         }
 
+        /* 背景图片层 */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         /* 装饰线条 */
         .decoration-line {
             position: fixed;
@@ -175,11 +191,11 @@
             background: linear-gradient(to right, var(--accent), var(--gold), var(--accent));
         }
 
-        /* CSS动漫头像 */
+        /* 动漫头像 */
         .avatar-container {
             flex-shrink: 0;
-            width: 180px;
-            height: 220px;
+            width: 200px;
+            height: 250px;
             position: relative;
         }
 
@@ -187,205 +203,55 @@
             width: 100%;
             height: 100%;
             position: relative;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
             overflow: hidden;
             border: 2px solid var(--accent);
         }
 
-        /* 头发 */
-        .hair {
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 100px;
-            background: #1a1a2e;
-            border-radius: 70px 70px 0 0;
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            transition: transform 0.5s ease;
         }
 
-        .hair::before {
+        .avatar:hover .avatar-img {
+            transform: scale(1.05);
+        }
+
+        /* 头像光效 */
+        .avatar::after {
             content: '';
             position: absolute;
-            top: 60px;
-            left: -15px;
-            width: 50px;
-            height: 120px;
-            background: #1a1a2e;
-            border-radius: 0 0 25px 25px;
-        }
-
-        .hair::after {
-            content: '';
-            position: absolute;
-            top: 60px;
-            right: -15px;
-            width: 50px;
-            height: 120px;
-            background: #1a1a2e;
-            border-radius: 0 0 25px 25px;
-        }
-
-        /* 脸 */
-        .face {
-            position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 110px;
-            background: #fce4d6;
-            border-radius: 50px 50px 40px 40px;
-        }
-
-        /* 眼睛 */
-        .eyes {
-            position: absolute;
-            top: 85px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .eye {
-            width: 25px;
-            height: 30px;
-            background: #c41e3a;
-            border-radius: 50%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .eye::before {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 12px;
-            height: 15px;
-            background: #2d0a0a;
-            border-radius: 50%;
-        }
-
-        .eye::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 6px;
-            height: 6px;
-            background: #fff;
-            border-radius: 50%;
-        }
-
-        /* 蝴蝶结 */
-        .ribbon {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            width: 35px;
-            height: 25px;
-        }
-
-        .ribbon::before,
-        .ribbon::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 15px;
-            background: var(--accent);
-            border-radius: 50% 50% 50% 50%;
-        }
-
-        .ribbon::before {
+            top: 0;
             left: 0;
-            transform: rotate(-20deg);
-        }
-
-        .ribbon::after {
             right: 0;
-            transform: rotate(20deg);
-        }
-
-        .ribbon-center {
-            position: absolute;
-            top: 30px;
-            right: 32px;
-            width: 10px;
-            height: 10px;
-            background: var(--accent-light);
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        /* 嘴巴 */
-        .mouth {
-            position: absolute;
-            top: 130px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 8px;
-            border-bottom: 2px solid #d4a5a5;
-            border-radius: 0 0 15px 15px;
-        }
-
-        /* 制服 */
-        .uniform {
-            position: absolute;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 60px;
-            background: #1a1a2e;
-            border-radius: 60px 60px 0 0;
+            background: linear-gradient(
+                135deg,
+                transparent 0%,
+                transparent 40%,
+                rgba(196, 30, 58, 0.1) 50%,
+                transparent 60%,
+                transparent 100%
+            );
+            pointer-events: none;
         }
 
-        .uniform::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 20px solid #fff;
+        /* 头像备用样式（图片加载失败时） */
+        .avatar-fallback {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .uniform-ribbon {
-            position: absolute;
-            bottom: 35px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 10px;
-            background: var(--accent);
-        }
-
-        .uniform-ribbon::before,
-        .uniform-ribbon::after {
-            content: '';
-            position: absolute;
-            top: 10px;
-            width: 8px;
-            height: 25px;
-            background: var(--accent);
-        }
-
-        .uniform-ribbon::before {
-            left: -3px;
-            transform: rotate(-10deg);
-        }
-
-        .uniform-ribbon::after {
-            right: -3px;
-            transform: rotate(10deg);
+        .avatar-fallback::before {
+            content: '辉夜';
+            font-family: 'Noto Serif JP', serif;
+            font-size: 2.5rem;
+            color: var(--accent);
+            opacity: 0.5;
         }
 
         /* 头像装饰框 */
@@ -879,6 +745,7 @@
     </style>
 </head>
 <body>
+    <div class="bg-image"></div>
     <div class="bg-pattern"></div>
     <div class="decoration-line left"></div>
     <div class="decoration-line right"></div>
@@ -898,18 +765,8 @@
         <section class="profile-section">
             <div class="avatar-container">
                 <div class="avatar">
-                    <div class="hair"></div>
-                    <div class="face"></div>
-                    <div class="eyes">
-                        <div class="eye"></div>
-                        <div class="eye"></div>
-                    </div>
-                    <div class="mouth"></div>
-                    <div class="ribbon"></div>
-                    <div class="ribbon-center"></div>
-                    <div class="uniform">
-                        <div class="uniform-ribbon"></div>
-                    </div>
+                    <!-- 四宫辉夜头像 -->
+                    <img class="avatar-img" src="kaguya.jpg" alt="四宫辉夜" onerror="this.style.display='none';this.parentElement.classList.add('avatar-fallback');">
                 </div>
                 <div class="avatar-frame"></div>
                 <div class="avatar-corner tl"></div>
