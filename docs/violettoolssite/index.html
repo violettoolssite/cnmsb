@@ -4,230 +4,561 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIOLETTOOLSSITE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-dark: #0d0d0d;
+            --bg-card: #1a1a1a;
+            --accent: #c41e3a;
+            --accent-light: #e8354f;
+            --accent-glow: rgba(196, 30, 58, 0.3);
+            --gold: #d4af37;
+            --text: #f5f5f5;
+            --text-dim: #999;
+            --sakura: #ffb7c5;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html {
-            font-size: 16px;
+        body {
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        body {
-            font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #fff;
-            color: #000;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+        /* 樱花飘落动画 */
+        .sakura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
         }
+
+        .sakura {
+            position: absolute;
+            top: -20px;
+            color: var(--sakura);
+            font-size: 20px;
+            animation: fall linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-20px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 背景装饰 */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 0%, var(--accent-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 装饰线条 */
+        .decoration-line {
+            position: fixed;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+            opacity: 0.3;
+        }
+
+        .decoration-line.left { left: 10%; }
+        .decoration-line.right { right: 10%; }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 80px 40px;
+            padding: 60px 40px;
+            position: relative;
+            z-index: 10;
         }
 
+        /* 头部 */
         header {
+            text-align: center;
             margin-bottom: 80px;
+            position: relative;
+        }
+
+        .header-decoration {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--accent), transparent);
+            margin: 0 auto 30px;
         }
 
         .logo {
+            font-family: 'Noto Serif JP', serif;
             font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            letter-spacing: 8px;
+            color: var(--gold);
+            margin-bottom: 20px;
         }
 
-        section {
+        .main-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--sakura) 50%, var(--text) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-dim);
+            letter-spacing: 3px;
+        }
+
+        .subtitle::before,
+        .subtitle::after {
+            content: '―';
+            margin: 0 15px;
+            color: var(--accent);
+        }
+
+        /* 引言区 */
+        .quote-section {
+            text-align: center;
+            margin-bottom: 80px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .quote-section::before {
+            content: '"';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Noto Serif JP', serif;
+            font-size: 80px;
+            color: var(--accent);
+            opacity: 0.3;
+            line-height: 1;
+        }
+
+        .quote-text {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--text);
+            line-height: 2;
+            margin-top: 30px;
+        }
+
+        .quote-author {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+
+        /* 区域标题 */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header::before,
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-glow));
+        }
+
+        .section-header::after {
+            background: linear-gradient(to left, transparent, var(--accent-glow));
+        }
+
+        .section-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            color: var(--gold);
+            padding: 0 30px;
+        }
+
+        /* 项目卡片 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
             margin-bottom: 80px;
         }
 
-        h1 {
-            font-size: 48px;
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(196, 30, 58, 0.2);
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), var(--gold));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .project-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .project-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px var(--accent-glow);
+        }
+
+        .project-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            border-right: 1px solid var(--accent);
+            border-bottom: 1px solid var(--accent);
+            opacity: 0.5;
+        }
+
+        .project-name {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.5rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-            margin-bottom: 40px;
-            line-height: 1.1;
+            margin-bottom: 15px;
+            color: var(--text);
         }
 
-        h2 {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #000;
+        .project-name a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
         }
 
-        .project-item {
-            margin-bottom: 30px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid #000;
-        }
-
-        .project-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .project-title {
-            font-size: 24px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .project-title a {
-            color: #000;
-            text-decoration: underline;
-            text-underline-offset: 4px;
-        }
-
-        .project-title a:hover {
-            text-decoration-style: dashed;
+        .project-name a:hover {
+            color: var(--accent-light);
         }
 
         .project-desc {
-            font-size: 14px;
-            color: #000;
-            line-height: 1.7;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.8;
         }
 
+        .project-tag {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            border: 1px solid var(--accent);
+            padding: 5px 12px;
+        }
+
+        /* 开源项目列表 */
         .oss-list {
-            list-style: none;
+            margin-bottom: 80px;
         }
 
         .oss-item {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #000;
+            display: flex;
+            align-items: flex-start;
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .oss-item:last-child {
             border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
+        }
+
+        .oss-bullet {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            margin-right: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .oss-content {
+            flex: 1;
         }
 
         .oss-name {
-            font-size: 16px;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.1rem;
             font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: var(--text);
         }
 
         .oss-desc {
-            font-size: 14px;
-            color: #000;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+
+        /* 关于区域 */
+        .about-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(196, 30, 58, 0.15);
+            padding: 50px;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 30px;
+            right: 30px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent), transparent);
         }
 
         .about-text {
-            font-size: 16px;
-            line-height: 1.8;
+            font-size: 1rem;
+            line-height: 2.2;
+            color: var(--text-dim);
+            text-align: center;
         }
 
+        .about-text strong {
+            color: var(--text);
+            font-weight: 400;
+        }
+
+        /* 页脚 */
         footer {
+            text-align: center;
             padding-top: 40px;
-            border-top: 1px solid #000;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-decoration {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-diamond {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            transform: rotate(45deg);
+        }
+
+        .footer-line {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent), transparent);
         }
 
         .footer-text {
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            letter-spacing: 3px;
         }
 
-        a {
-            color: #000;
-            text-decoration: underline;
-            text-underline-offset: 3px;
+        .footer-jp {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.75rem;
+            color: var(--accent);
+            margin-top: 10px;
+            letter-spacing: 5px;
         }
 
-        a:hover {
-            text-decoration-style: dashed;
-        }
-
-        @media (max-width: 600px) {
+        /* 响应式 */
+        @media (max-width: 768px) {
             .container {
-                padding: 40px 20px;
+                padding: 40px 25px;
             }
 
-            h1 {
-                font-size: 32px;
+            .projects-grid {
+                grid-template-columns: 1fr;
             }
 
-            section {
-                margin-bottom: 60px;
+            .decoration-line {
+                display: none;
             }
 
-            header {
-                margin-bottom: 60px;
+            .quote-section {
+                padding: 30px 20px;
             }
 
-            .project-title {
-                font-size: 20px;
+            .about-section {
+                padding: 35px 25px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="bg-pattern"></div>
+    <div class="decoration-line left"></div>
+    <div class="decoration-line right"></div>
+
+    <!-- 樱花飘落 -->
+    <div class="sakura-container" id="sakuraContainer"></div>
+
     <div class="container">
         <header>
-            <div class="logo">VIOLETTOOLSSITE</div>
+            <div class="header-decoration"></div>
+            <div class="logo">DEVELOPER PORTFOLIO</div>
+            <h1 class="main-title">VIOLETTOOLSSITE</h1>
+            <p class="subtitle">Edge Computing Specialist</p>
         </header>
 
-        <section>
-            <h1>DEVELOPER<br>TOOLS</h1>
-        </section>
-
-        <section>
-            <h2>FEATURED PROJECTS</h2>
-            <div class="project-item">
-                <div class="project-title">
-                    <a href="https://tmd.kami666.xyz/" target="_blank">TMD</a>
-                </div>
-                <p class="project-desc">极致精简的高效率功能组件</p>
-            </div>
-            <div class="project-item">
-                <div class="project-title">
-                    <a href="https://violettoolssite.github.io/cnmsb/" target="_blank">CNMSB</a>
-                </div>
-                <p class="project-desc">针对特定场景开发的轻量化工具模块</p>
-            </div>
-        </section>
-
-        <section>
-            <h2>OPEN SOURCE</h2>
-            <ul class="oss-list">
-                <li class="oss-item">
-                    <div class="oss-name">CFspider</div>
-                    <p class="oss-desc">分布式代理 IP 池，支持 Playwright</p>
-                </li>
-                <li class="oss-item">
-                    <div class="oss-name">loveFreeTools</div>
-                    <p class="oss-desc">集成 AI 逻辑的公益工具矩阵</p>
-                </li>
-            </ul>
-        </section>
-
-        <section>
-            <h2>INFO</h2>
-            <p class="about-text">
-                Violettoolssite 专注于 Cloudflare 边缘计算与 Serverless 架构，致力于构建零成本、高可用的开发者工具。
+        <section class="quote-section">
+            <p class="quote-text">
+                如何让代码告白？<br>
+                今天的 Violettoolssite 也在思考着。
             </p>
+            <p class="quote-author">― お可愛いこと ―</p>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <span class="section-title">FEATURED PROJECTS</span>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3 class="project-name">
+                        <a href="https://tmd.kami666.xyz/" target="_blank">TMD</a>
+                    </h3>
+                    <p class="project-desc">极致精简的高效率功能组件</p>
+                    <span class="project-tag">MINIMALIST</span>
+                </div>
+                <div class="project-card">
+                    <h3 class="project-name">
+                        <a href="https://violettoolssite.github.io/cnmsb/" target="_blank">CNMSB</a>
+                    </h3>
+                    <p class="project-desc">针对特定场景开发的轻量化工具模块</p>
+                    <span class="project-tag">LIGHTWEIGHT</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <span class="section-title">OPEN SOURCE</span>
+            </div>
+            <div class="oss-list">
+                <div class="oss-item">
+                    <div class="oss-bullet"></div>
+                    <div class="oss-content">
+                        <h4 class="oss-name">CFspider</h4>
+                        <p class="oss-desc">分布式代理 IP 池，支持 Playwright</p>
+                    </div>
+                </div>
+                <div class="oss-item">
+                    <div class="oss-bullet"></div>
+                    <div class="oss-content">
+                        <h4 class="oss-name">loveFreeTools</h4>
+                        <p class="oss-desc">集成 AI 逻辑的公益工具矩阵</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <span class="section-title">INFO</span>
+            </div>
+            <div class="about-section">
+                <p class="about-text">
+                    <strong>Violettoolssite</strong> 专注于 Cloudflare 边缘计算与 Serverless 架构，<br>
+                    致力于构建零成本、高可用的开发者工具。
+                </p>
+            </div>
         </section>
 
         <footer>
-            <div class="footer-text">VIOLETTOOLSSITE / 2026</div>
+            <div class="footer-decoration">
+                <div class="footer-line"></div>
+                <div class="footer-diamond"></div>
+                <div class="footer-line"></div>
+            </div>
+            <p class="footer-text">VIOLETTOOLSSITE / 2026</p>
+            <p class="footer-jp">ヴィオレットツールズサイト</p>
         </footer>
     </div>
+
+    <script>
+        // 创建樱花飘落效果
+        function createSakura() {
+            const container = document.getElementById('sakuraContainer');
+            const sakura = document.createElement('div');
+            sakura.className = 'sakura';
+            sakura.innerHTML = '❀';
+            sakura.style.left = Math.random() * 100 + '%';
+            sakura.style.animationDuration = (Math.random() * 5 + 8) + 's';
+            sakura.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            sakura.style.opacity = Math.random() * 0.4 + 0.2;
+            container.appendChild(sakura);
+
+            setTimeout(() => {
+                sakura.remove();
+            }, 13000);
+        }
+
+        // 定期创建樱花
+        setInterval(createSakura, 800);
+
+        // 初始创建一些樱花
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createSakura, i * 200);
+        }
+    </script>
 </body>
 </html>
-
