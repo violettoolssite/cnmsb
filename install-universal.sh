@@ -84,11 +84,25 @@ install_deps() {
         install_package zsh
     fi
     
-    # 安装 Rust
+    # 安装/更新 Rust（需要 1.82+）
     if ! command -v cargo >/dev/null 2>&1; then
         echo "安装 Rust..."
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         source "$HOME/.cargo/env"
+    else
+        # 检查 Rust 版本，如果太旧则更新
+        RUST_VER=$(rustc --version | grep -oP '\d+\.\d+' | head -1)
+        RUST_MAJOR=$(echo "$RUST_VER" | cut -d. -f1)
+        RUST_MINOR=$(echo "$RUST_VER" | cut -d. -f2)
+        if [ "$RUST_MAJOR" -eq 1 ] && [ "$RUST_MINOR" -lt 82 ]; then
+            echo "Rust 版本 $RUST_VER 太旧，需要 1.82+，正在更新..."
+            if command -v rustup >/dev/null 2>&1; then
+                rustup update stable
+            else
+                curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            fi
+            source "$HOME/.cargo/env"
+        fi
     fi
     
     # 安装编译依赖
