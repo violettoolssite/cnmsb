@@ -1,3 +1,15 @@
+cnmsb (0.1.0-3~ppa1) noble; urgency=medium
+
+  * Fix build: compile from source with cargo
+
+ -- violet <violetqqcom@qq.com>  Mon, 12 Jan 2026 23:02:57 +0800
+
+cnmsb (0.1.0-2~ppa1) noble; urgency=medium
+
+  * Initial PPA release
+
+ -- violet <violetqqcom@qq.com>  Mon, 12 Jan 2026 22:39:34 +0800
+
 cnmsb (0.1.0-1) unstable; urgency=medium
 
   * Initial release

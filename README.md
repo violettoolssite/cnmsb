@@ -98,6 +98,14 @@ $ tar ?
 
 ## 安装
 
+### 一键安装（推荐）
+
+妈的不管你是 Ubuntu 还是 CentOS 还是 Fedora，一行命令搞定：
+
+```bash
+curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/cnmsb-tool/install-universal.sh | bash
+```
+
 ### Debian/Ubuntu
 
 ```bash
@@ -109,6 +117,28 @@ sudo dpkg -i cnmsb_0.1.0_amd64.deb
 ```
 
 装完会自动把你的 shell 换成 zsh，重新登录就行了。
+
+### Fedora/RHEL/CentOS/Rocky/Alma
+
+```bash
+# 启用 COPR 源（等审核通过后可用）
+sudo dnf copr enable violettoolssite/cnmsb
+
+# 装上
+sudo dnf install cnmsb
+```
+
+或者手动编译 RPM：
+
+```bash
+git clone https://github.com/violettoolssite/cnmsb.git
+cd cnmsb/cnmsb-tool
+chmod +x rpm/build-rpm.sh
+./rpm/build-rpm.sh
+
+# 然后安装生成的 RPM
+sudo dnf install ~/rpmbuild/RPMS/x86_64/cnmsb-*.rpm
+```
 
 ### 手动安装
 
