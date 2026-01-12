@@ -185,7 +185,7 @@ _cnmsb_line_init() {
     POSTDISPLAY=""
     region_highlight=()
     _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=()
-    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_lastbuf=""
+    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_lastbuf="" _cnmsb_skip=0
 }
 
 zle -N zle-line-init _cnmsb_line_init
@@ -310,10 +310,18 @@ _cnmsb_accept() {
 }
 
 _cnmsb_run() {
+    # 清除所有显示
     POSTDISPLAY=""
     region_highlight=()
     _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=()
-    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_lastbuf=""
+    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_lastbuf=""
+    
+    # 使用终端转义序列清除光标后的内容
+    print -n '\e[K'
+    
+    # 如果有菜单，清除多行
+    print -n '\e[J'
+    
     zle -R
     zle .accept-line
 }
