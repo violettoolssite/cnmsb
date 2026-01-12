@@ -220,20 +220,23 @@ _cnmsb_tab() {
         if [[ ${#_cnmsb_list[@]} -gt 0 && $_cnmsb_idx -gt 0 ]]; then
             local selected="${_cnmsb_list[$_cnmsb_idx]}"
             
-            # 获取当前词
+            # 获取当前词和位置
             local words=(${(z)BUFFER})
             local curword=""
-            [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]] && curword="${words[-1]}"
+            local curword_start=0
+            
+            if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
+                curword="${words[-1]}"
+                curword_start=$((${#BUFFER} - ${#curword}))
+            fi
             
             if [[ -n "$curword" ]]; then
                 if [[ "$selected" == "$curword"* ]]; then
                     # 前缀匹配：追加后缀部分
                     BUFFER+="${selected#$curword}"
                 else
-                    # 模糊匹配：替换整个当前词
-                    # 使用 % 删除最后一个词，然后加上选中的补全
-                    local prefix="${BUFFER%$curword}"
-                    BUFFER="${prefix}${selected}"
+                    # 模糊匹配：用子串方式替换
+                    BUFFER="${BUFFER[1,$curword_start]}${selected}"
                 fi
             else
                 # 没有当前词，直接追加
@@ -263,19 +266,23 @@ _cnmsb_accept() {
     if [[ ($_cnmsb_menu -eq 1 || $_cnmsb_hist_mode -eq 1 || ${#_cnmsb_list[@]} -gt 0) && $_cnmsb_idx -gt 0 ]]; then
         local selected="${_cnmsb_list[$_cnmsb_idx]}"
         
-        # 获取当前词
+        # 获取当前词和位置
         local words=(${(z)BUFFER})
         local curword=""
-        [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]] && curword="${words[-1]}"
+        local curword_start=0
+        
+        if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
+            curword="${words[-1]}"
+            curword_start=$((${#BUFFER} - ${#curword}))
+        fi
         
         if [[ -n "$curword" ]]; then
             if [[ "$selected" == "$curword"* ]]; then
                 # 前缀匹配：追加后缀部分
                 BUFFER+="${selected#$curword}"
             else
-                # 模糊匹配：替换整个当前词
-                local prefix="${BUFFER%$curword}"
-                BUFFER="${prefix}${selected}"
+                # 模糊匹配：用子串方式替换
+                BUFFER="${BUFFER[1,$curword_start]}${selected}"
             fi
         else
             # 没有当前词，直接追加
