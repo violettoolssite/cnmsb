@@ -30,6 +30,9 @@ pub struct CommandDef {
     /// 子命令
     #[serde(default)]
     pub subcommands: HashMap<String, CommandDef>,
+    /// 预定义的可组合选项（如 pacman 的 -Syu）
+    #[serde(default)]
+    pub combinable_options: Option<Vec<String>>,
 }
 
 /// 选项定义

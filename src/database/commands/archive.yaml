@@ -4,6 +4,19 @@
 tar:
   name: tar
   description: 打包/解包工具
+  combinable_options:
+    - "-xvf"
+    - "-xzvf"
+    - "-xjvf"
+    - "-xJvf"
+    - "-cvf"
+    - "-czvf"
+    - "-cjvf"
+    - "-cJvf"
+    - "-tvf"
+    - "-tzvf"
+    - "-tjvf"
+    - "-tJvf"
   options:
     # 常用组合（优先显示）
     - short: "-xvf"

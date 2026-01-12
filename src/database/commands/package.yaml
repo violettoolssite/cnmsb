@@ -1,5 +1,7 @@
 # 包管理命令
-# 贡献者可以在此添加更多包管理命令
+# 支持所有主流 Linux 发行版
+
+# ============== Debian/Ubuntu 系列 ==============
 
 apt:
   name: apt
@@ -11,6 +13,18 @@ apt:
     - short: "-q"
       long: "--quiet"
       description: 静默模式
+    - short: "-s"
+      long: "--simulate"
+      description: 模拟执行
+    - short: "-d"
+      long: "--download-only"
+      description: 仅下载
+    - short: ""
+      long: "--no-install-recommends"
+      description: 不安装推荐包
+    - short: ""
+      long: "--fix-broken"
+      description: 修复依赖
   subcommands:
     update:
       name: update
@@ -22,6 +36,13 @@ apt:
     upgrade:
       name: upgrade
       description: 升级所有包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+    full-upgrade:
+      name: full-upgrade
+      description: 完整升级（可能删除包）
       options:
         - short: "-y"
           long: "--yes"
@@ -39,6 +60,118 @@ apt:
         - short: "-f"
           long: "--fix-broken"
           description: 修复依赖
+        - short: ""
+          long: "--reinstall"
+          description: 重新安装
+    remove:
+      name: remove
+      description: 删除包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+        - short: ""
+          long: "--purge"
+          description: 完全删除（包括配置）
+    purge:
+      name: purge
+      description: 完全删除包（包括配置）
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+    autoremove:
+      name: autoremove
+      description: 删除不需要的包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+        - short: ""
+          long: "--purge"
+          description: 完全删除
+    search:
+      name: search
+      description: 搜索包
+      options: []
+    show:
+      name: show
+      description: 显示包信息
+      options:
+        - short: "-a"
+          long: "--all-versions"
+          description: 显示所有版本
+    list:
+      name: list
+      description: 列出包
+      options:
+        - short: ""
+          long: "--installed"
+          description: 已安装的包
+        - short: ""
+          long: "--upgradable"
+          description: 可升级的包
+        - short: ""
+          long: "--all-versions"
+          description: 所有版本
+    edit-sources:
+      name: edit-sources
+      description: 编辑软件源
+      options: []
+    clean:
+      name: clean
+      description: 清理缓存
+      options: []
+    autoclean:
+      name: autoclean
+      description: 清理旧缓存
+      options: []
+
+apt-get:
+  name: apt-get
+  description: APT 包管理工具
+  options:
+    - short: "-y"
+      long: "--yes"
+      description: 自动确认
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-s"
+      long: "--simulate"
+      description: 模拟执行
+    - short: "-d"
+      long: "--download-only"
+      description: 仅下载
+  subcommands:
+    update:
+      name: update
+      description: 更新包列表
+      options: []
+    upgrade:
+      name: upgrade
+      description: 升级包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+    dist-upgrade:
+      name: dist-upgrade
+      description: 发行版升级
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+        - short: ""
+          long: "--no-install-recommends"
+          description: 不安装推荐包
     remove:
       name: remove
       description: 删除包
@@ -51,18 +184,141 @@ apt:
           description: 完全删除
     autoremove:
       name: autoremove
-      description: 删除不需要的包
+      description: 自动删除
       options:
         - short: "-y"
           long: "--yes"
           description: 自动确认
+    clean:
+      name: clean
+      description: 清理缓存
+      options: []
+    autoclean:
+      name: autoclean
+      description: 清理旧缓存
+      options: []
+
+dpkg:
+  name: dpkg
+  description: Debian 底层包管理器
+  options:
+    - short: "-i"
+      long: "--install"
+      description: 安装 deb 包
+    - short: "-r"
+      long: "--remove"
+      description: 删除包
+    - short: "-P"
+      long: "--purge"
+      description: 完全删除
+    - short: "-l"
+      long: "--list"
+      description: 列出包
+    - short: "-L"
+      long: "--listfiles"
+      description: 列出包文件
+    - short: "-s"
+      long: "--status"
+      description: 包状态
+    - short: "-S"
+      long: "--search"
+      description: 搜索文件所属包
+    - short: "-c"
+      long: "--contents"
+      description: 显示 deb 内容
+    - short: ""
+      long: "--configure"
+      description: 配置包
+    - short: ""
+      long: "--unpack"
+      description: 仅解包
+    - short: ""
+      long: "--force-all"
+      description: 强制操作
+
+# ============== Red Hat/Fedora/CentOS 系列 ==============
+
+dnf:
+  name: dnf
+  description: Fedora/RHEL/CentOS 包管理器
+  options:
+    - short: "-y"
+      long: "--assumeyes"
+      description: 自动确认
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--refresh"
+      description: 刷新缓存
+    - short: ""
+      long: "--skip-broken"
+      description: 跳过损坏的包
+    - short: ""
+      long: "--nobest"
+      description: 不限制最佳版本
+    - short: ""
+      long: "--allowerasing"
+      description: 允许删除冲突包
+  subcommands:
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+        - short: ""
+          long: "--skip-broken"
+          description: 跳过损坏的包
+    reinstall:
+      name: reinstall
+      description: 重新安装包
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+    remove:
+      name: remove
+      description: 删除包
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+    upgrade:
+      name: upgrade
+      description: 升级包
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+        - short: ""
+          long: "--refresh"
+          description: 刷新缓存
+    downgrade:
+      name: downgrade
+      description: 降级包
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+    check-update:
+      name: check-update
+      description: 检查更新
+      options: []
     search:
       name: search
       description: 搜索包
-      options: []
-    show:
-      name: show
-      description: 显示包信息
+      options:
+        - short: ""
+          long: "--all"
+          description: 搜索所有
+    info:
+      name: info
+      description: 包信息
       options: []
     list:
       name: list
@@ -70,10 +326,666 @@ apt:
       options:
         - short: ""
           long: "--installed"
-          description: 已安装的包
+          description: 已安装
         - short: ""
-          long: "--upgradable"
-          description: 可升级的包
+          long: "--available"
+          description: 可用的
+        - short: ""
+          long: "--upgrades"
+          description: 可升级
+    provides:
+      name: provides
+      description: 查找文件所属包
+      options: []
+    repolist:
+      name: repolist
+      description: 列出仓库
+      options:
+        - short: ""
+          long: "--all"
+          description: 所有仓库
+        - short: ""
+          long: "--enabled"
+          description: 已启用
+        - short: ""
+          long: "--disabled"
+          description: 已禁用
+    clean:
+      name: clean
+      description: 清理缓存
+      options: []
+      subcommands:
+        all:
+          name: all
+          description: 清理所有
+          options: []
+        packages:
+          name: packages
+          description: 清理包
+          options: []
+        metadata:
+          name: metadata
+          description: 清理元数据
+          options: []
+    makecache:
+      name: makecache
+      description: 生成缓存
+      options: []
+    history:
+      name: history
+      description: 历史记录
+      options: []
+      subcommands:
+        list:
+          name: list
+          description: 列出历史
+          options: []
+        undo:
+          name: undo
+          description: 撤销操作
+          options: []
+        redo:
+          name: redo
+          description: 重做操作
+          options: []
+    group:
+      name: group
+      description: 组管理
+      options: []
+      subcommands:
+        list:
+          name: list
+          description: 列出组
+          options: []
+        install:
+          name: install
+          description: 安装组
+          options:
+            - short: "-y"
+              long: "--assumeyes"
+              description: 自动确认
+        remove:
+          name: remove
+          description: 删除组
+          options:
+            - short: "-y"
+              long: "--assumeyes"
+              description: 自动确认
+    module:
+      name: module
+      description: 模块管理
+      options: []
+      subcommands:
+        list:
+          name: list
+          description: 列出模块
+          options: []
+        enable:
+          name: enable
+          description: 启用模块
+          options: []
+        disable:
+          name: disable
+          description: 禁用模块
+          options: []
+        install:
+          name: install
+          description: 安装模块
+          options: []
+    copr:
+      name: copr
+      description: COPR 仓库管理
+      options: []
+      subcommands:
+        enable:
+          name: enable
+          description: 启用 COPR 仓库
+          options: []
+        disable:
+          name: disable
+          description: 禁用 COPR 仓库
+          options: []
+
+yum:
+  name: yum
+  description: RHEL/CentOS 传统包管理器
+  options:
+    - short: "-y"
+      long: "--assumeyes"
+      description: 自动确认
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands:
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+    update:
+      name: update
+      description: 更新包
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+    remove:
+      name: remove
+      description: 删除包
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+    search:
+      name: search
+      description: 搜索包
+      options: []
+    info:
+      name: info
+      description: 包信息
+      options: []
+    list:
+      name: list
+      description: 列出包
+      options: []
+    clean:
+      name: clean
+      description: 清理缓存
+      options: []
+    repolist:
+      name: repolist
+      description: 列出仓库
+      options: []
+
+rpm:
+  name: rpm
+  description: RPM 底层包管理器
+  options:
+    - short: "-i"
+      long: "--install"
+      description: 安装包
+    - short: "-U"
+      long: "--upgrade"
+      description: 升级包
+    - short: "-e"
+      long: "--erase"
+      description: 删除包
+    - short: "-q"
+      long: "--query"
+      description: 查询包
+    - short: "-V"
+      long: "--verify"
+      description: 验证包
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-h"
+      long: "--hash"
+      description: 显示进度
+    - short: "-a"
+      long: "--all"
+      description: 所有包
+    - short: "-l"
+      long: "--list"
+      description: 列出文件
+    - short: "-f"
+      long: "--file"
+      description: 查询文件所属包
+    - short: ""
+      long: "--nodeps"
+      description: 忽略依赖
+    - short: ""
+      long: "--force"
+      description: 强制操作
+    - short: ""
+      long: "--import"
+      description: 导入密钥
+
+# ============== Arch Linux 系列 ==============
+
+pacman:
+  name: pacman
+  description: Arch Linux 包管理器
+  options:
+    - short: "-S"
+      long: "--sync"
+      description: 同步（安装/更新）
+    - short: "-R"
+      long: "--remove"
+      description: 删除包
+    - short: "-Q"
+      long: "--query"
+      description: 查询已安装包
+    - short: "-U"
+      long: "--upgrade"
+      description: 升级本地包
+    - short: "-F"
+      long: "--files"
+      description: 文件数据库
+    - short: "-D"
+      long: "--database"
+      description: 数据库操作
+    - short: "-y"
+      long: "--refresh"
+      description: 刷新数据库
+    - short: "-u"
+      long: "--sysupgrade"
+      description: 系统升级
+    - short: "-s"
+      long: "--search"
+      description: 搜索
+    - short: "-i"
+      long: "--info"
+      description: 信息
+    - short: "-c"
+      long: "--clean"
+      description: 清理缓存
+    - short: "-l"
+      long: "--list"
+      description: 列出文件
+    - short: "-n"
+      long: "--nosave"
+      description: 不保存配置
+    - short: "-q"
+      long: "--quiet"
+      description: 静默输出
+    - short: ""
+      long: "--noconfirm"
+      description: 不确认
+    - short: ""
+      long: "--needed"
+      description: 跳过已安装
+    - short: ""
+      long: "--overwrite"
+      description: 覆盖文件
+  combinable_options:
+    - "-Syu"
+    - "-Syyu"
+    - "-Ss"
+    - "-Si"
+    - "-Sii"
+    - "-Sc"
+    - "-Scc"
+    - "-Sw"
+    - "-Rs"
+    - "-Rns"
+    - "-Rsc"
+    - "-Qi"
+    - "-Ql"
+    - "-Qe"
+    - "-Qm"
+    - "-Qo"
+    - "-Qs"
+
+yay:
+  name: yay
+  description: Arch AUR 助手
+  options:
+    - short: "-S"
+      long: "--sync"
+      description: 同步（安装/更新）
+    - short: "-R"
+      long: "--remove"
+      description: 删除包
+    - short: "-Q"
+      long: "--query"
+      description: 查询
+    - short: "-y"
+      long: "--refresh"
+      description: 刷新
+    - short: "-u"
+      long: "--sysupgrade"
+      description: 升级
+    - short: "-s"
+      long: "--search"
+      description: 搜索
+    - short: "-c"
+      long: "--clean"
+      description: 清理
+    - short: ""
+      long: "--noconfirm"
+      description: 不确认
+    - short: ""
+      long: "--devel"
+      description: 开发包
+    - short: ""
+      long: "--aur"
+      description: 仅 AUR
+    - short: ""
+      long: "--repo"
+      description: 仅官方仓库
+
+paru:
+  name: paru
+  description: Arch AUR 助手
+  options:
+    - short: "-S"
+      long: "--sync"
+      description: 同步
+    - short: "-R"
+      long: "--remove"
+      description: 删除
+    - short: "-Q"
+      long: "--query"
+      description: 查询
+    - short: "-y"
+      long: "--refresh"
+      description: 刷新
+    - short: "-u"
+      long: "--sysupgrade"
+      description: 升级
+    - short: "-s"
+      long: "--search"
+      description: 搜索
+    - short: "-c"
+      long: "--clean"
+      description: 清理
+    - short: ""
+      long: "--noconfirm"
+      description: 不确认
+
+# ============== openSUSE 系列 ==============
+
+zypper:
+  name: zypper
+  description: openSUSE 包管理器
+  options:
+    - short: "-n"
+      long: "--non-interactive"
+      description: 非交互模式
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--no-refresh"
+      description: 不刷新
+  subcommands:
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-y"
+          long: ""
+          description: 自动确认
+        - short: "-l"
+          long: "--auto-agree-with-licenses"
+          description: 自动同意许可
+        - short: ""
+          long: "--no-recommends"
+          description: 不安装推荐
+    remove:
+      name: remove
+      description: 删除包
+      options:
+        - short: "-y"
+          long: ""
+          description: 自动确认
+        - short: "-u"
+          long: "--clean-deps"
+          description: 清理依赖
+    update:
+      name: update
+      description: 更新包
+      options:
+        - short: "-y"
+          long: ""
+          description: 自动确认
+        - short: "-l"
+          long: "--auto-agree-with-licenses"
+          description: 自动同意许可
+    refresh:
+      name: refresh
+      description: 刷新仓库
+      options: []
+    search:
+      name: search
+      description: 搜索包
+      options:
+        - short: "-s"
+          long: "--match-substrings"
+          description: 子串匹配
+        - short: "-i"
+          long: "--installed-only"
+          description: 仅已安装
+    info:
+      name: info
+      description: 包信息
+      options: []
+    repos:
+      name: repos
+      description: 列出仓库
+      options:
+        - short: "-d"
+          long: "--details"
+          description: 详细信息
+    addrepo:
+      name: addrepo
+      description: 添加仓库
+      options:
+        - short: "-f"
+          long: "--refresh"
+          description: 自动刷新
+    removerepo:
+      name: removerepo
+      description: 删除仓库
+      options: []
+    dist-upgrade:
+      name: dist-upgrade
+      description: 发行版升级
+      options:
+        - short: "-y"
+          long: ""
+          description: 自动确认
+        - short: "-l"
+          long: "--auto-agree-with-licenses"
+          description: 自动同意许可
+    clean:
+      name: clean
+      description: 清理缓存
+      options: []
+    patch:
+      name: patch
+      description: 安装补丁
+      options:
+        - short: "-y"
+          long: ""
+          description: 自动确认
+
+# ============== 通用包管理 ==============
+
+snap:
+  name: snap
+  description: Ubuntu Snap 包管理器
+  options:
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    install:
+      name: install
+      description: 安装 snap 包
+      options:
+        - short: ""
+          long: "--classic"
+          description: 经典模式
+        - short: ""
+          long: "--edge"
+          description: 边缘通道
+        - short: ""
+          long: "--beta"
+          description: 测试通道
+        - short: ""
+          long: "--candidate"
+          description: 候选通道
+        - short: ""
+          long: "--channel"
+          description: 指定通道
+          takes_value: true
+        - short: ""
+          long: "--dangerous"
+          description: 允许不安全
+    remove:
+      name: remove
+      description: 删除 snap 包
+      options:
+        - short: ""
+          long: "--purge"
+          description: 完全删除
+    refresh:
+      name: refresh
+      description: 更新 snap 包
+      options:
+        - short: ""
+          long: "--channel"
+          description: 指定通道
+          takes_value: true
+    list:
+      name: list
+      description: 列出已安装
+      options:
+        - short: ""
+          long: "--all"
+          description: 包括禁用的
+    find:
+      name: find
+      description: 搜索 snap 包
+      options: []
+    info:
+      name: info
+      description: 包信息
+      options: []
+    revert:
+      name: revert
+      description: 回滚版本
+      options: []
+    enable:
+      name: enable
+      description: 启用 snap
+      options: []
+    disable:
+      name: disable
+      description: 禁用 snap
+      options: []
+    services:
+      name: services
+      description: 服务列表
+      options: []
+    start:
+      name: start
+      description: 启动服务
+      options:
+        - short: ""
+          long: "--enable"
+          description: 开机启动
+    stop:
+      name: stop
+      description: 停止服务
+      options:
+        - short: ""
+          long: "--disable"
+          description: 禁止开机启动
+    logs:
+      name: logs
+      description: 查看日志
+      options:
+        - short: "-f"
+          long: "--follow"
+          description: 持续输出
+
+flatpak:
+  name: flatpak
+  description: Flatpak 包管理器
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-y"
+      long: "--assumeyes"
+      description: 自动确认
+    - short: ""
+      long: "--user"
+      description: 用户安装
+    - short: ""
+      long: "--system"
+      description: 系统安装
+  subcommands:
+    install:
+      name: install
+      description: 安装应用
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+        - short: ""
+          long: "--user"
+          description: 用户安装
+        - short: ""
+          long: "--system"
+          description: 系统安装
+    uninstall:
+      name: uninstall
+      description: 卸载应用
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+        - short: ""
+          long: "--delete-data"
+          description: 删除数据
+    update:
+      name: update
+      description: 更新应用
+      options:
+        - short: "-y"
+          long: "--assumeyes"
+          description: 自动确认
+    list:
+      name: list
+      description: 列出应用
+      options:
+        - short: ""
+          long: "--app"
+          description: 仅应用
+        - short: ""
+          long: "--runtime"
+          description: 仅运行时
+    search:
+      name: search
+      description: 搜索应用
+      options: []
+    info:
+      name: info
+      description: 应用信息
+      options: []
+    run:
+      name: run
+      description: 运行应用
+      options: []
+    remote-add:
+      name: remote-add
+      description: 添加仓库
+      options:
+        - short: ""
+          long: "--if-not-exists"
+          description: 不存在时添加
+    remote-delete:
+      name: remote-delete
+      description: 删除仓库
+      options: []
+    remotes:
+      name: remotes
+      description: 列出仓库
+      options: []
+
+# ============== 编程语言包管理 ==============
 
 npm:
   name: npm
@@ -85,6 +997,10 @@ npm:
     - short: "-h"
       long: "--help"
       description: 显示帮助
+    - short: ""
+      long: "--registry"
+      description: 指定仓库
+      takes_value: true
   subcommands:
     install:
       name: install
@@ -105,6 +1021,9 @@ npm:
         - short: ""
           long: "--legacy-peer-deps"
           description: 忽略 peer 依赖
+        - short: ""
+          long: "--force"
+          description: 强制安装
     uninstall:
       name: uninstall
       description: 卸载包
@@ -162,6 +1081,140 @@ npm:
           long: "--depth"
           description: 深度
           takes_value: true
+    outdated:
+      name: outdated
+      description: 过期的包
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 全局
+    cache:
+      name: cache
+      description: 缓存管理
+      options: []
+      subcommands:
+        clean:
+          name: clean
+          description: 清理缓存
+          options:
+            - short: ""
+              long: "--force"
+              description: 强制
+        verify:
+          name: verify
+          description: 验证缓存
+          options: []
+    audit:
+      name: audit
+      description: 安全审计
+      options:
+        - short: ""
+          long: "--fix"
+          description: 自动修复
+    ci:
+      name: ci
+      description: CI 安装
+      options: []
+    exec:
+      name: exec
+      description: 执行包命令
+      options: []
+    npx:
+      name: npx
+      description: 执行包命令
+      options: []
+
+yarn:
+  name: yarn
+  description: Yarn 包管理器
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    add:
+      name: add
+      description: 添加包
+      options:
+        - short: "-D"
+          long: "--dev"
+          description: 开发依赖
+        - short: "-E"
+          long: "--exact"
+          description: 精确版本
+        - short: "-T"
+          long: "--tilde"
+          description: 次版本
+    remove:
+      name: remove
+      description: 删除包
+      options: []
+    install:
+      name: install
+      description: 安装依赖
+      options:
+        - short: ""
+          long: "--frozen-lockfile"
+          description: 冻结锁文件
+        - short: ""
+          long: "--production"
+          description: 仅生产依赖
+    upgrade:
+      name: upgrade
+      description: 升级包
+      options:
+        - short: ""
+          long: "--latest"
+          description: 最新版本
+    run:
+      name: run
+      description: 运行脚本
+      options: []
+    build:
+      name: build
+      description: 构建项目
+      options: []
+    start:
+      name: start
+      description: 启动项目
+      options: []
+    test:
+      name: test
+      description: 运行测试
+      options: []
+    global:
+      name: global
+      description: 全局操作
+      options: []
+      subcommands:
+        add:
+          name: add
+          description: 全局添加
+          options: []
+        remove:
+          name: remove
+          description: 全局删除
+          options: []
+        list:
+          name: list
+          description: 全局列表
+          options: []
+    cache:
+      name: cache
+      description: 缓存管理
+      options: []
+      subcommands:
+        clean:
+          name: clean
+          description: 清理缓存
+          options: []
+        dir:
+          name: dir
+          description: 缓存目录
+          options: []
 
 pip:
   name: pip
@@ -205,6 +1258,12 @@ pip:
           long: "--index-url"
           description: 索引 URL
           takes_value: true
+        - short: ""
+          long: "--no-cache-dir"
+          description: 不使用缓存
+        - short: ""
+          long: "--pre"
+          description: 包含预发布版本
     uninstall:
       name: uninstall
       description: 卸载包
@@ -226,10 +1285,51 @@ pip:
         - short: "-u"
           long: "--uptodate"
           description: 最新的包
+        - short: ""
+          long: "--format"
+          description: 输出格式
+          takes_value: true
+          values: ["columns", "freeze", "json"]
     show:
       name: show
       description: 显示包信息
+      options:
+        - short: "-f"
+          long: "--files"
+          description: 显示文件
+    search:
+      name: search
+      description: 搜索包（已弃用）
       options: []
+    download:
+      name: download
+      description: 下载包
+      options:
+        - short: "-d"
+          long: "--dest"
+          description: 目标目录
+          takes_value: true
+    cache:
+      name: cache
+      description: 缓存管理
+      options: []
+      subcommands:
+        dir:
+          name: dir
+          description: 缓存目录
+          options: []
+        info:
+          name: info
+          description: 缓存信息
+          options: []
+        list:
+          name: list
+          description: 列出缓存
+          options: []
+        purge:
+          name: purge
+          description: 清除缓存
+          options: []
 
 cargo:
   name: cargo
@@ -247,6 +1347,11 @@ cargo:
     - short: "-q"
       long: "--quiet"
       description: 静默模式
+    - short: ""
+      long: "--color"
+      description: 颜色输出
+      takes_value: true
+      values: ["auto", "always", "never"]
   subcommands:
     new:
       name: new
@@ -262,6 +1367,11 @@ cargo:
           long: "--name"
           description: 项目名称
           takes_value: true
+        - short: ""
+          long: "--vcs"
+          description: 版本控制
+          takes_value: true
+          values: ["git", "hg", "pijul", "fossil", "none"]
     init:
       name: init
       description: 初始化项目
@@ -294,6 +1404,9 @@ cargo:
           long: "--package"
           description: 指定包
           takes_value: true
+        - short: ""
+          long: "--all-targets"
+          description: 所有目标
     run:
       name: run
       description: 运行项目
@@ -325,6 +1438,9 @@ cargo:
         - short: ""
           long: "--doc"
           description: 文档测试
+        - short: ""
+          long: "--all-features"
+          description: 所有特性
     check:
       name: check
       description: 检查项目
@@ -332,6 +1448,9 @@ cargo:
         - short: ""
           long: "--all-features"
           description: 启用所有特性
+        - short: ""
+          long: "--all-targets"
+          description: 所有目标
     clippy:
       name: clippy
       description: 代码检查
@@ -339,6 +1458,9 @@ cargo:
         - short: ""
           long: "--fix"
           description: 自动修复
+        - short: ""
+          long: "--allow-dirty"
+          description: 允许脏工作区
     fmt:
       name: fmt
       description: 格式化代码
@@ -346,6 +1468,9 @@ cargo:
         - short: ""
           long: "--check"
           description: 仅检查
+        - short: ""
+          long: "--all"
+          description: 所有包
     add:
       name: add
       description: 添加依赖
@@ -360,6 +1485,9 @@ cargo:
           long: "--features"
           description: 启用特性
           takes_value: true
+        - short: ""
+          long: "--optional"
+          description: 可选依赖
     remove:
       name: remove
       description: 删除依赖
@@ -375,6 +1503,9 @@ cargo:
           long: "--package"
           description: 指定包
           takes_value: true
+        - short: ""
+          long: "--aggressive"
+          description: 激进更新
     publish:
       name: publish
       description: 发布包
@@ -382,6 +1513,9 @@ cargo:
         - short: ""
           long: "--dry-run"
           description: 试运行
+        - short: ""
+          long: "--allow-dirty"
+          description: 允许脏工作区
     clean:
       name: clean
       description: 清理构建
@@ -389,4 +1523,176 @@ cargo:
         - short: "-r"
           long: "--release"
           description: 仅清理发布
+    doc:
+      name: doc
+      description: 生成文档
+      options:
+        - short: ""
+          long: "--open"
+          description: 打开浏览器
+        - short: ""
+          long: "--no-deps"
+          description: 不含依赖
+    bench:
+      name: bench
+      description: 运行基准测试
+      options:
+        - short: ""
+          long: "--all-features"
+          description: 所有特性
+    install:
+      name: install
+      description: 安装二进制
+      options:
+        - short: ""
+          long: "--path"
+          description: 本地路径
+          takes_value: true
+        - short: ""
+          long: "--git"
+          description: Git 仓库
+          takes_value: true
+        - short: ""
+          long: "--force"
+          description: 强制重装
+    uninstall:
+      name: uninstall
+      description: 卸载二进制
+      options: []
+    search:
+      name: search
+      description: 搜索 crates
+      options:
+        - short: ""
+          long: "--limit"
+          description: 结果数量
+          takes_value: true
 
+go:
+  name: go
+  description: Go 工具链
+  options:
+    - short: ""
+      long: "version"
+      description: 显示版本
+  subcommands:
+    build:
+      name: build
+      description: 编译包
+      options:
+        - short: "-o"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-v"
+          long: ""
+          description: 详细输出
+        - short: "-race"
+          long: ""
+          description: 竞态检测
+        - short: "-ldflags"
+          long: ""
+          description: 链接标志
+          takes_value: true
+    run:
+      name: run
+      description: 编译并运行
+      options:
+        - short: "-v"
+          long: ""
+          description: 详细输出
+    test:
+      name: test
+      description: 运行测试
+      options:
+        - short: "-v"
+          long: ""
+          description: 详细输出
+        - short: "-race"
+          long: ""
+          description: 竞态检测
+        - short: "-cover"
+          long: ""
+          description: 覆盖率
+        - short: "-bench"
+          long: ""
+          description: 基准测试
+          takes_value: true
+    get:
+      name: get
+      description: 下载并安装包
+      options:
+        - short: "-u"
+          long: ""
+          description: 更新
+        - short: "-v"
+          long: ""
+          description: 详细输出
+    install:
+      name: install
+      description: 编译并安装包
+      options:
+        - short: "-v"
+          long: ""
+          description: 详细输出
+    mod:
+      name: mod
+      description: 模块维护
+      options: []
+      subcommands:
+        init:
+          name: init
+          description: 初始化模块
+          options: []
+        tidy:
+          name: tidy
+          description: 整理依赖
+          options: []
+        download:
+          name: download
+          description: 下载依赖
+          options: []
+        verify:
+          name: verify
+          description: 验证依赖
+          options: []
+        vendor:
+          name: vendor
+          description: 创建 vendor
+          options: []
+    fmt:
+      name: fmt
+      description: 格式化代码
+      options:
+        - short: "-w"
+          long: ""
+          description: 写入文件
+    vet:
+      name: vet
+      description: 代码检查
+      options: []
+    clean:
+      name: clean
+      description: 清理缓存
+      options:
+        - short: "-cache"
+          long: ""
+          description: 清理缓存
+        - short: "-modcache"
+          long: ""
+          description: 清理模块缓存
+    doc:
+      name: doc
+      description: 显示文档
+      options: []
+    env:
+      name: env
+      description: 环境变量
+      options:
+        - short: "-w"
+          long: ""
+          description: 写入
+    generate:
+      name: generate
+      description: 生成代码
+      options: []
