@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIOLETTOOLSSITE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: #000;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        header {
+            margin-bottom: 80px;
+        }
+
+        .logo {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        section {
+            margin-bottom: 80px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 40px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #000;
+        }
+
+        .project-item {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #000;
+        }
+
+        .project-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .project-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .project-title a {
+            color: #000;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .project-title a:hover {
+            text-decoration-style: dashed;
+        }
+
+        .project-desc {
+            font-size: 14px;
+            color: #000;
+            line-height: 1.7;
+        }
+
+        .oss-list {
+            list-style: none;
+        }
+
+        .oss-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #000;
+        }
+
+        .oss-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .oss-name {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .oss-desc {
+            font-size: 14px;
+            color: #000;
+        }
+
+        .about-text {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        footer {
+            padding-top: 40px;
+            border-top: 1px solid #000;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        a {
+            color: #000;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        a:hover {
+            text-decoration-style: dashed;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            section {
+                margin-bottom: 60px;
+            }
+
+            header {
+                margin-bottom: 60px;
+            }
+
+            .project-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">VIOLETTOOLSSITE</div>
+        </header>
+
+        <section>
+            <h1>DEVELOPER<br>TOOLS</h1>
+        </section>
+
+        <section>
+            <h2>FEATURED PROJECTS</h2>
+            <div class="project-item">
+                <div class="project-title">
+                    <a href="https://tmd.kami666.xyz/" target="_blank">TMD</a>
+                </div>
+                <p class="project-desc">极致精简的高效率功能组件</p>
+            </div>
+            <div class="project-item">
+                <div class="project-title">
+                    <a href="https://violettoolssite.github.io/cnmsb/" target="_blank">CNMSB</a>
+                </div>
+                <p class="project-desc">针对特定场景开发的轻量化工具模块</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>OPEN SOURCE</h2>
+            <ul class="oss-list">
+                <li class="oss-item">
+                    <div class="oss-name">CFspider</div>
+                    <p class="oss-desc">分布式代理 IP 池，支持 Playwright</p>
+                </li>
+                <li class="oss-item">
+                    <div class="oss-name">loveFreeTools</div>
+                    <p class="oss-desc">集成 AI 逻辑的公益工具矩阵</p>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>INFO</h2>
+            <p class="about-text">
+                Violettoolssite 专注于 Cloudflare 边缘计算与 Serverless 架构，致力于构建零成本、高可用的开发者工具。
+            </p>
+        </section>
+
+        <footer>
+            <div class="footer-text">VIOLETTOOLSSITE / 2026</div>
+        </footer>
+    </div>
+</body>
+</html>
+
