@@ -145,7 +145,7 @@ install_from_source() {
         mv cnmsb-main cnmsb
     fi
     
-    cd cnmsb/cnmsb-tool
+    cd cnmsb
     
     # 编译
     echo "编译中（可能需要几分钟）..."
