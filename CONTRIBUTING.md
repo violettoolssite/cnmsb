@@ -79,6 +79,9 @@ commands/
 command_name:
   name: command_name
   description: 命令简介
+  combinable_options:            # 可选：预定义的组合参数
+    - "-abc"
+    - "-xyz"
   options:
     - short: "-o"
       long: "--option"
@@ -94,6 +97,56 @@ command_name:
           long: "--example"
           description: 子命令选项
 ```
+
+### 组合参数
+
+很多命令支持短选项组合使用（如 `rm -rf`、`ls -la`、`tar -xzvf`）。
+
+为了提供更好的补全体验，可以在命令定义中添加 `combinable_options` 字段，列出常用的参数组合：
+
+```yaml
+rm:
+  name: rm
+  description: 删除文件或目录
+  combinable_options:
+    - "-rf"      # 强制递归删除（最常用）
+    - "-rv"      # 递归删除并显示详情
+    - "-rfv"     # 强制递归删除并显示详情
+    - "-ri"      # 递归删除，每个文件确认
+    - "-rI"      # 递归删除，删除多个前确认
+  options:
+    - short: "-r"
+      long: "--recursive"
+      description: 递归删除目录
+    # ...
+```
+
+#### 已支持组合参数的命令
+
+| 命令 | 常用组合 | 说明 |
+|------|----------|------|
+| `rm` | `-rf`, `-rv`, `-rfv` | 强制递归删除 |
+| `ls` | `-la`, `-lah`, `-ltr`, `-latr` | 列表显示 |
+| `cp` | `-rv`, `-rpv`, `-a`, `-av` | 复制保留属性 |
+| `mv` | `-vf`, `-vi` | 移动文件 |
+| `chmod` | `-Rv`, `-Rc` | 递归修改权限 |
+| `chown` | `-Rv`, `-Rc` | 递归修改所有者 |
+| `mkdir` | `-p`, `-pv` | 创建父目录 |
+| `grep` | `-rn`, `-rni`, `-rnw`, `-rE` | 递归搜索 |
+| `ps` | `aux`, `auxf`, `-ef` | 进程列表 |
+| `df` | `-h`, `-hT` | 磁盘使用 |
+| `du` | `-sh`, `-shc` | 目录大小 |
+| `tar` | `-xvf`, `-xzvf`, `-czvf` | 压缩解压 |
+| `pacman` | `-Syu`, `-Syyu`, `-Rs`, `-Rns` | Arch 包管理 |
+| `rsync` | `-av`, `-avz`, `-avzP` | 同步文件 |
+| `curl` | `-sSL`, `-fsSL`, `-LO` | HTTP 请求 |
+| `scp` | `-rv`, `-rpv`, `-rC` | 安全复制 |
+
+#### 添加组合参数的原则
+
+1. **只添加常用组合**：不要把所有可能的组合都加进去，只加实际工作中常用的
+2. **保持简洁**：一般 5-10 个组合就够了
+3. **最常用的放前面**：分数相同时，靠前的会优先显示
 
 ### 示例：添加简单命令
 

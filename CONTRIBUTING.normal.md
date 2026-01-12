@@ -75,6 +75,9 @@ commands/
 command_name:
   name: command_name
   description: Brief description
+  combinable_options:            # Optional: predefined option combinations
+    - "-abc"
+    - "-xyz"
   options:
     - short: "-o"
       long: "--option"
@@ -90,6 +93,56 @@ command_name:
           long: "--example"
           description: Subcommand option
 ```
+
+### Combinable Options
+
+Many commands support combining short options (e.g., `rm -rf`, `ls -la`, `tar -xzvf`).
+
+To provide better completion, you can add a `combinable_options` field listing common combinations:
+
+```yaml
+rm:
+  name: rm
+  description: Remove files or directories
+  combinable_options:
+    - "-rf"      # Force recursive delete (most common)
+    - "-rv"      # Recursive delete with verbose
+    - "-rfv"     # Force recursive with verbose
+    - "-ri"      # Recursive with confirmation
+    - "-rI"      # Recursive with bulk confirmation
+  options:
+    - short: "-r"
+      long: "--recursive"
+      description: Remove directories recursively
+    # ...
+```
+
+#### Commands with Combinable Options
+
+| Command | Common Combinations | Description |
+|---------|---------------------|-------------|
+| `rm` | `-rf`, `-rv`, `-rfv` | Force recursive delete |
+| `ls` | `-la`, `-lah`, `-ltr`, `-latr` | List with details |
+| `cp` | `-rv`, `-rpv`, `-a`, `-av` | Copy with attributes |
+| `mv` | `-vf`, `-vi` | Move files |
+| `chmod` | `-Rv`, `-Rc` | Recursive permission change |
+| `chown` | `-Rv`, `-Rc` | Recursive ownership change |
+| `mkdir` | `-p`, `-pv` | Create parent directories |
+| `grep` | `-rn`, `-rni`, `-rnw`, `-rE` | Recursive search |
+| `ps` | `aux`, `auxf`, `-ef` | Process list |
+| `df` | `-h`, `-hT` | Disk usage |
+| `du` | `-sh`, `-shc` | Directory size |
+| `tar` | `-xvf`, `-xzvf`, `-czvf` | Archive operations |
+| `pacman` | `-Syu`, `-Syyu`, `-Rs`, `-Rns` | Arch package management |
+| `rsync` | `-av`, `-avz`, `-avzP` | File synchronization |
+| `curl` | `-sSL`, `-fsSL`, `-LO` | HTTP requests |
+| `scp` | `-rv`, `-rpv`, `-rC` | Secure copy |
+
+#### Guidelines for Adding Combinations
+
+1. **Only add common combinations**: Don't list every possible combination, just the frequently used ones
+2. **Keep it concise**: Generally 5-10 combinations is enough
+3. **Most common first**: When scores are equal, earlier items are shown first
 
 ### Example: Simple Command
 
