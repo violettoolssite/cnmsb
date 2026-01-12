@@ -4,6 +4,16 @@
 ls:
   name: ls
   description: 列出目录内容
+  combinable_options:
+    - "-la"
+    - "-lah"
+    - "-lAh"
+    - "-ltr"
+    - "-lS"
+    - "-laSh"
+    - "-latr"
+    - "-lR"
+    - "-ld"
   options:
     - short: "-l"
       long: ""
@@ -45,6 +55,16 @@ ls:
 cp:
   name: cp
   description: 复制文件或目录
+  combinable_options:
+    - "-r"
+    - "-rv"
+    - "-rf"
+    - "-rp"
+    - "-rpv"
+    - "-a"
+    - "-av"
+    - "-avn"
+    - "-iu"
   options:
     - short: "-r"
       long: "--recursive"
@@ -81,6 +101,12 @@ cp:
 mv:
   name: mv
   description: 移动或重命名文件
+  combinable_options:
+    - "-v"
+    - "-vf"
+    - "-vi"
+    - "-vn"
+    - "-vu"
   options:
     - short: "-i"
       long: "--interactive"
@@ -102,6 +128,13 @@ mv:
 rm:
   name: rm
   description: 删除文件或目录
+  combinable_options:
+    - "-rf"
+    - "-rv"
+    - "-rfv"
+    - "-ri"
+    - "-rI"
+    - "-riv"
   options:
     - short: "-r"
       long: "--recursive"
@@ -126,6 +159,9 @@ rm:
 mkdir:
   name: mkdir
   description: 创建目录
+  combinable_options:
+    - "-p"
+    - "-pv"
   options:
     - short: "-p"
       long: "--parents"
@@ -188,6 +224,10 @@ ln:
 chmod:
   name: chmod
   description: 修改文件权限
+  combinable_options:
+    - "-R"
+    - "-Rv"
+    - "-Rc"
   options:
     - short: "-R"
       long: "--recursive"
@@ -206,6 +246,10 @@ chmod:
 chown:
   name: chown
   description: 修改文件所有者
+  combinable_options:
+    - "-R"
+    - "-Rv"
+    - "-Rc"
   options:
     - short: "-R"
       long: "--recursive"

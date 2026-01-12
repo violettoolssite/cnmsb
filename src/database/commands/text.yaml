@@ -98,6 +98,19 @@ less:
 grep:
   name: grep
   description: 搜索文本模式
+  combinable_options:
+    - "-rn"
+    - "-ri"
+    - "-rni"
+    - "-rin"
+    - "-rni"
+    - "-rnl"
+    - "-rw"
+    - "-rnw"
+    - "-rE"
+    - "-rP"
+    - "-rnv"
+    - "-rnc"
   options:
     - short: "-r"
       long: "--recursive"

@@ -129,6 +129,13 @@ journalctl:
 ps:
   name: ps
   description: 显示进程状态
+  combinable_options:
+    - "aux"
+    - "auxf"
+    - "auxww"
+    - "-ef"
+    - "-eF"
+    - "-eLf"
   options:
     - short: "-e"
       long: ""
@@ -248,6 +255,12 @@ htop:
 df:
   name: df
   description: 显示磁盘使用
+  combinable_options:
+    - "-h"
+    - "-hT"
+    - "-hi"
+    - "-ha"
+    - "-haT"
   options:
     - short: "-h"
       long: "--human-readable"
@@ -266,6 +279,12 @@ df:
 du:
   name: du
   description: 显示目录大小
+  combinable_options:
+    - "-sh"
+    - "-shc"
+    - "-ha"
+    - "-hac"
+    - "-hs"
   options:
     - short: "-h"
       long: "--human-readable"

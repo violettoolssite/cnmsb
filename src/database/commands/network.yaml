@@ -56,6 +56,13 @@ ssh:
 scp:
   name: scp
   description: 安全复制文件
+  combinable_options:
+    - "-r"
+    - "-rv"
+    - "-rp"
+    - "-rpv"
+    - "-rC"
+    - "-rpC"
   options:
     - short: "-r"
       long: ""
@@ -89,6 +96,13 @@ scp:
 rsync:
   name: rsync
   description: 远程同步工具
+  combinable_options:
+    - "-av"
+    - "-avz"
+    - "-avzP"
+    - "-avP"
+    - "-avzn"
+    - "-avn"
   options:
     - short: "-a"
       long: "--archive"
@@ -138,6 +152,16 @@ rsync:
 curl:
   name: curl
   description: HTTP 客户端
+  combinable_options:
+    - "-sS"
+    - "-sSL"
+    - "-sL"
+    - "-sLO"
+    - "-sSLO"
+    - "-LO"
+    - "-Lv"
+    - "-OL"
+    - "-fsSL"
   options:
     - short: "-o"
       long: "--output"
@@ -221,6 +245,10 @@ curl:
 wget:
   name: wget
   description: 下载文件
+  combinable_options:
+    - "-c"
+    - "-qc"
+    - "-cO"
   options:
     - short: "-O"
       long: "--output-document"
