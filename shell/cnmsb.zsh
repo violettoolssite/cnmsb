@@ -180,6 +180,16 @@ _cnmsb_line_pre_redraw() {
 
 zle -N zle-line-pre-redraw _cnmsb_line_pre_redraw
 
+# 新行初始化 - 清除所有显示
+_cnmsb_line_init() {
+    POSTDISPLAY=""
+    region_highlight=()
+    _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=()
+    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_lastbuf=""
+}
+
+zle -N zle-line-init _cnmsb_line_init
+
 # ================== Widget 函数 ==================
 
 _cnmsb_prev() {
