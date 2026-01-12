@@ -109,7 +109,7 @@
         /* 头部 */
         header {
             text-align: center;
-            margin-bottom: 80px;
+            margin-bottom: 60px;
             position: relative;
         }
 
@@ -151,6 +151,364 @@
             content: '―';
             margin: 0 15px;
             color: var(--accent);
+        }
+
+        /* 个人资料区域 */
+        .profile-section {
+            display: flex;
+            gap: 50px;
+            align-items: center;
+            margin-bottom: 80px;
+            padding: 40px;
+            background: var(--bg-card);
+            border: 1px solid rgba(196, 30, 58, 0.2);
+            position: relative;
+        }
+
+        .profile-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), var(--gold), var(--accent));
+        }
+
+        /* CSS动漫头像 */
+        .avatar-container {
+            flex-shrink: 0;
+            width: 180px;
+            height: 220px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            overflow: hidden;
+            border: 2px solid var(--accent);
+        }
+
+        /* 头发 */
+        .hair {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 100px;
+            background: #1a1a2e;
+            border-radius: 70px 70px 0 0;
+        }
+
+        .hair::before {
+            content: '';
+            position: absolute;
+            top: 60px;
+            left: -15px;
+            width: 50px;
+            height: 120px;
+            background: #1a1a2e;
+            border-radius: 0 0 25px 25px;
+        }
+
+        .hair::after {
+            content: '';
+            position: absolute;
+            top: 60px;
+            right: -15px;
+            width: 50px;
+            height: 120px;
+            background: #1a1a2e;
+            border-radius: 0 0 25px 25px;
+        }
+
+        /* 脸 */
+        .face {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 110px;
+            background: #fce4d6;
+            border-radius: 50px 50px 40px 40px;
+        }
+
+        /* 眼睛 */
+        .eyes {
+            position: absolute;
+            top: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .eye {
+            width: 25px;
+            height: 30px;
+            background: #c41e3a;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eye::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 15px;
+            background: #2d0a0a;
+            border-radius: 50%;
+        }
+
+        .eye::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        /* 蝴蝶结 */
+        .ribbon {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 35px;
+            height: 25px;
+        }
+
+        .ribbon::before,
+        .ribbon::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 15px;
+            background: var(--accent);
+            border-radius: 50% 50% 50% 50%;
+        }
+
+        .ribbon::before {
+            left: 0;
+            transform: rotate(-20deg);
+        }
+
+        .ribbon::after {
+            right: 0;
+            transform: rotate(20deg);
+        }
+
+        .ribbon-center {
+            position: absolute;
+            top: 30px;
+            right: 32px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* 嘴巴 */
+        .mouth {
+            position: absolute;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 8px;
+            border-bottom: 2px solid #d4a5a5;
+            border-radius: 0 0 15px 15px;
+        }
+
+        /* 制服 */
+        .uniform {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 60px;
+            background: #1a1a2e;
+            border-radius: 60px 60px 0 0;
+        }
+
+        .uniform::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 20px solid #fff;
+        }
+
+        .uniform-ribbon {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+        }
+
+        .uniform-ribbon::before,
+        .uniform-ribbon::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            width: 8px;
+            height: 25px;
+            background: var(--accent);
+        }
+
+        .uniform-ribbon::before {
+            left: -3px;
+            transform: rotate(-10deg);
+        }
+
+        .uniform-ribbon::after {
+            right: -3px;
+            transform: rotate(10deg);
+        }
+
+        /* 头像装饰框 */
+        .avatar-frame {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 1px solid var(--gold);
+            pointer-events: none;
+        }
+
+        .avatar-corner {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-color: var(--gold);
+            border-style: solid;
+        }
+
+        .avatar-corner.tl { top: -5px; left: -5px; border-width: 2px 0 0 2px; }
+        .avatar-corner.tr { top: -5px; right: -5px; border-width: 2px 2px 0 0; }
+        .avatar-corner.bl { bottom: -5px; left: -5px; border-width: 0 0 2px 2px; }
+        .avatar-corner.br { bottom: -5px; right: -5px; border-width: 0 2px 2px 0; }
+
+        .profile-content {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .profile-name-jp {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .profile-title {
+            font-size: 0.85rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .profile-bio {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            line-height: 2;
+            margin-bottom: 25px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* 技能区域 */
+        .skills-section {
+            margin-bottom: 80px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(196, 30, 58, 0.15);
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .skill-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .skill-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .skill-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .skill-desc {
+            font-size: 0.8rem;
+            color: var(--text-dim);
         }
 
         /* 引言区 */
@@ -377,6 +735,66 @@
             font-weight: 400;
         }
 
+        /* 时间线 */
+        .timeline-section {
+            margin-bottom: 80px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), var(--gold));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 30px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -34px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.85rem;
+            color: var(--gold);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .timeline-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .timeline-desc {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+
         /* 页脚 */
         footer {
             text-align: center;
@@ -425,7 +843,20 @@
                 padding: 40px 25px;
             }
 
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
             .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -439,6 +870,10 @@
 
             .about-section {
                 padding: 35px 25px;
+            }
+
+            .avatar-container {
+                margin: 0 auto;
             }
         }
     </style>
@@ -459,6 +894,94 @@
             <p class="subtitle">Edge Computing Specialist</p>
         </header>
 
+        <!-- 个人资料 -->
+        <section class="profile-section">
+            <div class="avatar-container">
+                <div class="avatar">
+                    <div class="hair"></div>
+                    <div class="face"></div>
+                    <div class="eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                    <div class="mouth"></div>
+                    <div class="ribbon"></div>
+                    <div class="ribbon-center"></div>
+                    <div class="uniform">
+                        <div class="uniform-ribbon"></div>
+                    </div>
+                </div>
+                <div class="avatar-frame"></div>
+                <div class="avatar-corner tl"></div>
+                <div class="avatar-corner tr"></div>
+                <div class="avatar-corner bl"></div>
+                <div class="avatar-corner br"></div>
+            </div>
+            <div class="profile-content">
+                <h2 class="profile-name">Violettoolssite</h2>
+                <p class="profile-name-jp">ヴィオレットツールズサイト</p>
+                <p class="profile-title">Full Stack Developer & Cloud Architect</p>
+                <p class="profile-bio">
+                    一位热爱动漫与技术的开发者，专注于 Cloudflare 边缘计算与 Serverless 架构。
+                    信奉「代码即艺术」的理念，致力于打造优雅高效的开发者工具。
+                    如同四宫辉夜般追求完美，在代码世界中编织属于自己的故事。
+                </p>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">10+</div>
+                        <div class="stat-label">开源项目</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5+</div>
+                        <div class="stat-label">年开发经验</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">∞</div>
+                        <div class="stat-label">热爱程度</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 技能 -->
+        <section class="skills-section">
+            <div class="section-header">
+                <span class="section-title">SKILLS</span>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">☁</div>
+                    <div class="skill-name">Cloudflare</div>
+                    <div class="skill-desc">Workers / Pages / R2</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">⚡</div>
+                    <div class="skill-name">Serverless</div>
+                    <div class="skill-desc">边缘计算架构</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🦀</div>
+                    <div class="skill-name">Rust</div>
+                    <div class="skill-desc">高性能系统开发</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">⚛</div>
+                    <div class="skill-name">TypeScript</div>
+                    <div class="skill-desc">全栈开发</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🐍</div>
+                    <div class="skill-name">Python</div>
+                    <div class="skill-desc">自动化 / AI</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🐳</div>
+                    <div class="skill-name">DevOps</div>
+                    <div class="skill-desc">容器化部署</div>
+                </div>
+            </div>
+        </section>
+
         <section class="quote-section">
             <p class="quote-text">
                 如何让代码告白？<br>
@@ -476,15 +999,15 @@
                     <h3 class="project-name">
                         <a href="https://tmd.kami666.xyz/" target="_blank">TMD</a>
                     </h3>
-                    <p class="project-desc">极致精简的高效率功能组件</p>
+                    <p class="project-desc">极致精简的高效率功能组件，追求代码的极简之美</p>
                     <span class="project-tag">MINIMALIST</span>
                 </div>
                 <div class="project-card">
                     <h3 class="project-name">
                         <a href="https://violettoolssite.github.io/cnmsb/" target="_blank">CNMSB</a>
                     </h3>
-                    <p class="project-desc">针对特定场景开发的轻量化工具模块</p>
-                    <span class="project-tag">LIGHTWEIGHT</span>
+                    <p class="project-desc">Linux 命令行智能补全工具，让终端操作如丝般顺滑</p>
+                    <span class="project-tag">CLI TOOL</span>
                 </div>
             </div>
         </section>
@@ -498,27 +1021,63 @@
                     <div class="oss-bullet"></div>
                     <div class="oss-content">
                         <h4 class="oss-name">CFspider</h4>
-                        <p class="oss-desc">分布式代理 IP 池，支持 Playwright</p>
+                        <p class="oss-desc">分布式代理 IP 池，支持 Playwright，基于 Cloudflare Workers 的边缘代理解决方案</p>
                     </div>
                 </div>
                 <div class="oss-item">
                     <div class="oss-bullet"></div>
                     <div class="oss-content">
                         <h4 class="oss-name">loveFreeTools</h4>
-                        <p class="oss-desc">集成 AI 逻辑的公益工具矩阵</p>
+                        <p class="oss-desc">集成 AI 逻辑的公益工具矩阵，让每个人都能免费使用高质量工具</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 时间线 -->
+        <section class="timeline-section">
+            <div class="section-header">
+                <span class="section-title">JOURNEY</span>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2026</div>
+                    <div class="timeline-title">CNMSB 发布</div>
+                    <div class="timeline-desc">发布 Linux 命令行智能补全工具，获得开发者社区好评</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2025</div>
+                    <div class="timeline-title">深耕边缘计算</div>
+                    <div class="timeline-desc">专注于 Cloudflare 生态，构建多个 Serverless 项目</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-title">开源之路</div>
+                    <div class="timeline-desc">开始在 GitHub 上发布开源项目，践行开源精神</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2021</div>
+                    <div class="timeline-title">起点</div>
+                    <div class="timeline-desc">开始学习编程，踏上代码之旅</div>
                 </div>
             </div>
         </section>
 
         <section>
             <div class="section-header">
-                <span class="section-title">INFO</span>
+                <span class="section-title">PHILOSOPHY</span>
             </div>
             <div class="about-section">
                 <p class="about-text">
-                    <strong>Violettoolssite</strong> 专注于 Cloudflare 边缘计算与 Serverless 架构，<br>
-                    致力于构建零成本、高可用的开发者工具。
+                    <strong>代码如诗，优雅至上。</strong><br><br>
+                    我相信好的代码应该像艺术品一样精致，像诗歌一样优美。<br>
+                    每一行代码都是对完美的追求，每一个项目都是对自我的超越。<br><br>
+                    专注于 <strong>Cloudflare 边缘计算</strong>与 <strong>Serverless 架构</strong>，<br>
+                    致力于构建<strong>零成本、高可用</strong>的开发者工具。
                 </p>
             </div>
         </section>
