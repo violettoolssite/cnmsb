@@ -1,0 +1,10 @@
+Origin: cnmsb
+Label: cnmsb
+Suite: stable
+Codename: stable
+Version: 1.0
+Architectures: amd64
+Components: main
+Description: cnmsb APT Repository - Linux 命令行智能补全工具
+Date: Mon, 12 Jan 2026 00:00:00 UTC
+

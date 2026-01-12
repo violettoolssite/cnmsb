@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cnmsb APT Repository</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0d1117;
+            color: #c9d1d9;
+        }
+        h1 { color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+        h2 { color: #8b949e; margin-top: 30px; }
+        code { background: #161b22; padding: 2px 6px; border-radius: 3px; color: #79c0ff; }
+        pre { 
+            background: #161b22; 
+            padding: 16px; 
+            border-radius: 6px; 
+            overflow-x: auto;
+            border: 1px solid #30363d;
+        }
+        pre code { padding: 0; background: none; }
+        .highlight { color: #ffa657; }
+        a { color: #58a6ff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>cnmsb APT Repository</h1>
+    <p>Linux 命令行智能补全工具的官方 APT 源</p>
+    
+    <h2>一键安装（推荐）</h2>
+    <pre><code>curl -fsSL https://violettoolssite.github.io/cnmsb/apt/install.sh | sudo bash</code></pre>
+    
+    <h2>手动安装</h2>
+    <p><strong>1. 添加 APT 源：</strong></p>
+    <pre><code>echo "deb [trusted=yes] https://violettoolssite.github.io/cnmsb/apt stable main" | sudo tee /etc/apt/sources.list.d/cnmsb.list</code></pre>
+    
+    <p><strong>2. 更新并安装：</strong></p>
+    <pre><code>sudo apt update
+sudo apt install cnmsb</code></pre>
+    
+    <h2>直接下载 .deb</h2>
+    <p><a href="pool/main/c/cnmsb/cnmsb_0.1.0_amd64.deb">cnmsb_0.1.0_amd64.deb</a> (1.4 MB)</p>
+    
+    <h2>仓库信息</h2>
+    <ul>
+        <li>架构: <code>amd64</code></li>
+        <li>发行版: <code>stable</code></li>
+        <li>组件: <code>main</code></li>
+        <li>依赖: <code>zsh</code></li>
+    </ul>
+    
+    <h2>卸载</h2>
+    <pre><code>sudo apt remove cnmsb
+sudo rm /etc/apt/sources.list.d/cnmsb.list</code></pre>
+    
+    <p style="margin-top: 40px; color: #8b949e;">
+        <a href="https://github.com/violettoolssite/cnmsb">GitHub</a> |
+        <a href="../">项目主页</a>
+    </p>
+</body>
+</html>
+
