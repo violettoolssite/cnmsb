@@ -5,7 +5,7 @@ Summary:        Linux 命令行智能补全工具
 
 License:        MIT
 URL:            https://github.com/violettoolssite/cnmsb
-Source0:        %{name}-%{version}.tar.gz
+Source0:        https://github.com/violettoolssite/cnmsb/archive/refs/heads/main.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildRequires:  rust >= 1.70
 BuildRequires:  cargo
@@ -29,7 +29,8 @@ cnmsb 是一个为 Linux 命令行提供类似 IDE 编辑器补全体验的工�
 支持 300+ 常用命令，仅支持 Zsh shell。
 
 %prep
-%autosetup -n %{name}-%{version}
+# GitHub archive 解压后目录名为 cnmsb-main
+%autosetup -n cnmsb-main/cnmsb-tool
 
 %build
 export CARGO_HOME=%{_builddir}/cargo
