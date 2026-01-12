@@ -22,8 +22,12 @@ typeset -g _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_lastbuf="" _cnmsb_skip=0 _cnmsb_his
 # ================== 核心函数 ==================
 
 # 获取补全（默认过滤历史命令）
+# 全局变量保存当前词的位置
+typeset -g _cnmsb_curword="" _cnmsb_curword_start=0
+
 _cnmsb_fetch() {
     _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=() _cnmsb_idx=0
+    _cnmsb_curword="" _cnmsb_curword_start=0
     [[ -z "$1" ]] && return
     
     local comps curword count=0
@@ -32,7 +36,12 @@ _cnmsb_fetch() {
     [[ -z "$comps" ]] && return
     
     local words=(${(z)1})
-    [[ "$1" != *" " && ${#words[@]} -gt 0 ]] && curword="${words[-1]}"
+    if [[ "$1" != *" " && ${#words[@]} -gt 0 ]]; then
+        curword="${words[-1]}"
+        _cnmsb_curword="$curword"
+        # 计算当前词的开始位置
+        _cnmsb_curword_start=$((${#1} - ${#curword}))
+    fi
     
     local text desc suf
     while IFS=$'\t' read -r text desc; do
@@ -40,6 +49,8 @@ _cnmsb_fetch() {
         ((count++))
         [[ $count -gt 10 ]] && break
         
+        # 对于前缀匹配，只补充后缀部分
+        # 对于模糊匹配，存储完整文本（替换整个当前词）
         if [[ -n "$curword" && "$text" == "$curword"* ]]; then
             suf="${text#$curword}"
         else
@@ -217,8 +228,24 @@ _cnmsb_tab() {
     _cnmsb_skip=1
     if [[ $_cnmsb_menu -eq 1 || $_cnmsb_hist_mode -eq 1 ]]; then
         if [[ ${#_cnmsb_list[@]} -gt 0 && $_cnmsb_idx -gt 0 ]]; then
+            local text="${_cnmsb_list[$_cnmsb_idx]}"
             local suf="${_cnmsb_suff[$_cnmsb_idx]}"
-            [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
+            
+            # 判断是前缀匹配还是模糊匹配
+            if [[ -n "$_cnmsb_curword" && "$text" == "$_cnmsb_curword"* ]]; then
+                # 前缀匹配：追加后缀
+                [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
+            else
+                # 模糊匹配：替换当前词
+                if [[ -n "$_cnmsb_curword" && $_cnmsb_curword_start -ge 0 ]]; then
+                    BUFFER="${BUFFER:0:$_cnmsb_curword_start}$text"
+                    CURSOR=${#BUFFER}
+                else
+                    # 没有当前词，直接追加
+                    BUFFER+="$text"
+                    CURSOR=${#BUFFER}
+                fi
+            fi
         fi
         _cnmsb_reset
         _cnmsb_lastbuf="$BUFFER"
@@ -240,8 +267,24 @@ _cnmsb_tab() {
 _cnmsb_accept() {
     _cnmsb_skip=1
     if [[ ($_cnmsb_menu -eq 1 || $_cnmsb_hist_mode -eq 1 || ${#_cnmsb_list[@]} -gt 0) && $_cnmsb_idx -gt 0 ]]; then
+        local text="${_cnmsb_list[$_cnmsb_idx]}"
         local suf="${_cnmsb_suff[$_cnmsb_idx]}"
-        [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
+        
+        # 判断是前缀匹配还是模糊匹配
+        if [[ -n "$_cnmsb_curword" && "$text" == "$_cnmsb_curword"* ]]; then
+            # 前缀匹配：追加后缀
+            [[ -n "$suf" ]] && { BUFFER+="$suf"; CURSOR=${#BUFFER}; }
+        else
+            # 模糊匹配：替换当前词
+            if [[ -n "$_cnmsb_curword" && $_cnmsb_curword_start -ge 0 ]]; then
+                BUFFER="${BUFFER:0:$_cnmsb_curword_start}$text"
+                CURSOR=${#BUFFER}
+            else
+                # 没有当前词，直接追加
+                BUFFER+="$text"
+                CURSOR=${#BUFFER}
+            fi
+        fi
         _cnmsb_reset
         _cnmsb_lastbuf="$BUFFER"
         _cnmsb_fetch "$BUFFER"
