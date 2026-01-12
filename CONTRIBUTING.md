@@ -2,6 +2,10 @@
 
 想给这项目添砖加瓦？行，看看怎么搞。
 
+> **不想看脏话？** [点这里看正常版本](CONTRIBUTING.normal.md)
+
+---
+
 ## 项目结构
 
 ```
@@ -276,63 +280,3 @@ docs: 更新 README
 ## 许可证
 
 贡献的代码会采用 MIT 协议，提交即表示同意。
-
----
-
-# 正常版本
-
----
-
-# Contribution Guide
-
-## Adding New Commands
-
-Command definitions are in `src/database/commands/` directory as YAML files.
-
-### YAML Format
-
-```yaml
-command_name:
-  name: command_name
-  description: Brief description
-  options:
-    - short: "-o"
-      long: "--option"
-      description: Option description
-      takes_value: true
-      values: ["val1", "val2"]
-  subcommands:
-    subcommand_name:
-      name: subcommand_name
-      description: Subcommand description
-      options: []
-```
-
-### Adding a New Category
-
-1. Create a new `.yaml` file in `commands/`
-2. Add `include_str!` in `src/database/mod.rs`
-
-## Building
-
-```bash
-cargo build --release
-./build-deb.sh
-```
-
-## Pull Requests
-
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/xxx`
-3. Commit changes: `git commit -m 'Add xxx'`
-4. Push: `git push origin feature/xxx`
-5. Open Pull Request
-
-## Code Style
-
-- Use `cargo fmt` for Rust code
-- Use 2-space indentation for YAML and shell scripts
-
-## License
-
-MIT License
