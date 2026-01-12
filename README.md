@@ -98,55 +98,38 @@ $ tar ?
 
 ## 安装
 
-### 一键安装（推荐）
+### 一键安装（所有 Linux 发行版通用）
 
-妈的不管你是 Ubuntu 还是 CentOS 还是 Fedora，一行命令搞定：
+妈的不管你是 Ubuntu、Debian、CentOS、Fedora、Arch 还是什么鬼发行版，一行命令搞定：
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/cnmsb-tool/install-universal.sh | bash
 ```
 
-### Debian/Ubuntu
+这个脚本会自动：
+- 检测你的系统类型
+- 安装必要的依赖（zsh、rust）
+- 下载源码并编译
+- 配置好 zsh
 
-```bash
-# 下载 deb 包
-wget https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
-
-# 装上
-sudo dpkg -i cnmsb_0.1.0_amd64.deb
-```
-
-装完会自动把你的 shell 换成 zsh，重新登录就行了。
-
-### Fedora/RHEL/CentOS/Rocky/Alma
-
-```bash
-# 启用 COPR 源（等审核通过后可用）
-sudo dnf copr enable violettoolssite/cnmsb
-
-# 装上
-sudo dnf install cnmsb
-```
-
-或者手动编译 RPM：
-
-```bash
-git clone https://github.com/violettoolssite/cnmsb.git
-cd cnmsb/cnmsb-tool
-chmod +x rpm/build-rpm.sh
-./rpm/build-rpm.sh
-
-# 然后安装生成的 RPM
-sudo dnf install ~/rpmbuild/RPMS/x86_64/cnmsb-*.rpm
-```
+装完重新登录就能用了。
 
 ### 手动安装
 
+如果你他妈不信任一键脚本（我理解），可以手动装：
+
 ```bash
+# 克隆项目
 git clone https://github.com/violettoolssite/cnmsb.git
 cd cnmsb/cnmsb-tool
+
+# 编译
 cargo build --release
-sudo ./install.sh
+
+# 安装
+sudo mkdir -p /usr/bin /usr/share/cnmsb
+sudo cp target/release/cnmsb /usr/bin/
+sudo cp shell/cnmsb.zsh /usr/share/cnmsb/
 ```
 
 然后在 `~/.zshrc` 里加一行：

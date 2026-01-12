@@ -1,6 +1,6 @@
 #!/bin/bash
 # cnmsb 通用安装脚本
-# 支持 Debian/Ubuntu 和 RHEL/Fedora/CentOS
+# 支持所有主流 Linux 发行版
 
 set -e
 
@@ -25,6 +25,12 @@ detect_distro() {
     elif [ -f /etc/debian_version ]; then
         DISTRO="debian"
         DISTRO_FAMILY="debian"
+    elif [ -f /etc/arch-release ]; then
+        DISTRO="arch"
+        DISTRO_FAMILY="arch"
+    elif [ -f /etc/SuSE-release ] || [ -f /etc/SUSE-brand ]; then
+        DISTRO="opensuse"
+        DISTRO_FAMILY="suse"
     else
         DISTRO="unknown"
         DISTRO_FAMILY=""
@@ -33,41 +39,98 @@ detect_distro() {
 
 # 检查是否为 Debian 系列
 is_debian_based() {
-    [[ "$DISTRO" == "debian" || "$DISTRO" == "ubuntu" || "$DISTRO" == "linuxmint" ]] || \
-    [[ "$DISTRO_FAMILY" == *"debian"* ]]
+    [[ "$DISTRO" == "debian" || "$DISTRO" == "ubuntu" || "$DISTRO" == "linuxmint" || "$DISTRO" == "pop" || "$DISTRO" == "elementary" || "$DISTRO" == "kali" ]] || \
+    [[ "$DISTRO_FAMILY" == *"debian"* || "$DISTRO_FAMILY" == *"ubuntu"* ]]
 }
 
 # 检查是否为 Red Hat 系列
 is_redhat_based() {
     [[ "$DISTRO" == "fedora" || "$DISTRO" == "rhel" || "$DISTRO" == "centos" || \
-       "$DISTRO" == "rocky" || "$DISTRO" == "almalinux" ]] || \
+       "$DISTRO" == "rocky" || "$DISTRO" == "almalinux" || "$DISTRO" == "ol" ]] || \
     [[ "$DISTRO_FAMILY" == *"rhel"* || "$DISTRO_FAMILY" == *"fedora"* ]]
+}
+
+# 检查是否为 Arch 系列
+is_arch_based() {
+    [[ "$DISTRO" == "arch" || "$DISTRO" == "manjaro" || "$DISTRO" == "endeavouros" || "$DISTRO" == "garuda" ]] || \
+    [[ "$DISTRO_FAMILY" == *"arch"* ]]
+}
+
+# 检查是否为 SUSE 系列
+is_suse_based() {
+    [[ "$DISTRO" == "opensuse"* || "$DISTRO" == "sles" || "$DISTRO" == "opensuse-leap" || "$DISTRO" == "opensuse-tumbleweed" ]] || \
+    [[ "$DISTRO_FAMILY" == *"suse"* ]]
 }
 
 # 安装依赖
 install_deps() {
     echo "检查依赖..."
     
-    if ! command -v zsh >/dev/null 2>&1; then
-        echo "安装 zsh..."
-        if is_debian_based; then
-            sudo apt-get update
-            sudo apt-get install -y zsh
-        elif is_redhat_based; then
-            sudo dnf install -y zsh || sudo yum install -y zsh
-        fi
+    # 安装基本工具
+    if ! command -v curl >/dev/null 2>&1; then
+        echo "安装 curl..."
+        install_package curl
     fi
     
+    # 安装 git（如果没有）
+    if ! command -v git >/dev/null 2>&1; then
+        echo "安装 git..."
+        install_package git
+    fi
+    
+    # 安装 zsh
+    if ! command -v zsh >/dev/null 2>&1; then
+        echo "安装 zsh..."
+        install_package zsh
+    fi
+    
+    # 安装 Rust
     if ! command -v cargo >/dev/null 2>&1; then
         echo "安装 Rust..."
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         source "$HOME/.cargo/env"
+    fi
+    
+    # 安装编译依赖
+    echo "安装编译依赖..."
+    if is_debian_based; then
+        sudo apt-get update
+        sudo apt-get install -y build-essential pkg-config libssl-dev
+    elif is_redhat_based; then
+        sudo dnf groupinstall -y "Development Tools" 2>/dev/null || sudo yum groupinstall -y "Development Tools"
+        sudo dnf install -y openssl-devel 2>/dev/null || sudo yum install -y openssl-devel
+    elif is_arch_based; then
+        sudo pacman -Sy --noconfirm base-devel openssl
+    elif is_suse_based; then
+        sudo zypper install -y -t pattern devel_basis
+        sudo zypper install -y libopenssl-devel
+    fi
+}
+
+# 通用包安装函数
+install_package() {
+    local pkg=$1
+    
+    if is_debian_based; then
+        sudo apt-get update
+        sudo apt-get install -y "$pkg"
+    elif is_redhat_based; then
+        sudo dnf install -y "$pkg" 2>/dev/null || sudo yum install -y "$pkg"
+    elif is_arch_based; then
+        sudo pacman -Sy --noconfirm "$pkg"
+    elif is_suse_based; then
+        sudo zypper install -y "$pkg"
+    else
+        echo "警告: 未知的包管理器，请手动安装 $pkg"
     fi
 }
 
 # 从源码编译安装
 install_from_source() {
     echo "从源码编译安装..."
+    
+    # 确保 cargo 在 PATH 中
+    [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
     
     # 创建临时目录
     TMPDIR=$(mktemp -d)
@@ -95,6 +158,7 @@ install_from_source() {
     sudo mkdir -p /etc/profile.d
     
     sudo cp target/release/cnmsb /usr/bin/
+    sudo chmod +x /usr/bin/cnmsb
     sudo ln -sf /usr/bin/cnmsb /usr/bin/cnmsb-sql
     sudo cp shell/cnmsb.zsh /usr/share/cnmsb/
     sudo cp shell/cnmsb.bash /usr/share/cnmsb/
@@ -139,22 +203,29 @@ setup_zsh() {
     fi
 }
 
-# 主函数
-main() {
-    detect_distro
-    
+# 显示系统信息
+show_system_info() {
     echo "检测到发行版: $DISTRO"
     
     if is_debian_based; then
         echo "系统类型: Debian/Ubuntu 系列"
     elif is_redhat_based; then
-        echo "系统类型: Red Hat/Fedora 系列"
+        echo "系统类型: Red Hat/Fedora/CentOS 系列"
+    elif is_arch_based; then
+        echo "系统类型: Arch Linux 系列"
+    elif is_suse_based; then
+        echo "系统类型: openSUSE/SLES 系列"
     else
-        echo "系统类型: 其他 Linux"
+        echo "系统类型: 其他 Linux（将尝试通用安装）"
     fi
     
     echo ""
-    
+}
+
+# 主函数
+main() {
+    detect_distro
+    show_system_info
     install_deps
     install_from_source
     setup_zsh
@@ -167,7 +238,12 @@ main() {
     echo "如果当前 shell 不是 zsh，请执行："
     echo "  chsh -s \$(which zsh)"
     echo ""
+    echo "支持的发行版："
+    echo "  - Debian/Ubuntu/Mint/Pop!_OS/Kali"
+    echo "  - Fedora/RHEL/CentOS/Rocky/Alma"
+    echo "  - Arch/Manjaro/EndeavourOS"
+    echo "  - openSUSE/SLES"
+    echo ""
 }
 
 main "$@"
-
