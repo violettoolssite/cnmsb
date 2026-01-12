@@ -103,7 +103,7 @@ $ tar ?
 妈的不管你是 Ubuntu、Debian、CentOS、Fedora、Arch 还是什么鬼发行版，一行命令搞定：
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/cnmsb-tool/install-universal.sh | bash
+curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/install-universal.sh | bash
 ```
 
 这个脚本会自动：

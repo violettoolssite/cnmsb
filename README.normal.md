@@ -100,7 +100,7 @@ $ tar ?
 支持 Ubuntu、Debian、CentOS、Fedora、Arch、openSUSE 等所有主流发行版：
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/cnmsb-tool/install-universal.sh | bash
+curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/install-universal.sh | bash
 ```
 
 安装脚本会自动：
