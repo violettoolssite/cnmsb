@@ -36,7 +36,7 @@ impl CompletionKind {
         match self {
             CompletionKind::Command => "\x1b[32m",      // 绿色 - 命令
             CompletionKind::Subcommand => "\x1b[36m",   // 青色 - 子命令
-            CompletionKind::Option => "\x1b[33m",       // 黄色 - 选项
+            CompletionKind::Option => "\x1b[38;5;226m",  // 鲜艳黄色 - 选项
             CompletionKind::Argument => "\x1b[35m",     // 紫色 - 参数值
             CompletionKind::File => "\x1b[0m",          // 默认 - 文件
             CompletionKind::Directory => "\x1b[34;1m", // 蓝色粗体 - 目录

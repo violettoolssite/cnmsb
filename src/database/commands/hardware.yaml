@@ -1,0 +1,734 @@
+# 硬件信息命令
+# 贡献者可以在此添加更多硬件命令
+
+lscpu:
+  name: lscpu
+  description: CPU 信息
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有 CPU
+    - short: "-b"
+      long: "--online"
+      description: 在线 CPU
+    - short: "-c"
+      long: "--offline"
+      description: 离线 CPU
+    - short: "-e"
+      long: "--extended"
+      description: 扩展格式
+    - short: "-p"
+      long: "--parse"
+      description: 解析格式
+    - short: "-s"
+      long: "--sysroot"
+      description: 系统根目录
+      takes_value: true
+    - short: "-x"
+      long: "--hex"
+      description: 十六进制
+    - short: "-y"
+      long: "--physical"
+      description: 物理 ID
+    - short: "-J"
+      long: "--json"
+      description: JSON 输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+lsmem:
+  name: lsmem
+  description: 内存信息
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有内存块
+    - short: "-b"
+      long: "--bytes"
+      description: 字节显示
+    - short: "-J"
+      long: "--json"
+      description: JSON 输出
+    - short: "-n"
+      long: "--noheadings"
+      description: 不显示标题
+    - short: "-o"
+      long: "--output"
+      description: 输出列
+      takes_value: true
+    - short: "-P"
+      long: "--pairs"
+      description: 键值对
+    - short: "-r"
+      long: "--raw"
+      description: 原始格式
+    - short: "-s"
+      long: "--sysroot"
+      description: 系统根目录
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+lspci:
+  name: lspci
+  description: PCI 设备
+  options:
+    - short: "-v"
+      long: ""
+      description: 详细信息
+    - short: "-vv"
+      long: ""
+      description: 更详细
+    - short: "-vvv"
+      long: ""
+      description: 最详细
+    - short: "-k"
+      long: ""
+      description: 内核驱动
+    - short: "-n"
+      long: ""
+      description: 数字 ID
+    - short: "-nn"
+      long: ""
+      description: 名称和 ID
+    - short: "-t"
+      long: ""
+      description: 树形显示
+    - short: "-s"
+      long: ""
+      description: 设备槽位
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 设备 ID
+      takes_value: true
+    - short: "-x"
+      long: ""
+      description: 十六进制转储
+    - short: "-xxx"
+      long: ""
+      description: 完整转储
+    - short: "-m"
+      long: ""
+      description: 机器可读
+    - short: "-mm"
+      long: ""
+      description: 详细机器格式
+    - short: "-D"
+      long: ""
+      description: 显示域
+    - short: "-PP"
+      long: ""
+      description: 显示路径
+    - short: "-Q"
+      long: ""
+      description: 查询模式
+    - short: "-q"
+      long: ""
+      description: 查询
+  subcommands: {}
+
+lsusb:
+  name: lsusb
+  description: USB 设备
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细信息
+    - short: "-s"
+      long: ""
+      description: 设备
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 厂商:产品
+      takes_value: true
+    - short: "-D"
+      long: ""
+      description: 设备文件
+      takes_value: true
+    - short: "-t"
+      long: "--tree"
+      description: 树形显示
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+lshw:
+  name: lshw
+  description: 硬件列表
+  options:
+    - short: "-html"
+      long: ""
+      description: HTML 输出
+    - short: "-xml"
+      long: ""
+      description: XML 输出
+    - short: "-json"
+      long: ""
+      description: JSON 输出
+    - short: "-short"
+      long: ""
+      description: 简短格式
+    - short: "-businfo"
+      long: ""
+      description: 总线信息
+    - short: "-dump"
+      long: ""
+      description: 转储文件
+      takes_value: true
+    - short: "-class"
+      long: ""
+      description: 设备类
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: 设备类
+      takes_value: true
+    - short: "-disable"
+      long: ""
+      description: 禁用测试
+      takes_value: true
+    - short: "-enable"
+      long: ""
+      description: 启用测试
+      takes_value: true
+    - short: "-quiet"
+      long: ""
+      description: 静默模式
+    - short: "-sanitize"
+      long: ""
+      description: 隐藏敏感信息
+    - short: "-numeric"
+      long: ""
+      description: 数字 ID
+    - short: "-notime"
+      long: ""
+      description: 不显示时间
+  subcommands: {}
+
+dmidecode:
+  name: dmidecode
+  description: DMI/SMBIOS 信息
+  options:
+    - short: "-d"
+      long: "--dev-mem"
+      description: 内存设备
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-s"
+      long: "--string"
+      description: 字符串关键字
+      takes_value: true
+    - short: "-t"
+      long: "--type"
+      description: DMI 类型
+      takes_value: true
+    - short: "-u"
+      long: "--dump"
+      description: 转储
+    - short: ""
+      long: "--dump-bin"
+      description: 二进制转储
+      takes_value: true
+    - short: ""
+      long: "--from-dump"
+      description: 从转储读取
+      takes_value: true
+    - short: ""
+      long: "--no-sysfs"
+      description: 不使用 sysfs
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+hdparm:
+  name: hdparm
+  description: 硬盘参数
+  options:
+    - short: "-a"
+      long: ""
+      description: 预读扇区
+      takes_value: true
+    - short: "-A"
+      long: ""
+      description: 预读功能
+      takes_value: true
+    - short: "-b"
+      long: ""
+      description: 总线状态
+      takes_value: true
+    - short: "-B"
+      long: ""
+      description: APM 设置
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 32 位 I/O
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: 电源状态
+    - short: "-d"
+      long: ""
+      description: DMA 设置
+      takes_value: true
+    - short: "-g"
+      long: ""
+      description: 几何参数
+    - short: "-i"
+      long: ""
+      description: 启动信息
+    - short: "-I"
+      long: ""
+      description: 详细信息
+    - short: "-M"
+      long: ""
+      description: APM 级别
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 只读标志
+      takes_value: true
+    - short: "-S"
+      long: ""
+      description: 待机超时
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 读取计时
+    - short: "-T"
+      long: ""
+      description: 缓存读取计时
+    - short: "-v"
+      long: ""
+      description: 显示设置
+    - short: "-W"
+      long: ""
+      description: 写缓存
+      takes_value: true
+    - short: "-y"
+      long: ""
+      description: 待机模式
+    - short: "-Y"
+      long: ""
+      description: 睡眠模式
+    - short: "-z"
+      long: ""
+      description: 重读分区
+    - short: "-Z"
+      long: ""
+      description: 禁用 APM
+    - short: ""
+      long: "--security-freeze"
+      description: 安全冻结
+    - short: ""
+      long: "--security-unlock"
+      description: 安全解锁
+      takes_value: true
+  subcommands: {}
+
+smartctl:
+  name: smartctl
+  description: SMART 信息
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有信息
+    - short: "-x"
+      long: "--xall"
+      description: 扩展信息
+    - short: "-H"
+      long: "--health"
+      description: 健康状态
+    - short: "-i"
+      long: "--info"
+      description: 设备信息
+    - short: "-c"
+      long: "--capabilities"
+      description: 能力
+    - short: "-A"
+      long: "--attributes"
+      description: 属性
+    - short: "-l"
+      long: "--log"
+      description: 日志
+      takes_value: true
+    - short: "-s"
+      long: "--smart"
+      description: SMART 开关
+      takes_value: true
+      values: ["on", "off"]
+    - short: "-o"
+      long: "--offlineauto"
+      description: 离线测试
+      takes_value: true
+    - short: "-S"
+      long: "--saveauto"
+      description: 自动保存
+      takes_value: true
+    - short: "-t"
+      long: "--test"
+      description: 运行测试
+      takes_value: true
+      values: ["short", "long", "conveyance", "offline"]
+    - short: "-X"
+      long: "--abort"
+      description: 中止测试
+    - short: "-d"
+      long: "--device"
+      description: 设备类型
+      takes_value: true
+    - short: "-T"
+      long: "--tolerance"
+      description: 容错
+      takes_value: true
+    - short: "-q"
+      long: "--quietmode"
+      description: 静默模式
+      takes_value: true
+    - short: "-j"
+      long: "--json"
+      description: JSON 输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+sensors:
+  name: sensors
+  description: 传感器信息
+  options:
+    - short: "-c"
+      long: "--config-file"
+      description: 配置文件
+      takes_value: true
+    - short: "-s"
+      long: "--set"
+      description: 设置限制
+    - short: "-f"
+      long: "--fahrenheit"
+      description: 华氏度
+    - short: "-A"
+      long: "--no-adapter"
+      description: 不显示适配器
+    - short: "-u"
+      long: ""
+      description: 原始输出
+    - short: "-j"
+      long: "--json"
+      description: JSON 输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+udevadm:
+  name: udevadm
+  description: udev 管理工具
+  options:
+    - short: "-d"
+      long: "--debug"
+      description: 调试模式
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands:
+    info:
+      name: info
+      description: 设备信息
+      options:
+        - short: "-q"
+          long: "--query"
+          description: 查询类型
+          takes_value: true
+          values: ["name", "symlink", "path", "property", "all"]
+        - short: "-p"
+          long: "--path"
+          description: 设备路径
+          takes_value: true
+        - short: "-n"
+          long: "--name"
+          description: 设备名称
+          takes_value: true
+        - short: "-a"
+          long: "--attribute-walk"
+          description: 属性遍历
+        - short: "-x"
+          long: "--export"
+          description: 导出格式
+        - short: "-e"
+          long: "--export-db"
+          description: 导出数据库
+    trigger:
+      name: trigger
+      description: 触发事件
+      options:
+        - short: "-v"
+          long: "--verbose"
+          description: 详细输出
+        - short: "-n"
+          long: "--dry-run"
+          description: 试运行
+        - short: "-t"
+          long: "--type"
+          description: 设备类型
+          takes_value: true
+        - short: "-c"
+          long: "--action"
+          description: 事件动作
+          takes_value: true
+          values: ["add", "change", "remove"]
+        - short: "-s"
+          long: "--subsystem-match"
+          description: 子系统匹配
+          takes_value: true
+        - short: "-a"
+          long: "--attr-match"
+          description: 属性匹配
+          takes_value: true
+    settle:
+      name: settle
+      description: 等待事件完成
+      options:
+        - short: "-t"
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+        - short: "-E"
+          long: "--exit-if-exists"
+          description: 存在则退出
+          takes_value: true
+    control:
+      name: control
+      description: 控制守护进程
+      options:
+        - short: "-e"
+          long: "--exit"
+          description: 退出守护进程
+        - short: "-l"
+          long: "--log-priority"
+          description: 日志级别
+          takes_value: true
+        - short: "-s"
+          long: "--stop-exec-queue"
+          description: 停止执行队列
+        - short: "-S"
+          long: "--start-exec-queue"
+          description: 启动执行队列
+        - short: "-R"
+          long: "--reload"
+          description: 重载规则
+    monitor:
+      name: monitor
+      description: 监控事件
+      options:
+        - short: "-k"
+          long: "--kernel"
+          description: 内核事件
+        - short: "-u"
+          long: "--udev"
+          description: udev 事件
+        - short: "-p"
+          long: "--property"
+          description: 显示属性
+        - short: "-s"
+          long: "--subsystem-match"
+          description: 子系统匹配
+          takes_value: true
+        - short: "-t"
+          long: "--tag-match"
+          description: 标签匹配
+          takes_value: true
+    test:
+      name: test
+      description: 测试规则
+      options:
+        - short: "-a"
+          long: "--action"
+          description: 事件动作
+          takes_value: true
+
+inxi:
+  name: inxi
+  description: 系统信息工具
+  options:
+    - short: "-A"
+      long: ""
+      description: 音频信息
+    - short: "-b"
+      long: ""
+      description: 基本信息
+    - short: "-B"
+      long: ""
+      description: 电池信息
+    - short: "-c"
+      long: ""
+      description: 颜色方案
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: CPU 信息
+    - short: "-d"
+      long: ""
+      description: 光驱信息
+    - short: "-D"
+      long: ""
+      description: 硬盘信息
+    - short: "-F"
+      long: ""
+      description: 完整信息
+    - short: "-G"
+      long: ""
+      description: 显卡信息
+    - short: "-i"
+      long: ""
+      description: IP 信息
+    - short: "-I"
+      long: ""
+      description: 系统信息
+    - short: "-l"
+      long: ""
+      description: 分区标签
+    - short: "-m"
+      long: ""
+      description: 内存信息
+    - short: "-M"
+      long: ""
+      description: 机器信息
+    - short: "-n"
+      long: ""
+      description: 网络信息
+    - short: "-N"
+      long: ""
+      description: 网卡信息
+    - short: "-o"
+      long: ""
+      description: 其他设备
+    - short: "-p"
+      long: ""
+      description: 分区信息
+    - short: "-P"
+      long: ""
+      description: 分区使用
+    - short: "-r"
+      long: ""
+      description: 软件源
+    - short: "-R"
+      long: ""
+      description: RAID 信息
+    - short: "-s"
+      long: ""
+      description: 传感器
+    - short: "-S"
+      long: ""
+      description: 系统摘要
+    - short: "-t"
+      long: ""
+      description: 进程
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: 分区 UUID
+    - short: "-v"
+      long: ""
+      description: 详细级别
+      takes_value: true
+    - short: "-x"
+      long: ""
+      description: 额外信息
+    - short: "-y"
+      long: ""
+      description: 输出宽度
+      takes_value: true
+    - short: "-z"
+      long: ""
+      description: 隐藏敏感信息
+    - short: "-h"
+      long: ""
+      description: 显示帮助
+    - short: "-V"
+      long: ""
+      description: 显示版本
+  subcommands: {}
+
+hwinfo:
+  name: hwinfo
+  description: 硬件信息
+  options:
+    - short: ""
+      long: "--all"
+      description: 所有信息
+    - short: ""
+      long: "--cpu"
+      description: CPU 信息
+    - short: ""
+      long: "--disk"
+      description: 磁盘信息
+    - short: ""
+      long: "--memory"
+      description: 内存信息
+    - short: ""
+      long: "--network"
+      description: 网络信息
+    - short: ""
+      long: "--gfxcard"
+      description: 显卡信息
+    - short: ""
+      long: "--sound"
+      description: 声卡信息
+    - short: ""
+      long: "--usb"
+      description: USB 信息
+    - short: ""
+      long: "--pci"
+      description: PCI 信息
+    - short: ""
+      long: "--partition"
+      description: 分区信息
+    - short: ""
+      long: "--short"
+      description: 简短输出
+    - short: ""
+      long: "--log"
+      description: 日志文件
+      takes_value: true
+    - short: ""
+      long: "--debug"
+      description: 调试级别
+      takes_value: true
+    - short: ""
+      long: "--version"
+      description: 显示版本
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+

@@ -2,7 +2,7 @@
 //! Linux 命令行智能补全工具入口
 
 use clap::{Parser, Subcommand};
-use cnmsb::{CompletionEngine, CnmsbShell};
+use cnmsb::{CompletionEngine, CnmsbShell, SqlShell, DatabaseType};
 
 #[derive(Parser)]
 #[command(name = "cnmsb")]
@@ -48,11 +48,31 @@ enum Commands {
     /// 启动交互式 shell（带内联建议）
     Shell,
 
+    /// 启动 SQL 交互式客户端（带智能补全）
+    Sql {
+        /// 数据库类型 (mysql/postgresql/sqlite)
+        #[arg(short, long)]
+        db_type: Option<String>,
+    },
+
     /// 显示版本信息
     Version,
 }
 
 fn main() {
+    // 检测是否通过 cnmsb-sql 调用
+    let args: Vec<String> = std::env::args().collect();
+    let prog_name = std::path::Path::new(&args[0])
+        .file_name()
+        .and_then(|n| n.to_str())
+        .unwrap_or("cnmsb");
+    
+    // 如果通过 cnmsb-sql 调用，直接进入 SQL 模式
+    if prog_name == "cnmsb-sql" || prog_name == "cnmsb-sql.exe" {
+        run_sql_mode(None);
+        return;
+    }
+    
     let cli = Cli::parse();
 
     match cli.command {
@@ -198,10 +218,75 @@ fn main() {
             }
         }
 
+        Some(Commands::Sql { db_type }) => {
+            run_sql_mode(db_type);
+        }
+
         Some(Commands::Version) => {
             println!("cnmsb (操你妈傻逼) v0.1.0");
             println!("Linux 命令行智能补全工具");
         }
+    }
+}
+
+/// 运行 SQL 模式
+fn run_sql_mode(db_type: Option<String>) {
+    use std::io::{self, Write};
+    
+    let db = match db_type {
+        Some(t) => {
+            match DatabaseType::from_str(&t) {
+                Some(db) => db,
+                None => {
+                    eprintln!("\x1b[31m不认识的数据库类型: {}\x1b[0m", t);
+                    eprintln!("支持的类型: mysql, postgresql, sqlite, mariadb, oracle, sqlserver");
+                    std::process::exit(1);
+                }
+            }
+        }
+        None => {
+            println!("\x1b[1;33m");
+            println!("  ███████╗ ██████╗ ██╗         ███╗   ███╗ ██████╗ ██████╗ ███████╗");
+            println!("  ██╔════╝██╔═══██╗██║         ████╗ ████║██╔═══██╗██╔══██╗██╔════╝");
+            println!("  ███████╗██║   ██║██║         ██╔████╔██║██║   ██║██║  ██║█████╗  ");
+            println!("  ╚════██║██║▄▄ ██║██║         ██║╚██╔╝██║██║   ██║██║  ██║██╔══╝  ");
+            println!("  ███████║╚██████╔╝███████╗    ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗");
+            println!("  ╚══════╝ ╚══▀▀═╝ ╚══════╝    ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝");
+            println!("\x1b[0m");
+            println!("  \x1b[1;38;5;208mcnmsb-sql\x1b[0m - SQL 智能补全客户端");
+            println!();
+            println!("  选择你要连接的数据库类型：");
+            println!();
+            println!("    \x1b[1;36m1.\x1b[0m MySQL");
+            println!("    \x1b[1;36m2.\x1b[0m PostgreSQL");
+            println!("    \x1b[1;36m3.\x1b[0m SQLite");
+            println!();
+            print!("  输入选择 (1-3): ");
+            io::stdout().flush().unwrap();
+            
+            let mut input = String::new();
+            io::stdin().read_line(&mut input).unwrap();
+            
+            match input.trim() {
+                "1" | "mysql" => DatabaseType::MySQL,
+                "2" | "postgresql" | "postgres" | "psql" => DatabaseType::PostgreSQL,
+                "3" | "sqlite" | "sqlite3" => DatabaseType::SQLite,
+                _ => {
+                    eprintln!("\x1b[31m选个鸡巴！输入 1、2 或 3\x1b[0m");
+                    std::process::exit(1);
+                }
+            }
+        }
+    };
+    
+    println!();
+    println!("  \x1b[32m正在启动 {:?} SQL Shell...\x1b[0m", db);
+    println!();
+    
+    let mut sql_shell = SqlShell::new(db);
+    if let Err(e) = sql_shell.run() {
+        eprintln!("SQL Shell 错误: {}", e);
+        std::process::exit(1);
     }
 }
 

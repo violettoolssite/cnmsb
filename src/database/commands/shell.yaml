@@ -1,0 +1,1069 @@
+# Shell 工具命令
+# 贡献者可以在此添加更多 Shell 工具
+
+echo:
+  name: echo
+  description: 输出文本
+  options:
+    - short: "-n"
+      long: ""
+      description: 不换行
+    - short: "-e"
+      long: ""
+      description: 解释转义
+    - short: "-E"
+      long: ""
+      description: 不解释转义
+  subcommands: {}
+
+printf:
+  name: printf
+  description: 格式化输出
+  options: []
+  subcommands: {}
+
+read:
+  name: read
+  description: 读取输入
+  options:
+    - short: "-p"
+      long: ""
+      description: 提示符
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 不处理反斜杠
+    - short: "-s"
+      long: ""
+      description: 静默模式
+    - short: "-n"
+      long: ""
+      description: 读取字符数
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 超时时间
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 分隔符
+      takes_value: true
+    - short: "-a"
+      long: ""
+      description: 读入数组
+    - short: "-u"
+      long: ""
+      description: 从文件描述符读取
+      takes_value: true
+  subcommands: {}
+
+test:
+  name: test
+  description: 条件测试
+  options:
+    - short: "-e"
+      long: ""
+      description: 文件存在
+    - short: "-f"
+      long: ""
+      description: 是普通文件
+    - short: "-d"
+      long: ""
+      description: 是目录
+    - short: "-r"
+      long: ""
+      description: 可读
+    - short: "-w"
+      long: ""
+      description: 可写
+    - short: "-x"
+      long: ""
+      description: 可执行
+    - short: "-s"
+      long: ""
+      description: 文件非空
+    - short: "-L"
+      long: ""
+      description: 是符号链接
+    - short: "-z"
+      long: ""
+      description: 字符串为空
+    - short: "-n"
+      long: ""
+      description: 字符串非空
+    - short: "-eq"
+      long: ""
+      description: 数字相等
+    - short: "-ne"
+      long: ""
+      description: 数字不等
+    - short: "-lt"
+      long: ""
+      description: 小于
+    - short: "-le"
+      long: ""
+      description: 小于等于
+    - short: "-gt"
+      long: ""
+      description: 大于
+    - short: "-ge"
+      long: ""
+      description: 大于等于
+  subcommands: {}
+
+xargs:
+  name: xargs
+  description: 参数传递
+  options:
+    - short: "-0"
+      long: "--null"
+      description: 空字符分隔
+    - short: "-a"
+      long: "--arg-file"
+      description: 从文件读取
+      takes_value: true
+    - short: "-d"
+      long: "--delimiter"
+      description: 分隔符
+      takes_value: true
+    - short: "-E"
+      long: ""
+      description: EOF 字符串
+      takes_value: true
+    - short: "-I"
+      long: "--replace"
+      description: 替换字符串
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 替换 {}
+    - short: "-L"
+      long: "--max-lines"
+      description: 每次行数
+      takes_value: true
+    - short: "-l"
+      long: ""
+      description: 每次行数
+    - short: "-n"
+      long: "--max-args"
+      description: 每次参数数
+      takes_value: true
+    - short: "-P"
+      long: "--max-procs"
+      description: 最大进程数
+      takes_value: true
+    - short: "-p"
+      long: "--interactive"
+      description: 交互模式
+    - short: "-r"
+      long: "--no-run-if-empty"
+      description: 空则不执行
+    - short: "-s"
+      long: "--max-chars"
+      description: 最大字符数
+      takes_value: true
+    - short: "-t"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-x"
+      long: "--exit"
+      description: 超限退出
+    - short: ""
+      long: "--show-limits"
+      description: 显示限制
+    - short: ""
+      long: "--version"
+      description: 显示版本
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+watch:
+  name: watch
+  description: 周期执行命令
+  options:
+    - short: "-n"
+      long: "--interval"
+      description: 间隔秒数
+      takes_value: true
+    - short: "-d"
+      long: "--differences"
+      description: 高亮差异
+    - short: "-g"
+      long: "--chgexit"
+      description: 变化时退出
+    - short: "-t"
+      long: "--no-title"
+      description: 不显示标题
+    - short: "-b"
+      long: "--beep"
+      description: 错误时响铃
+    - short: "-e"
+      long: "--errexit"
+      description: 错误时退出
+    - short: "-c"
+      long: "--color"
+      description: 颜色输出
+    - short: "-x"
+      long: "--exec"
+      description: 传递给 exec
+    - short: "-p"
+      long: "--precise"
+      description: 精确间隔
+    - short: "-w"
+      long: "--no-wrap"
+      description: 不换行
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+timeout:
+  name: timeout
+  description: 超时控制
+  options:
+    - short: "-k"
+      long: "--kill-after"
+      description: 强制终止延迟
+      takes_value: true
+    - short: "-s"
+      long: "--signal"
+      description: 发送信号
+      takes_value: true
+    - short: ""
+      long: "--preserve-status"
+      description: 保留状态码
+    - short: ""
+      long: "--foreground"
+      description: 前台运行
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+nohup:
+  name: nohup
+  description: 后台运行(忽略挂起)
+  options:
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+screen:
+  name: screen
+  description: 终端复用器
+  options:
+    - short: "-S"
+      long: ""
+      description: 会话名称
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 恢复会话
+    - short: "-R"
+      long: ""
+      description: 恢复或创建
+    - short: "-x"
+      long: ""
+      description: 多重附加
+    - short: "-d"
+      long: ""
+      description: 分离会话
+    - short: "-D"
+      long: ""
+      description: 强制分离
+    - short: "-ls"
+      long: ""
+      description: 列出会话
+    - short: "-list"
+      long: ""
+      description: 列出会话
+    - short: "-wipe"
+      long: ""
+      description: 清理死会话
+    - short: "-X"
+      long: ""
+      description: 发送命令
+    - short: "-c"
+      long: ""
+      description: 配置文件
+      takes_value: true
+    - short: "-e"
+      long: ""
+      description: 转义字符
+      takes_value: true
+    - short: "-h"
+      long: ""
+      description: 历史行数
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 忽略 $STY
+    - short: "-p"
+      long: ""
+      description: 预选窗口
+      takes_value: true
+    - short: "-q"
+      long: ""
+      description: 静默模式
+    - short: "-t"
+      long: ""
+      description: 窗口标题
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 显示版本
+    - short: "-A"
+      long: ""
+      description: 适应终端大小
+    - short: "-L"
+      long: ""
+      description: 开启日志
+    - short: "-U"
+      long: ""
+      description: UTF-8 模式
+  subcommands: {}
+
+tmux:
+  name: tmux
+  description: 终端复用器
+  options:
+    - short: "-2"
+      long: ""
+      description: 256 色
+    - short: "-C"
+      long: ""
+      description: 控制模式
+    - short: "-c"
+      long: ""
+      description: 执行命令
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 配置文件
+      takes_value: true
+    - short: "-L"
+      long: ""
+      description: Socket 名称
+      takes_value: true
+    - short: "-S"
+      long: ""
+      description: Socket 路径
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: UTF-8 模式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-V"
+      long: ""
+      description: 显示版本
+  subcommands:
+    new-session:
+      name: new-session
+      description: 新建会话
+      options:
+        - short: "-d"
+          long: ""
+          description: 不附加
+        - short: "-s"
+          long: ""
+          description: 会话名
+          takes_value: true
+        - short: "-n"
+          long: ""
+          description: 窗口名
+          takes_value: true
+        - short: "-c"
+          long: ""
+          description: 工作目录
+          takes_value: true
+    attach-session:
+      name: attach-session
+      description: 附加会话
+      options:
+        - short: "-t"
+          long: ""
+          description: 目标会话
+          takes_value: true
+        - short: "-d"
+          long: ""
+          description: 先分离
+    detach-client:
+      name: detach-client
+      description: 分离客户端
+      options:
+        - short: "-s"
+          long: ""
+          description: 目标会话
+          takes_value: true
+    kill-session:
+      name: kill-session
+      description: 终止会话
+      options:
+        - short: "-t"
+          long: ""
+          description: 目标会话
+          takes_value: true
+        - short: "-a"
+          long: ""
+          description: 除了目标
+    list-sessions:
+      name: list-sessions
+      description: 列出会话
+      options: []
+    new-window:
+      name: new-window
+      description: 新建窗口
+      options:
+        - short: "-n"
+          long: ""
+          description: 窗口名
+          takes_value: true
+        - short: "-t"
+          long: ""
+          description: 目标窗口
+          takes_value: true
+    kill-window:
+      name: kill-window
+      description: 关闭窗口
+      options:
+        - short: "-t"
+          long: ""
+          description: 目标窗口
+          takes_value: true
+    split-window:
+      name: split-window
+      description: 分割窗格
+      options:
+        - short: "-h"
+          long: ""
+          description: 水平分割
+        - short: "-v"
+          long: ""
+          description: 垂直分割
+        - short: "-p"
+          long: ""
+          description: 百分比
+          takes_value: true
+    select-pane:
+      name: select-pane
+      description: 选择窗格
+      options:
+        - short: "-L"
+          long: ""
+          description: 左边
+        - short: "-R"
+          long: ""
+          description: 右边
+        - short: "-U"
+          long: ""
+          description: 上边
+        - short: "-D"
+          long: ""
+          description: 下边
+    send-keys:
+      name: send-keys
+      description: 发送按键
+      options:
+        - short: "-t"
+          long: ""
+          description: 目标窗格
+          takes_value: true
+    source-file:
+      name: source-file
+      description: 加载配置
+      options: []
+
+tee:
+  name: tee
+  description: 输出分流
+  options:
+    - short: "-a"
+      long: "--append"
+      description: 追加模式
+    - short: "-i"
+      long: "--ignore-interrupts"
+      description: 忽略中断
+    - short: "-p"
+      long: ""
+      description: 诊断写入错误
+    - short: ""
+      long: "--output-error"
+      description: 错误处理
+      takes_value: true
+      values: ["warn", "warn-nopipe", "exit", "exit-nopipe"]
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+script:
+  name: script
+  description: 记录终端会话
+  options:
+    - short: "-a"
+      long: "--append"
+      description: 追加模式
+    - short: "-c"
+      long: "--command"
+      description: 执行命令
+      takes_value: true
+    - short: "-e"
+      long: "--return"
+      description: 返回子进程状态
+    - short: "-f"
+      long: "--flush"
+      description: 实时刷新
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-t"
+      long: "--timing"
+      description: 时间文件
+      takes_value: true
+    - short: "-T"
+      long: "--log-timing"
+      description: 日志时间
+      takes_value: true
+    - short: "-B"
+      long: "--log-io"
+      description: 日志 IO
+      takes_value: true
+    - short: "-I"
+      long: "--log-in"
+      description: 日志输入
+      takes_value: true
+    - short: "-O"
+      long: "--log-out"
+      description: 日志输出
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+yes:
+  name: yes
+  description: 重复输出字符串
+  options:
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+seq:
+  name: seq
+  description: 生成数字序列
+  options:
+    - short: "-f"
+      long: "--format"
+      description: 格式
+      takes_value: true
+    - short: "-s"
+      long: "--separator"
+      description: 分隔符
+      takes_value: true
+    - short: "-w"
+      long: "--equal-width"
+      description: 等宽输出
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+shuf:
+  name: shuf
+  description: 随机排列
+  options:
+    - short: "-e"
+      long: "--echo"
+      description: 处理参数
+    - short: "-i"
+      long: "--input-range"
+      description: 输入范围
+      takes_value: true
+    - short: "-n"
+      long: "--head-count"
+      description: 输出行数
+      takes_value: true
+    - short: "-o"
+      long: "--output"
+      description: 输出文件
+      takes_value: true
+    - short: "-r"
+      long: "--repeat"
+      description: 允许重复
+    - short: "-z"
+      long: "--zero-terminated"
+      description: 空字符分隔
+    - short: ""
+      long: "--random-source"
+      description: 随机源
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+sleep:
+  name: sleep
+  description: 延迟指定时间
+  options:
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+wait:
+  name: wait
+  description: 等待进程结束
+  options:
+    - short: "-n"
+      long: ""
+      description: 等待任一进程
+    - short: "-p"
+      long: ""
+      description: 存储 PID
+    - short: "-f"
+      long: ""
+      description: 等待终止
+  subcommands: {}
+
+jobs:
+  name: jobs
+  description: 列出后台任务
+  options:
+    - short: "-l"
+      long: ""
+      description: 显示 PID
+    - short: "-n"
+      long: ""
+      description: 只显示变化
+    - short: "-p"
+      long: ""
+      description: 只显示 PID
+    - short: "-r"
+      long: ""
+      description: 只显示运行中
+    - short: "-s"
+      long: ""
+      description: 只显示停止
+  subcommands: {}
+
+fg:
+  name: fg
+  description: 前台运行任务
+  options: []
+  subcommands: {}
+
+bg:
+  name: bg
+  description: 后台运行任务
+  options: []
+  subcommands: {}
+
+disown:
+  name: disown
+  description: 移除任务
+  options:
+    - short: "-a"
+      long: ""
+      description: 移除所有
+    - short: "-h"
+      long: ""
+      description: 不发送 SIGHUP
+    - short: "-r"
+      long: ""
+      description: 移除运行中
+  subcommands: {}
+
+trap:
+  name: trap
+  description: 信号处理
+  options:
+    - short: "-l"
+      long: ""
+      description: 列出信号
+    - short: "-p"
+      long: ""
+      description: 显示陷阱
+  subcommands: {}
+
+true:
+  name: "true"
+  description: 返回成功
+  options: []
+  subcommands: {}
+
+false:
+  name: "false"
+  description: 返回失败
+  options: []
+  subcommands: {}
+
+exit:
+  name: exit
+  description: 退出 Shell
+  options: []
+  subcommands: {}
+
+return:
+  name: return
+  description: 从函数返回
+  options: []
+  subcommands: {}
+
+break:
+  name: break
+  description: 跳出循环
+  options: []
+  subcommands: {}
+
+continue:
+  name: continue
+  description: 继续循环
+  options: []
+  subcommands: {}
+
+shift:
+  name: shift
+  description: 移动位置参数
+  options: []
+  subcommands: {}
+
+set:
+  name: set
+  description: 设置 Shell 选项
+  options:
+    - short: "-e"
+      long: ""
+      description: 错误时退出
+    - short: "-u"
+      long: ""
+      description: 未定义变量报错
+    - short: "-x"
+      long: ""
+      description: 显示执行命令
+    - short: "-o"
+      long: ""
+      description: 设置选项
+      takes_value: true
+    - short: "+o"
+      long: ""
+      description: 取消选项
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 显示输入
+    - short: "-n"
+      long: ""
+      description: 不执行命令
+    - short: "-f"
+      long: ""
+      description: 禁用通配符
+    - short: "-a"
+      long: ""
+      description: 自动导出
+    - short: "-b"
+      long: ""
+      description: 立即报告后台
+    - short: "-h"
+      long: ""
+      description: 记住命令位置
+    - short: "-m"
+      long: ""
+      description: 作业控制
+    - short: "-p"
+      long: ""
+      description: 特权模式
+    - short: "-t"
+      long: ""
+      description: 执行一条后退出
+  subcommands: {}
+
+declare:
+  name: declare
+  description: 声明变量
+  options:
+    - short: "-a"
+      long: ""
+      description: 索引数组
+    - short: "-A"
+      long: ""
+      description: 关联数组
+    - short: "-f"
+      long: ""
+      description: 函数
+    - short: "-F"
+      long: ""
+      description: 函数名
+    - short: "-g"
+      long: ""
+      description: 全局变量
+    - short: "-i"
+      long: ""
+      description: 整数
+    - short: "-l"
+      long: ""
+      description: 小写
+    - short: "-n"
+      long: ""
+      description: 名称引用
+    - short: "-p"
+      long: ""
+      description: 显示属性
+    - short: "-r"
+      long: ""
+      description: 只读
+    - short: "-t"
+      long: ""
+      description: 跟踪
+    - short: "-u"
+      long: ""
+      description: 大写
+    - short: "-x"
+      long: ""
+      description: 导出
+  subcommands: {}
+
+local:
+  name: local
+  description: 局部变量
+  options:
+    - short: "-a"
+      long: ""
+      description: 数组
+    - short: "-A"
+      long: ""
+      description: 关联数组
+    - short: "-i"
+      long: ""
+      description: 整数
+    - short: "-l"
+      long: ""
+      description: 小写
+    - short: "-n"
+      long: ""
+      description: 名称引用
+    - short: "-r"
+      long: ""
+      description: 只读
+    - short: "-u"
+      long: ""
+      description: 大写
+    - short: "-x"
+      long: ""
+      description: 导出
+  subcommands: {}
+
+readonly:
+  name: readonly
+  description: 只读变量
+  options:
+    - short: "-a"
+      long: ""
+      description: 数组
+    - short: "-A"
+      long: ""
+      description: 关联数组
+    - short: "-f"
+      long: ""
+      description: 函数
+    - short: "-p"
+      long: ""
+      description: 显示所有
+  subcommands: {}
+
+typeset:
+  name: typeset
+  description: 声明变量属性
+  options:
+    - short: "-a"
+      long: ""
+      description: 数组
+    - short: "-A"
+      long: ""
+      description: 关联数组
+    - short: "-f"
+      long: ""
+      description: 函数
+    - short: "-i"
+      long: ""
+      description: 整数
+    - short: "-r"
+      long: ""
+      description: 只读
+    - short: "-x"
+      long: ""
+      description: 导出
+  subcommands: {}
+
+type:
+  name: type
+  description: 显示命令类型
+  options:
+    - short: "-a"
+      long: ""
+      description: 显示所有
+    - short: "-f"
+      long: ""
+      description: 不查找函数
+    - short: "-p"
+      long: ""
+      description: 显示路径
+    - short: "-P"
+      long: ""
+      description: 强制路径
+    - short: "-t"
+      long: ""
+      description: 类型名称
+  subcommands: {}
+
+which:
+  name: which
+  description: 显示命令路径
+  options:
+    - short: "-a"
+      long: ""
+      description: 显示所有
+  subcommands: {}
+
+whereis:
+  name: whereis
+  description: 定位命令
+  options:
+    - short: "-b"
+      long: ""
+      description: 仅二进制
+    - short: "-m"
+      long: ""
+      description: 仅手册
+    - short: "-s"
+      long: ""
+      description: 仅源码
+    - short: "-u"
+      long: ""
+      description: 异常条目
+    - short: "-B"
+      long: ""
+      description: 二进制路径
+      takes_value: true
+    - short: "-M"
+      long: ""
+      description: 手册路径
+      takes_value: true
+    - short: "-S"
+      long: ""
+      description: 源码路径
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 结束路径
+    - short: "-l"
+      long: ""
+      description: 显示搜索路径
+  subcommands: {}
+
+command:
+  name: command
+  description: 执行命令
+  options:
+    - short: "-p"
+      long: ""
+      description: 默认路径
+    - short: "-v"
+      long: ""
+      description: 显示描述
+    - short: "-V"
+      long: ""
+      description: 详细描述
+  subcommands: {}
+
+builtin:
+  name: builtin
+  description: 执行内置命令
+  options: []
+  subcommands: {}
+
+enable:
+  name: enable
+  description: 启用/禁用内置命令
+  options:
+    - short: "-a"
+      long: ""
+      description: 显示所有
+    - short: "-d"
+      long: ""
+      description: 删除加载
+    - short: "-f"
+      long: ""
+      description: 加载文件
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 禁用
+    - short: "-p"
+      long: ""
+      description: 显示已禁用
+    - short: "-s"
+      long: ""
+      description: POSIX 特殊
+  subcommands: {}
+
+hash:
+  name: hash
+  description: 命令哈希表
+  options:
+    - short: "-d"
+      long: ""
+      description: 删除条目
+    - short: "-l"
+      long: ""
+      description: 列出格式
+    - short: "-p"
+      long: ""
+      description: 指定路径
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 清空表
+    - short: "-t"
+      long: ""
+      description: 显示路径
+  subcommands: {}
+
+

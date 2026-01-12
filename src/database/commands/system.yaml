@@ -349,5 +349,2252 @@ sudo:
     - short: "-l"
       long: ""
       description: 列出权限
+    - short: "-n"
+      long: ""
+      description: 非交互模式
+    - short: "-b"
+      long: ""
+      description: 后台运行
+    - short: "-H"
+      long: ""
+      description: 设置 HOME
+  subcommands: {}
+
+# 用户管理命令
+
+useradd:
+  name: useradd
+  description: 创建用户
+  options:
+    - short: "-m"
+      long: "--create-home"
+      description: 创建主目录
+    - short: "-M"
+      long: "--no-create-home"
+      description: 不创建主目录
+    - short: "-d"
+      long: "--home-dir"
+      description: 主目录路径
+      takes_value: true
+    - short: "-s"
+      long: "--shell"
+      description: 登录 shell
+      takes_value: true
+    - short: "-g"
+      long: "--gid"
+      description: 主组
+      takes_value: true
+    - short: "-G"
+      long: "--groups"
+      description: 附加组
+      takes_value: true
+    - short: "-u"
+      long: "--uid"
+      description: 用户 ID
+      takes_value: true
+    - short: "-c"
+      long: "--comment"
+      description: 备注信息
+      takes_value: true
+    - short: "-e"
+      long: "--expiredate"
+      description: 过期日期
+      takes_value: true
+    - short: "-f"
+      long: "--inactive"
+      description: 密码过期后天数
+      takes_value: true
+    - short: "-r"
+      long: "--system"
+      description: 系统用户
+    - short: "-o"
+      long: "--non-unique"
+      description: 允许重复 UID
+    - short: "-k"
+      long: "--skel"
+      description: 骨架目录
+      takes_value: true
+    - short: "-p"
+      long: "--password"
+      description: 加密密码
+      takes_value: true
+  subcommands: {}
+
+usermod:
+  name: usermod
+  description: 修改用户
+  options:
+    - short: "-a"
+      long: "--append"
+      description: 追加到组
+    - short: "-G"
+      long: "--groups"
+      description: 附加组
+      takes_value: true
+    - short: "-g"
+      long: "--gid"
+      description: 主组
+      takes_value: true
+    - short: "-d"
+      long: "--home"
+      description: 主目录
+      takes_value: true
+    - short: "-m"
+      long: "--move-home"
+      description: 移动主目录
+    - short: "-s"
+      long: "--shell"
+      description: 登录 shell
+      takes_value: true
+    - short: "-l"
+      long: "--login"
+      description: 新登录名
+      takes_value: true
+    - short: "-L"
+      long: "--lock"
+      description: 锁定账户
+    - short: "-U"
+      long: "--unlock"
+      description: 解锁账户
+    - short: "-u"
+      long: "--uid"
+      description: 用户 ID
+      takes_value: true
+    - short: "-c"
+      long: "--comment"
+      description: 备注信息
+      takes_value: true
+    - short: "-e"
+      long: "--expiredate"
+      description: 过期日期
+      takes_value: true
+    - short: "-p"
+      long: "--password"
+      description: 加密密码
+      takes_value: true
+  subcommands: {}
+
+userdel:
+  name: userdel
+  description: 删除用户
+  options:
+    - short: "-r"
+      long: "--remove"
+      description: 删除主目录
+    - short: "-f"
+      long: "--force"
+      description: 强制删除
+    - short: "-Z"
+      long: "--selinux-user"
+      description: 删除 SELinux 映射
+  subcommands: {}
+
+groupadd:
+  name: groupadd
+  description: 创建组
+  options:
+    - short: "-g"
+      long: "--gid"
+      description: 组 ID
+      takes_value: true
+    - short: "-r"
+      long: "--system"
+      description: 系统组
+    - short: "-o"
+      long: "--non-unique"
+      description: 允许重复 GID
+    - short: "-f"
+      long: "--force"
+      description: 强制创建
+    - short: "-p"
+      long: "--password"
+      description: 加密密码
+      takes_value: true
+  subcommands: {}
+
+groupmod:
+  name: groupmod
+  description: 修改组
+  options:
+    - short: "-g"
+      long: "--gid"
+      description: 新组 ID
+      takes_value: true
+    - short: "-n"
+      long: "--new-name"
+      description: 新组名
+      takes_value: true
+    - short: "-o"
+      long: "--non-unique"
+      description: 允许重复 GID
+    - short: "-p"
+      long: "--password"
+      description: 加密密码
+      takes_value: true
+  subcommands: {}
+
+groupdel:
+  name: groupdel
+  description: 删除组
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制删除
+  subcommands: {}
+
+passwd:
+  name: passwd
+  description: 修改密码
+  options:
+    - short: "-l"
+      long: "--lock"
+      description: 锁定密码
+    - short: "-u"
+      long: "--unlock"
+      description: 解锁密码
+    - short: "-d"
+      long: "--delete"
+      description: 删除密码
+    - short: "-e"
+      long: "--expire"
+      description: 过期密码
+    - short: "-n"
+      long: "--mindays"
+      description: 最小天数
+      takes_value: true
+    - short: "-x"
+      long: "--maxdays"
+      description: 最大天数
+      takes_value: true
+    - short: "-w"
+      long: "--warndays"
+      description: 警告天数
+      takes_value: true
+    - short: "-S"
+      long: "--status"
+      description: 显示状态
+    - short: "-a"
+      long: "--all"
+      description: 所有用户
+  subcommands: {}
+
+chage:
+  name: chage
+  description: 修改密码过期信息
+  options:
+    - short: "-l"
+      long: "--list"
+      description: 显示信息
+    - short: "-d"
+      long: "--lastday"
+      description: 上次修改日期
+      takes_value: true
+    - short: "-E"
+      long: "--expiredate"
+      description: 账户过期日期
+      takes_value: true
+    - short: "-I"
+      long: "--inactive"
+      description: 密码过期后天数
+      takes_value: true
+    - short: "-m"
+      long: "--mindays"
+      description: 最小天数
+      takes_value: true
+    - short: "-M"
+      long: "--maxdays"
+      description: 最大天数
+      takes_value: true
+    - short: "-W"
+      long: "--warndays"
+      description: 警告天数
+      takes_value: true
+  subcommands: {}
+
+id:
+  name: id
+  description: 显示用户 ID
+  options:
+    - short: "-u"
+      long: "--user"
+      description: 仅用户 ID
+    - short: "-g"
+      long: "--group"
+      description: 仅主组 ID
+    - short: "-G"
+      long: "--groups"
+      description: 所有组 ID
+    - short: "-n"
+      long: "--name"
+      description: 显示名称
+    - short: "-r"
+      long: "--real"
+      description: 真实 ID
+  subcommands: {}
+
+whoami:
+  name: whoami
+  description: 显示当前用户名
+  options: []
+  subcommands: {}
+
+who:
+  name: who
+  description: 显示登录用户
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有信息
+    - short: "-b"
+      long: "--boot"
+      description: 启动时间
+    - short: "-H"
+      long: "--heading"
+      description: 显示标题
+    - short: "-q"
+      long: "--count"
+      description: 用户数量
+    - short: "-r"
+      long: "--runlevel"
+      description: 运行级别
+  subcommands: {}
+
+w:
+  name: w
+  description: 显示登录用户及其活动
+  options:
+    - short: "-h"
+      long: "--no-header"
+      description: 不显示标题
+    - short: "-s"
+      long: "--short"
+      description: 简短格式
+    - short: "-f"
+      long: "--from"
+      description: 显示来源
+  subcommands: {}
+
+last:
+  name: last
+  description: 显示登录历史
+  options:
+    - short: "-n"
+      long: ""
+      description: 显示行数
+      takes_value: true
+    - short: "-x"
+      long: ""
+      description: 显示关机记录
+    - short: "-f"
+      long: ""
+      description: 日志文件
+      takes_value: true
+    - short: "-a"
+      long: ""
+      description: 显示主机名
+    - short: "-d"
+      long: ""
+      description: DNS 解析
+  subcommands: {}
+
+# 权限管理命令
+
+chmod:
+  name: chmod
+  description: 修改文件权限
+  options:
+    - short: "-R"
+      long: "--recursive"
+      description: 递归修改
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-c"
+      long: "--changes"
+      description: 显示变化
+    - short: "-f"
+      long: "--silent"
+      description: 静默模式
+    - short: ""
+      long: "--reference"
+      description: 参考文件
+      takes_value: true
+    - short: ""
+      long: "--preserve-root"
+      description: 保护根目录
+  subcommands: {}
+
+chown:
+  name: chown
+  description: 修改文件所有者
+  options:
+    - short: "-R"
+      long: "--recursive"
+      description: 递归修改
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-c"
+      long: "--changes"
+      description: 显示变化
+    - short: "-f"
+      long: "--silent"
+      description: 静默模式
+    - short: "-h"
+      long: "--no-dereference"
+      description: 不跟随链接
+    - short: ""
+      long: "--reference"
+      description: 参考文件
+      takes_value: true
+    - short: ""
+      long: "--from"
+      description: 仅匹配时修改
+      takes_value: true
+    - short: ""
+      long: "--preserve-root"
+      description: 保护根目录
+  subcommands: {}
+
+chgrp:
+  name: chgrp
+  description: 修改文件所属组
+  options:
+    - short: "-R"
+      long: "--recursive"
+      description: 递归修改
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-c"
+      long: "--changes"
+      description: 显示变化
+    - short: "-f"
+      long: "--silent"
+      description: 静默模式
+    - short: "-h"
+      long: "--no-dereference"
+      description: 不跟随链接
+    - short: ""
+      long: "--reference"
+      description: 参考文件
+      takes_value: true
+  subcommands: {}
+
+umask:
+  name: umask
+  description: 设置文件创建掩码
+  options:
+    - short: "-S"
+      long: ""
+      description: 符号格式
+    - short: "-p"
+      long: ""
+      description: 可重用格式
+  subcommands: {}
+
+# 定时任务命令
+
+crontab:
+  name: crontab
+  description: 定时任务管理
+  options:
+    - short: "-e"
+      long: ""
+      description: 编辑任务
+    - short: "-l"
+      long: ""
+      description: 列出任务
+    - short: "-r"
+      long: ""
+      description: 删除任务
+    - short: "-u"
+      long: ""
+      description: 指定用户
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 删除前确认
+  subcommands: {}
+
+at:
+  name: at
+  description: 一次性定时任务
+  options:
+    - short: "-l"
+      long: ""
+      description: 列出任务
+    - short: "-d"
+      long: ""
+      description: 删除任务
+    - short: "-c"
+      long: ""
+      description: 显示任务内容
+    - short: "-f"
+      long: ""
+      description: 从文件读取
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 完成后发邮件
+    - short: "-q"
+      long: ""
+      description: 队列名
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 显示执行时间
+  subcommands: {}
+
+# 磁盘管理命令
+
+mount:
+  name: mount
+  description: 挂载文件系统
+  options:
+    - short: "-t"
+      long: "--types"
+      description: 文件系统类型
+      takes_value: true
+      values: ["ext4", "xfs", "btrfs", "ntfs", "vfat", "nfs", "cifs", "tmpfs"]
+    - short: "-o"
+      long: "--options"
+      description: 挂载选项
+      takes_value: true
+    - short: "-a"
+      long: "--all"
+      description: 挂载所有
+    - short: "-r"
+      long: "--read-only"
+      description: 只读挂载
+    - short: "-w"
+      long: "--rw"
+      description: 读写挂载
+    - short: ""
+      long: "--bind"
+      description: 绑定挂载
+    - short: ""
+      long: "--rbind"
+      description: 递归绑定挂载
+    - short: "-n"
+      long: ""
+      description: 不更新 mtab
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-l"
+      long: ""
+      description: 显示标签
+    - short: "-U"
+      long: ""
+      description: 按 UUID 挂载
+      takes_value: true
+    - short: "-L"
+      long: ""
+      description: 按标签挂载
+      takes_value: true
+    - short: ""
+      long: "--make-private"
+      description: 私有挂载
+    - short: ""
+      long: "--make-shared"
+      description: 共享挂载
+  subcommands: {}
+
+umount:
+  name: umount
+  description: 卸载文件系统
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 卸载所有
+    - short: "-f"
+      long: "--force"
+      description: 强制卸载
+    - short: "-l"
+      long: "--lazy"
+      description: 懒惰卸载
+    - short: "-n"
+      long: ""
+      description: 不更新 mtab
+    - short: "-r"
+      long: ""
+      description: 卸载失败则只读
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-t"
+      long: "--types"
+      description: 文件系统类型
+      takes_value: true
+  subcommands: {}
+
+fdisk:
+  name: fdisk
+  description: 分区管理
+  options:
+    - short: "-l"
+      long: "--list"
+      description: 列出分区表
+    - short: "-s"
+      long: "--getsz"
+      description: 显示大小
+    - short: "-u"
+      long: "--units"
+      description: 单位
+      takes_value: true
+      values: ["sectors", "cylinders"]
+    - short: "-b"
+      long: "--sector-size"
+      description: 扇区大小
+      takes_value: true
+    - short: "-c"
+      long: "--compatibility"
+      description: 兼容模式
+      takes_value: true
+    - short: "-L"
+      long: "--color"
+      description: 颜色输出
+      takes_value: true
+      values: ["auto", "always", "never"]
+    - short: "-o"
+      long: "--output"
+      description: 输出列
+      takes_value: true
+    - short: "-t"
+      long: "--type"
+      description: 分区表类型
+      takes_value: true
+      values: ["dos", "gpt"]
+    - short: "-w"
+      long: "--wipe"
+      description: 清除签名
+      takes_value: true
+  subcommands: {}
+
+parted:
+  name: parted
+  description: 分区工具
+  options:
+    - short: "-l"
+      long: "--list"
+      description: 列出设备
+    - short: "-s"
+      long: "--script"
+      description: 脚本模式
+    - short: "-a"
+      long: "--align"
+      description: 对齐方式
+      takes_value: true
+      values: ["none", "cylinder", "minimal", "optimal"]
+    - short: "-m"
+      long: "--machine"
+      description: 机器可读格式
+  subcommands:
+    mklabel:
+      name: mklabel
+      description: 创建分区表
+      options: []
+    mkpart:
+      name: mkpart
+      description: 创建分区
+      options: []
+    rm:
+      name: rm
+      description: 删除分区
+      options: []
+    print:
+      name: print
+      description: 显示分区
+      options: []
+    resizepart:
+      name: resizepart
+      description: 调整分区大小
+      options: []
+    set:
+      name: set
+      description: 设置标志
+      options: []
+
+lsblk:
+  name: lsblk
+  description: 列出块设备
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 显示所有
+    - short: "-f"
+      long: "--fs"
+      description: 显示文件系统
+    - short: "-l"
+      long: "--list"
+      description: 列表格式
+    - short: "-o"
+      long: "--output"
+      description: 输出列
+      takes_value: true
+    - short: "-p"
+      long: "--paths"
+      description: 显示完整路径
+    - short: "-t"
+      long: "--topology"
+      description: 显示拓扑
+    - short: "-d"
+      long: "--nodeps"
+      description: 不显示依赖
+    - short: "-e"
+      long: "--exclude"
+      description: 排除设备
+      takes_value: true
+    - short: "-I"
+      long: "--include"
+      description: 包含设备
+      takes_value: true
+    - short: "-n"
+      long: "--noheadings"
+      description: 不显示标题
+    - short: "-r"
+      long: "--raw"
+      description: 原始格式
+    - short: "-J"
+      long: "--json"
+      description: JSON 输出
+    - short: "-P"
+      long: "--pairs"
+      description: 键值对输出
+    - short: "-S"
+      long: "--scsi"
+      description: SCSI 信息
+  subcommands: {}
+
+blkid:
+  name: blkid
+  description: 显示块设备属性
+  options:
+    - short: "-c"
+      long: ""
+      description: 缓存文件
+      takes_value: true
+    - short: "-g"
+      long: ""
+      description: 垃圾回收
+    - short: "-o"
+      long: "--output"
+      description: 输出格式
+      takes_value: true
+      values: ["full", "value", "list", "device", "udev", "export"]
+    - short: "-p"
+      long: "--probe"
+      description: 底层探测
+    - short: "-s"
+      long: "--match-tag"
+      description: 匹配标签
+      takes_value: true
+    - short: "-t"
+      long: "--match-token"
+      description: 匹配令牌
+      takes_value: true
+    - short: "-L"
+      long: "--label"
+      description: 按标签查找
+      takes_value: true
+    - short: "-U"
+      long: "--uuid"
+      description: 按 UUID 查找
+      takes_value: true
+  subcommands: {}
+
+mkfs:
+  name: mkfs
+  description: 创建文件系统
+  options:
+    - short: "-t"
+      long: "--type"
+      description: 文件系统类型
+      takes_value: true
+      values: ["ext2", "ext3", "ext4", "xfs", "btrfs", "vfat", "ntfs"]
+    - short: "-c"
+      long: ""
+      description: 检查坏块
+    - short: "-L"
+      long: ""
+      description: 卷标
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 不实际创建
+    - short: "-V"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+mkfs.ext4:
+  name: mkfs.ext4
+  description: 创建 ext4 文件系统
+  options:
+    - short: "-L"
+      long: ""
+      description: 卷标
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 保留块百分比
+      takes_value: true
+    - short: "-b"
+      long: ""
+      description: 块大小
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: inode 比例
+      takes_value: true
+    - short: "-j"
+      long: ""
+      description: 创建日志
+    - short: "-F"
+      long: ""
+      description: 强制创建
+    - short: "-O"
+      long: ""
+      description: 文件系统特性
+      takes_value: true
+    - short: "-E"
+      long: ""
+      description: 扩展选项
+      takes_value: true
+  subcommands: {}
+
+mkfs.xfs:
+  name: mkfs.xfs
+  description: 创建 XFS 文件系统
+  options:
+    - short: "-L"
+      long: ""
+      description: 卷标
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 强制创建
+    - short: "-b"
+      long: ""
+      description: 块大小
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 数据段选项
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: inode 选项
+      takes_value: true
+    - short: "-l"
+      long: ""
+      description: 日志选项
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 元数据选项
+      takes_value: true
+  subcommands: {}
+
+fsck:
+  name: fsck
+  description: 文件系统检查
+  options:
+    - short: "-a"
+      long: ""
+      description: 自动修复
+    - short: "-n"
+      long: ""
+      description: 只检查不修复
+    - short: "-y"
+      long: ""
+      description: 对所有问题回答是
+    - short: "-r"
+      long: ""
+      description: 交互式修复
+    - short: "-t"
+      long: ""
+      description: 文件系统类型
+      takes_value: true
+    - short: "-A"
+      long: ""
+      description: 检查所有
+    - short: "-C"
+      long: ""
+      description: 进度条
+    - short: "-V"
+      long: ""
+      description: 详细输出
+    - short: "-f"
+      long: ""
+      description: 强制检查
+  subcommands: {}
+
+tune2fs:
+  name: tune2fs
+  description: 调整 ext 文件系统
+  options:
+    - short: "-l"
+      long: ""
+      description: 列出超级块
+    - short: "-c"
+      long: ""
+      description: 最大挂载次数
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 检查间隔
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 保留块百分比
+      takes_value: true
+    - short: "-L"
+      long: ""
+      description: 卷标
+      takes_value: true
+    - short: "-U"
+      long: ""
+      description: UUID
+      takes_value: true
+    - short: "-O"
+      long: ""
+      description: 文件系统特性
+      takes_value: true
+    - short: "-E"
+      long: ""
+      description: 扩展选项
+      takes_value: true
+    - short: "-j"
+      long: ""
+      description: 添加日志
+    - short: "-e"
+      long: ""
+      description: 错误行为
+      takes_value: true
+      values: ["continue", "remount-ro", "panic"]
+  subcommands: {}
+
+# LVM 管理命令
+
+pvcreate:
+  name: pvcreate
+  description: 创建物理卷
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制创建
+    - short: "-y"
+      long: "--yes"
+      description: 自动确认
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--dataalignment"
+      description: 数据对齐
+      takes_value: true
+    - short: ""
+      long: "--metadatasize"
+      description: 元数据大小
+      takes_value: true
+    - short: "-u"
+      long: "--uuid"
+      description: 指定 UUID
+      takes_value: true
+    - short: "-Z"
+      long: "--zero"
+      description: 清零设备
+      takes_value: true
+      values: ["y", "n"]
+  subcommands: {}
+
+pvdisplay:
+  name: pvdisplay
+  description: 显示物理卷信息
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-m"
+      long: "--maps"
+      description: 显示映射
+    - short: "-s"
+      long: "--short"
+      description: 简短输出
+    - short: "-c"
+      long: "--colon"
+      description: 冒号分隔
+    - short: "-C"
+      long: "--columns"
+      description: 列格式
+    - short: ""
+      long: "--units"
+      description: 单位
+      takes_value: true
+  subcommands: {}
+
+pvs:
+  name: pvs
+  description: 显示物理卷摘要
+  options:
+    - short: "-o"
+      long: "--options"
+      description: 输出字段
+      takes_value: true
+    - short: "-a"
+      long: "--all"
+      description: 显示所有
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--units"
+      description: 单位
+      takes_value: true
+    - short: ""
+      long: "--separator"
+      description: 分隔符
+      takes_value: true
+    - short: ""
+      long: "--noheadings"
+      description: 不显示标题
+  subcommands: {}
+
+pvremove:
+  name: pvremove
+  description: 删除物理卷
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制删除
+    - short: "-y"
+      long: "--yes"
+      description: 自动确认
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+vgcreate:
+  name: vgcreate
+  description: 创建卷组
+  options:
+    - short: "-s"
+      long: "--physicalextentsize"
+      description: PE 大小
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-l"
+      long: "--maxlogicalvolumes"
+      description: 最大 LV 数
+      takes_value: true
+    - short: "-p"
+      long: "--maxphysicalvolumes"
+      description: 最大 PV 数
+      takes_value: true
+    - short: "-A"
+      long: "--autobackup"
+      description: 自动备份
+      takes_value: true
+      values: ["y", "n"]
+    - short: "-c"
+      long: "--clustered"
+      description: 集群模式
+      takes_value: true
+      values: ["y", "n"]
+  subcommands: {}
+
+vgdisplay:
+  name: vgdisplay
+  description: 显示卷组信息
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-s"
+      long: "--short"
+      description: 简短输出
+    - short: "-c"
+      long: "--colon"
+      description: 冒号分隔
+    - short: "-C"
+      long: "--columns"
+      description: 列格式
+    - short: "-A"
+      long: "--activevolumegroups"
+      description: 仅活动 VG
+    - short: ""
+      long: "--units"
+      description: 单位
+      takes_value: true
+  subcommands: {}
+
+vgs:
+  name: vgs
+  description: 显示卷组摘要
+  options:
+    - short: "-o"
+      long: "--options"
+      description: 输出字段
+      takes_value: true
+    - short: "-a"
+      long: "--all"
+      description: 显示所有
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--units"
+      description: 单位
+      takes_value: true
+    - short: ""
+      long: "--separator"
+      description: 分隔符
+      takes_value: true
+    - short: ""
+      long: "--noheadings"
+      description: 不显示标题
+  subcommands: {}
+
+vgextend:
+  name: vgextend
+  description: 扩展卷组
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-A"
+      long: "--autobackup"
+      description: 自动备份
+      takes_value: true
+    - short: "-f"
+      long: "--force"
+      description: 强制添加
+  subcommands: {}
+
+vgreduce:
+  name: vgreduce
+  description: 缩减卷组
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 删除所有空 PV
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--removemissing"
+      description: 删除丢失 PV
+    - short: "-f"
+      long: "--force"
+      description: 强制删除
+  subcommands: {}
+
+vgremove:
+  name: vgremove
+  description: 删除卷组
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制删除
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+lvcreate:
+  name: lvcreate
+  description: 创建逻辑卷
+  options:
+    - short: "-L"
+      long: "--size"
+      description: 大小
+      takes_value: true
+    - short: "-l"
+      long: "--extents"
+      description: 扩展数
+      takes_value: true
+    - short: "-n"
+      long: "--name"
+      description: 名称
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-i"
+      long: "--stripes"
+      description: 条带数
+      takes_value: true
+    - short: "-I"
+      long: "--stripesize"
+      description: 条带大小
+      takes_value: true
+    - short: "-m"
+      long: "--mirrors"
+      description: 镜像数
+      takes_value: true
+    - short: ""
+      long: "--type"
+      description: 类型
+      takes_value: true
+      values: ["linear", "striped", "mirror", "raid1", "raid5", "raid6", "thin", "thin-pool"]
+    - short: "-T"
+      long: "--thin"
+      description: 精简卷
+    - short: ""
+      long: "--thinpool"
+      description: 精简池
+      takes_value: true
+    - short: "-V"
+      long: "--virtualsize"
+      description: 虚拟大小
+      takes_value: true
+    - short: "-s"
+      long: "--snapshot"
+      description: 快照
+    - short: "-Z"
+      long: "--zero"
+      description: 清零
+      takes_value: true
+      values: ["y", "n"]
+  subcommands: {}
+
+lvdisplay:
+  name: lvdisplay
+  description: 显示逻辑卷信息
+  options:
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-m"
+      long: "--maps"
+      description: 显示映射
+    - short: "-c"
+      long: "--colon"
+      description: 冒号分隔
+    - short: "-C"
+      long: "--columns"
+      description: 列格式
+    - short: "-a"
+      long: "--all"
+      description: 显示所有
+    - short: ""
+      long: "--units"
+      description: 单位
+      takes_value: true
+  subcommands: {}
+
+lvs:
+  name: lvs
+  description: 显示逻辑卷摘要
+  options:
+    - short: "-o"
+      long: "--options"
+      description: 输出字段
+      takes_value: true
+    - short: "-a"
+      long: "--all"
+      description: 显示所有
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--units"
+      description: 单位
+      takes_value: true
+    - short: ""
+      long: "--separator"
+      description: 分隔符
+      takes_value: true
+    - short: ""
+      long: "--noheadings"
+      description: 不显示标题
+  subcommands: {}
+
+lvextend:
+  name: lvextend
+  description: 扩展逻辑卷
+  options:
+    - short: "-L"
+      long: "--size"
+      description: 新大小
+      takes_value: true
+    - short: "-l"
+      long: "--extents"
+      description: 扩展数
+      takes_value: true
+    - short: "-r"
+      long: "--resizefs"
+      description: 同时调整文件系统
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-f"
+      long: "--force"
+      description: 强制扩展
+    - short: "-n"
+      long: "--nofsck"
+      description: 不检查文件系统
+  subcommands: {}
+
+lvreduce:
+  name: lvreduce
+  description: 缩减逻辑卷
+  options:
+    - short: "-L"
+      long: "--size"
+      description: 新大小
+      takes_value: true
+    - short: "-l"
+      long: "--extents"
+      description: 扩展数
+      takes_value: true
+    - short: "-r"
+      long: "--resizefs"
+      description: 同时调整文件系统
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-f"
+      long: "--force"
+      description: 强制缩减
+    - short: "-n"
+      long: "--nofsck"
+      description: 不检查文件系统
+  subcommands: {}
+
+lvresize:
+  name: lvresize
+  description: 调整逻辑卷大小
+  options:
+    - short: "-L"
+      long: "--size"
+      description: 新大小
+      takes_value: true
+    - short: "-l"
+      long: "--extents"
+      description: 扩展数
+      takes_value: true
+    - short: "-r"
+      long: "--resizefs"
+      description: 同时调整文件系统
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-f"
+      long: "--force"
+      description: 强制调整
+  subcommands: {}
+
+lvremove:
+  name: lvremove
+  description: 删除逻辑卷
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制删除
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+# 其他系统命令
+
+ln:
+  name: ln
+  description: 创建链接
+  options:
+    - short: "-s"
+      long: "--symbolic"
+      description: 符号链接
+    - short: "-f"
+      long: "--force"
+      description: 强制创建
+    - short: "-n"
+      long: "--no-dereference"
+      description: 不解引用
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-r"
+      long: "--relative"
+      description: 相对路径
+    - short: "-b"
+      long: "--backup"
+      description: 备份
+    - short: "-i"
+      long: "--interactive"
+      description: 交互模式
+  subcommands: {}
+
+env:
+  name: env
+  description: 环境变量
+  options:
+    - short: "-i"
+      long: "--ignore-environment"
+      description: 忽略环境
+    - short: "-u"
+      long: "--unset"
+      description: 取消变量
+      takes_value: true
+    - short: "-0"
+      long: "--null"
+      description: 空字符分隔
+  subcommands: {}
+
+export:
+  name: export
+  description: 导出变量
+  options:
+    - short: "-n"
+      long: ""
+      description: 取消导出
+    - short: "-p"
+      long: ""
+      description: 列出导出变量
+  subcommands: {}
+
+unset:
+  name: unset
+  description: 删除变量
+  options:
+    - short: "-v"
+      long: ""
+      description: 删除变量
+    - short: "-f"
+      long: ""
+      description: 删除函数
+  subcommands: {}
+
+history:
+  name: history
+  description: 历史命令
+  options:
+    - short: "-c"
+      long: ""
+      description: 清空历史
+    - short: "-d"
+      long: ""
+      description: 删除条目
+      takes_value: true
+    - short: "-a"
+      long: ""
+      description: 追加到文件
+    - short: "-n"
+      long: ""
+      description: 从文件读取
+    - short: "-r"
+      long: ""
+      description: 读取文件
+    - short: "-w"
+      long: ""
+      description: 写入文件
+  subcommands: {}
+
+alias:
+  name: alias
+  description: 命令别名
+  options:
+    - short: "-p"
+      long: ""
+      description: 列出所有别名
+  subcommands: {}
+
+unalias:
+  name: unalias
+  description: 删除别名
+  options:
+    - short: "-a"
+      long: ""
+      description: 删除所有别名
+  subcommands: {}
+
+reboot:
+  name: reboot
+  description: 重启系统
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制重启
+    - short: "-n"
+      long: ""
+      description: 不同步
+    - short: "-p"
+      long: "--poweroff"
+      description: 关机
+    - short: ""
+      long: "--halt"
+      description: 停机
+    - short: "-w"
+      long: ""
+      description: 仅写 wtmp
+  subcommands: {}
+
+shutdown:
+  name: shutdown
+  description: 关机或重启
+  options:
+    - short: "-h"
+      long: "--halt"
+      description: 停机
+    - short: "-P"
+      long: "--poweroff"
+      description: 关机
+    - short: "-r"
+      long: "--reboot"
+      description: 重启
+    - short: "-k"
+      long: ""
+      description: 仅发送警告
+    - short: "-c"
+      long: ""
+      description: 取消关机
+    - short: ""
+      long: "--no-wall"
+      description: 不发送消息
+  subcommands: {}
+
+poweroff:
+  name: poweroff
+  description: 关闭系统
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制关机
+    - short: "-n"
+      long: ""
+      description: 不同步
+    - short: "-w"
+      long: ""
+      description: 仅写 wtmp
+  subcommands: {}
+
+halt:
+  name: halt
+  description: 停止系统
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制停机
+    - short: "-n"
+      long: ""
+      description: 不同步
+    - short: "-p"
+      long: "--poweroff"
+      description: 关机
+    - short: "-w"
+      long: ""
+      description: 仅写 wtmp
+  subcommands: {}
+
+dmesg:
+  name: dmesg
+  description: 内核消息
+  options:
+    - short: "-c"
+      long: "--clear"
+      description: 清除缓冲区
+    - short: "-H"
+      long: "--human"
+      description: 人类可读
+    - short: "-L"
+      long: "--color"
+      description: 颜色输出
+      takes_value: true
+      values: ["auto", "always", "never"]
+    - short: "-l"
+      long: "--level"
+      description: 级别过滤
+      takes_value: true
+    - short: "-f"
+      long: "--facility"
+      description: 设施过滤
+      takes_value: true
+    - short: "-T"
+      long: "--ctime"
+      description: 人类可读时间
+    - short: "-w"
+      long: "--follow"
+      description: 跟踪输出
+    - short: "-x"
+      long: "--decode"
+      description: 解码设施和级别
+  subcommands: {}
+
+lsof:
+  name: lsof
+  description: 列出打开的文件
+  options:
+    - short: "-i"
+      long: ""
+      description: 网络文件
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 指定 PID
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: 指定用户
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 命令名匹配
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 文件描述符
+      takes_value: true
+    - short: "+D"
+      long: ""
+      description: 目录及子目录
+    - short: "-n"
+      long: ""
+      description: 不解析主机名
+    - short: "-P"
+      long: ""
+      description: 不解析端口
+    - short: "-t"
+      long: ""
+      description: 仅显示 PID
+    - short: "-r"
+      long: ""
+      description: 重复模式
+      takes_value: true
+  subcommands: {}
+
+strace:
+  name: strace
+  description: 系统调用跟踪
+  options:
+    - short: "-p"
+      long: ""
+      description: 跟踪 PID
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 跟踪子进程
+    - short: "-e"
+      long: ""
+      description: 表达式
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 统计
+    - short: "-t"
+      long: ""
+      description: 时间戳
+    - short: "-tt"
+      long: ""
+      description: 微秒时间戳
+    - short: "-T"
+      long: ""
+      description: 调用耗时
+    - short: "-s"
+      long: ""
+      description: 字符串长度
+      takes_value: true
+    - short: "-y"
+      long: ""
+      description: 显示路径
+    - short: "-v"
+      long: ""
+      description: 详细输出
+  subcommands: {}
+
+nice:
+  name: nice
+  description: 以调整优先级运行
+  options:
+    - short: "-n"
+      long: "--adjustment"
+      description: 优先级调整
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+renice:
+  name: renice
+  description: 调整运行进程优先级
+  options:
+    - short: "-n"
+      long: "--priority"
+      description: 优先级值
+      takes_value: true
+    - short: "-p"
+      long: "--pid"
+      description: 进程 ID
+    - short: "-g"
+      long: "--pgrp"
+      description: 进程组
+    - short: "-u"
+      long: "--user"
+      description: 用户
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+ionice:
+  name: ionice
+  description: 设置 I/O 优先级
+  options:
+    - short: "-c"
+      long: "--class"
+      description: 调度类
+      takes_value: true
+      values: ["0", "1", "2", "3"]
+    - short: "-n"
+      long: "--classdata"
+      description: 类数据
+      takes_value: true
+    - short: "-p"
+      long: "--pid"
+      description: 进程 ID
+      takes_value: true
+    - short: "-P"
+      long: "--pgid"
+      description: 进程组 ID
+      takes_value: true
+    - short: "-t"
+      long: "--ignore"
+      description: 忽略错误
+    - short: "-u"
+      long: "--uid"
+      description: 用户 ID
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+taskset:
+  name: taskset
+  description: 设置 CPU 亲和性
+  options:
+    - short: "-a"
+      long: "--all-tasks"
+      description: 所有任务
+    - short: "-c"
+      long: "--cpu-list"
+      description: CPU 列表
+    - short: "-p"
+      long: "--pid"
+      description: 进程 ID
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+chroot:
+  name: chroot
+  description: 更改根目录
+  options:
+    - short: ""
+      long: "--groups"
+      description: 设置组
+      takes_value: true
+    - short: ""
+      long: "--userspec"
+      description: 用户:组
+      takes_value: true
+    - short: ""
+      long: "--skip-chdir"
+      description: 不切换目录
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+nproc:
+  name: nproc
+  description: 打印处理器数量
+  options:
+    - short: ""
+      long: "--all"
+      description: 所有处理器
+    - short: ""
+      long: "--ignore"
+      description: 忽略数量
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+getconf:
+  name: getconf
+  description: 获取配置值
+  options:
+    - short: "-a"
+      long: ""
+      description: 列出所有
+    - short: "-v"
+      long: ""
+      description: 规范版本
+      takes_value: true
+  subcommands: {}
+
+ulimit:
+  name: ulimit
+  description: 用户资源限制
+  options:
+    - short: "-a"
+      long: ""
+      description: 显示所有限制
+    - short: "-H"
+      long: ""
+      description: 硬限制
+    - short: "-S"
+      long: ""
+      description: 软限制
+    - short: "-c"
+      long: ""
+      description: 核心文件大小
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 数据段大小
+      takes_value: true
+    - short: "-e"
+      long: ""
+      description: 调度优先级
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 文件大小
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 待处理信号
+      takes_value: true
+    - short: "-l"
+      long: ""
+      description: 锁定内存
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 常驻内存
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 打开文件数
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 管道缓冲
+      takes_value: true
+    - short: "-q"
+      long: ""
+      description: 消息队列
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 实时优先级
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 栈大小
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: CPU 时间
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: 进程数
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 虚拟内存
+      takes_value: true
+    - short: "-x"
+      long: ""
+      description: 文件锁
+      takes_value: true
+  subcommands: {}
+
+time:
+  name: time
+  description: 测量命令执行时间
+  options:
+    - short: "-p"
+      long: "--portability"
+      description: POSIX 格式
+    - short: "-o"
+      long: "--output"
+      description: 输出文件
+      takes_value: true
+    - short: "-a"
+      long: "--append"
+      description: 追加输出
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-f"
+      long: "--format"
+      description: 输出格式
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+crontab:
+  name: crontab
+  description: 定时任务管理
+  options:
+    - short: "-e"
+      long: ""
+      description: 编辑任务
+    - short: "-l"
+      long: ""
+      description: 列出任务
+    - short: "-r"
+      long: ""
+      description: 删除任务
+    - short: "-i"
+      long: ""
+      description: 删除前确认
+    - short: "-u"
+      long: ""
+      description: 指定用户
+      takes_value: true
+  subcommands: {}
+
+at:
+  name: at
+  description: 定时执行命令
+  options:
+    - short: "-c"
+      long: ""
+      description: 显示任务内容
+    - short: "-d"
+      long: ""
+      description: 删除任务
+    - short: "-f"
+      long: ""
+      description: 从文件读取
+      takes_value: true
+    - short: "-l"
+      long: ""
+      description: 列出任务
+    - short: "-m"
+      long: ""
+      description: 完成后邮件通知
+    - short: "-q"
+      long: ""
+      description: 队列名称
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 删除任务
+    - short: "-t"
+      long: ""
+      description: 时间
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 显示执行时间
+    - short: "-V"
+      long: ""
+      description: 显示版本
+  subcommands: {}
+
+atq:
+  name: atq
+  description: 列出 at 任务
+  options:
+    - short: "-q"
+      long: ""
+      description: 队列名称
+      takes_value: true
+    - short: "-V"
+      long: ""
+      description: 显示版本
+  subcommands: {}
+
+atrm:
+  name: atrm
+  description: 删除 at 任务
+  options:
+    - short: "-V"
+      long: ""
+      description: 显示版本
+  subcommands: {}
+
+batch:
+  name: batch
+  description: 低负载时执行
+  options:
+    - short: "-f"
+      long: ""
+      description: 从文件读取
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 完成后邮件通知
+    - short: "-q"
+      long: ""
+      description: 队列名称
+      takes_value: true
+    - short: "-V"
+      long: ""
+      description: 显示版本
+  subcommands: {}
+
+shutdown:
+  name: shutdown
+  description: 关机或重启
+  options:
+    - short: "-r"
+      long: "--reboot"
+      description: 重启
+    - short: "-h"
+      long: "--halt"
+      description: 关机后停机
+    - short: "-P"
+      long: "--poweroff"
+      description: 关机后断电
+    - short: "-H"
+      long: ""
+      description: 关机后停机
+    - short: "-k"
+      long: ""
+      description: 只发送警告
+    - short: "-c"
+      long: ""
+      description: 取消关机
+    - short: ""
+      long: "--no-wall"
+      description: 不发送消息
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+reboot:
+  name: reboot
+  description: 重启系统
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制重启
+    - short: "-p"
+      long: "--poweroff"
+      description: 关机
+    - short: "-w"
+      long: "--wtmp-only"
+      description: 只写 wtmp
+    - short: ""
+      long: "--no-wall"
+      description: 不发送消息
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+poweroff:
+  name: poweroff
+  description: 关闭系统
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制关机
+    - short: "-w"
+      long: "--wtmp-only"
+      description: 只写 wtmp
+    - short: ""
+      long: "--no-wall"
+      description: 不发送消息
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+halt:
+  name: halt
+  description: 停止系统
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制停机
+    - short: "-p"
+      long: "--poweroff"
+      description: 关机
+    - short: "-w"
+      long: "--wtmp-only"
+      description: 只写 wtmp
+    - short: ""
+      long: "--no-wall"
+      description: 不发送消息
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+sudo:
+  name: sudo
+  description: 以其他用户身份执行
+  options:
+    - short: "-u"
+      long: "--user"
+      description: 指定用户
+      takes_value: true
+    - short: "-g"
+      long: "--group"
+      description: 指定组
+      takes_value: true
+    - short: "-i"
+      long: "--login"
+      description: 登录 Shell
+    - short: "-s"
+      long: "--shell"
+      description: 运行 Shell
+    - short: "-E"
+      long: "--preserve-env"
+      description: 保留环境
+    - short: "-H"
+      long: "--set-home"
+      description: 设置 HOME
+    - short: "-n"
+      long: "--non-interactive"
+      description: 非交互
+    - short: "-p"
+      long: "--prompt"
+      description: 密码提示
+      takes_value: true
+    - short: "-k"
+      long: "--reset-timestamp"
+      description: 重置时间戳
+    - short: "-K"
+      long: "--remove-timestamp"
+      description: 移除时间戳
+    - short: "-v"
+      long: "--validate"
+      description: 验证
+    - short: "-l"
+      long: "--list"
+      description: 列出权限
+    - short: "-e"
+      long: "--edit"
+      description: 编辑文件
+    - short: "-b"
+      long: "--background"
+      description: 后台运行
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+su:
+  name: su
+  description: 切换用户
+  options:
+    - short: "-"
+      long: "--login"
+      description: 登录 Shell
+    - short: "-l"
+      long: "--login"
+      description: 登录 Shell
+    - short: "-c"
+      long: "--command"
+      description: 执行命令
+      takes_value: true
+    - short: "-f"
+      long: "--fast"
+      description: 快速模式
+    - short: "-g"
+      long: "--group"
+      description: 指定组
+      takes_value: true
+    - short: "-G"
+      long: "--supp-group"
+      description: 附加组
+      takes_value: true
+    - short: "-m"
+      long: "--preserve-environment"
+      description: 保留环境
+    - short: "-p"
+      long: ""
+      description: 保留环境
+    - short: "-s"
+      long: "--shell"
+      description: 指定 Shell
+      takes_value: true
+    - short: "-w"
+      long: "--whitelist-environment"
+      description: 环境白名单
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+visudo:
+  name: visudo
+  description: 编辑 sudoers 文件
+  options:
+    - short: "-c"
+      long: "--check"
+      description: 检查语法
+    - short: "-f"
+      long: "--file"
+      description: 指定文件
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-s"
+      long: "--strict"
+      description: 严格检查
+    - short: "-x"
+      long: "--export"
+      description: 导出
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
   subcommands: {}
 

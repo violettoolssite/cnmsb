@@ -110,6 +110,7 @@ impl ArgsCompleter {
 
             // 子命令补全
             if parsed.subcommand.is_none() && parsed.current_word_index == 1 {
+                // 一级子命令
                 if let Some(subcommands) = self.database.get_subcommands(&parsed.command) {
                     for (sub_name, sub_desc) in subcommands {
                         completions.push(Completion {
@@ -118,6 +119,20 @@ impl ArgsCompleter {
                             score: 95,
                             kind: CompletionKind::Subcommand,
                         });
+                    }
+                }
+            } else if parsed.subcommand.is_some() && parsed.current_word_index == 2 {
+                // 二级子命令（嵌套）
+                if let Some(ref sub) = parsed.subcommand {
+                    if let Some(sub_def) = self.database.get_subcommand(&parsed.command, sub) {
+                        for (sub_name, sub_def) in &sub_def.subcommands {
+                            completions.push(Completion {
+                                text: sub_name.clone(),
+                                description: sub_def.description.clone(),
+                                score: 95,
+                                kind: CompletionKind::Subcommand,
+                            });
+                        }
                     }
                 }
             }

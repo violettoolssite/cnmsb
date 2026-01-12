@@ -1,0 +1,759 @@
+# 数据库客户端命令
+# 贡献者可以在此添加更多数据库命令
+
+mysql:
+  name: mysql
+  description: MySQL 客户端
+  options:
+    - short: "-u"
+      long: "--user"
+      description: 用户名
+      takes_value: true
+    - short: "-p"
+      long: "--password"
+      description: 密码
+    - short: "-h"
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: "-P"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-D"
+      long: "--database"
+      description: 数据库
+      takes_value: true
+    - short: "-e"
+      long: "--execute"
+      description: 执行 SQL
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-s"
+      long: "--silent"
+      description: 静默模式
+    - short: "-N"
+      long: "--skip-column-names"
+      description: 不显示列名
+    - short: "-B"
+      long: "--batch"
+      description: 批处理模式
+    - short: ""
+      long: "--ssl"
+      description: 使用 SSL
+    - short: ""
+      long: "--ssl-ca"
+      description: CA 证书
+      takes_value: true
+    - short: ""
+      long: "--ssl-cert"
+      description: 客户端证书
+      takes_value: true
+    - short: ""
+      long: "--ssl-key"
+      description: 客户端密钥
+      takes_value: true
+    - short: ""
+      long: "--default-character-set"
+      description: 字符集
+      takes_value: true
+      values: ["utf8", "utf8mb4", "latin1", "gbk"]
+    - short: "-A"
+      long: "--no-auto-rehash"
+      description: 禁用自动补全
+    - short: ""
+      long: "--connect-timeout"
+      description: 连接超时
+      takes_value: true
+    - short: ""
+      long: "--compress"
+      description: 压缩
+    - short: "-f"
+      long: "--force"
+      description: 强制执行
+    - short: ""
+      long: "--safe-updates"
+      description: 安全更新
+    - short: ""
+      long: "--quick"
+      description: 快速模式
+    - short: "-t"
+      long: "--table"
+      description: 表格输出
+  subcommands: {}
+
+mysqldump:
+  name: mysqldump
+  description: MySQL 备份工具
+  options:
+    - short: "-u"
+      long: "--user"
+      description: 用户名
+      takes_value: true
+    - short: "-p"
+      long: "--password"
+      description: 密码
+    - short: "-h"
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: "-P"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-B"
+      long: "--databases"
+      description: 多个数据库
+    - short: "-A"
+      long: "--all-databases"
+      description: 所有数据库
+    - short: ""
+      long: "--single-transaction"
+      description: 单事务
+    - short: ""
+      long: "--quick"
+      description: 快速模式
+    - short: ""
+      long: "--lock-tables"
+      description: 锁表
+    - short: ""
+      long: "--no-data"
+      description: 仅结构
+    - short: "-d"
+      long: "--no-create-info"
+      description: 仅数据
+    - short: ""
+      long: "--routines"
+      description: 包含存储过程
+    - short: ""
+      long: "--triggers"
+      description: 包含触发器
+    - short: ""
+      long: "--events"
+      description: 包含事件
+    - short: ""
+      long: "--add-drop-table"
+      description: 添加 DROP TABLE
+    - short: ""
+      long: "--add-drop-database"
+      description: 添加 DROP DATABASE
+    - short: ""
+      long: "--compress"
+      description: 压缩
+    - short: ""
+      long: "--default-character-set"
+      description: 字符集
+      takes_value: true
+    - short: ""
+      long: "--where"
+      description: WHERE 条件
+      takes_value: true
+    - short: ""
+      long: "--ignore-table"
+      description: 忽略表
+      takes_value: true
+    - short: "-r"
+      long: "--result-file"
+      description: 输出文件
+      takes_value: true
+  subcommands: {}
+
+psql:
+  name: psql
+  description: PostgreSQL 客户端
+  options:
+    - short: "-U"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-h"
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: "-p"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-d"
+      long: "--dbname"
+      description: 数据库
+      takes_value: true
+    - short: "-c"
+      long: "--command"
+      description: 执行命令
+      takes_value: true
+    - short: "-f"
+      long: "--file"
+      description: 执行文件
+      takes_value: true
+    - short: "-l"
+      long: "--list"
+      description: 列出数据库
+    - short: "-A"
+      long: "--no-align"
+      description: 不对齐
+    - short: "-t"
+      long: "--tuples-only"
+      description: 仅元组
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-w"
+      long: "--no-password"
+      description: 不询问密码
+    - short: "-W"
+      long: "--password"
+      description: 询问密码
+    - short: "-e"
+      long: "--echo-queries"
+      description: 回显查询
+    - short: "-E"
+      long: "--echo-hidden"
+      description: 显示隐藏
+    - short: ""
+      long: "--csv"
+      description: CSV 输出
+    - short: "-H"
+      long: "--html"
+      description: HTML 输出
+    - short: "-x"
+      long: "--expanded"
+      description: 扩展显示
+    - short: "-F"
+      long: "--field-separator"
+      description: 字段分隔符
+      takes_value: true
+    - short: "-R"
+      long: "--record-separator"
+      description: 记录分隔符
+      takes_value: true
+    - short: "-o"
+      long: "--output"
+      description: 输出文件
+      takes_value: true
+    - short: "-v"
+      long: "--variable"
+      description: 设置变量
+      takes_value: true
+    - short: "-1"
+      long: "--single-transaction"
+      description: 单事务
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+pg_dump:
+  name: pg_dump
+  description: PostgreSQL 备份
+  options:
+    - short: "-U"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-h"
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: "-p"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-d"
+      long: "--dbname"
+      description: 数据库
+      takes_value: true
+    - short: "-f"
+      long: "--file"
+      description: 输出文件
+      takes_value: true
+    - short: "-F"
+      long: "--format"
+      description: 格式
+      takes_value: true
+      values: ["p", "c", "d", "t"]
+    - short: "-t"
+      long: "--table"
+      description: 指定表
+      takes_value: true
+    - short: "-T"
+      long: "--exclude-table"
+      description: 排除表
+      takes_value: true
+    - short: "-n"
+      long: "--schema"
+      description: 指定 schema
+      takes_value: true
+    - short: "-N"
+      long: "--exclude-schema"
+      description: 排除 schema
+      takes_value: true
+    - short: "-a"
+      long: "--data-only"
+      description: 仅数据
+    - short: "-s"
+      long: "--schema-only"
+      description: 仅结构
+    - short: "-c"
+      long: "--clean"
+      description: 添加 DROP
+    - short: "-C"
+      long: "--create"
+      description: 添加 CREATE
+    - short: ""
+      long: "--if-exists"
+      description: IF EXISTS
+    - short: "-Z"
+      long: "--compress"
+      description: 压缩级别
+      takes_value: true
+    - short: "-j"
+      long: "--jobs"
+      description: 并行任务
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+pg_restore:
+  name: pg_restore
+  description: PostgreSQL 恢复
+  options:
+    - short: "-U"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-h"
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: "-p"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-d"
+      long: "--dbname"
+      description: 数据库
+      takes_value: true
+    - short: "-F"
+      long: "--format"
+      description: 格式
+      takes_value: true
+      values: ["c", "d", "t"]
+    - short: "-t"
+      long: "--table"
+      description: 指定表
+      takes_value: true
+    - short: "-n"
+      long: "--schema"
+      description: 指定 schema
+      takes_value: true
+    - short: "-a"
+      long: "--data-only"
+      description: 仅数据
+    - short: "-s"
+      long: "--schema-only"
+      description: 仅结构
+    - short: "-c"
+      long: "--clean"
+      description: 先清理
+    - short: "-C"
+      long: "--create"
+      description: 创建数据库
+    - short: "-e"
+      long: "--exit-on-error"
+      description: 错误退出
+    - short: "-j"
+      long: "--jobs"
+      description: 并行任务
+      takes_value: true
+    - short: "-l"
+      long: "--list"
+      description: 列出内容
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+mongosh:
+  name: mongosh
+  description: MongoDB Shell
+  options:
+    - short: ""
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: ""
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-u"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-p"
+      long: "--password"
+      description: 密码
+      takes_value: true
+    - short: ""
+      long: "--authenticationDatabase"
+      description: 认证数据库
+      takes_value: true
+    - short: ""
+      long: "--eval"
+      description: 执行代码
+      takes_value: true
+    - short: ""
+      long: "--file"
+      description: 执行文件
+      takes_value: true
+    - short: ""
+      long: "--shell"
+      description: 进入 Shell
+    - short: ""
+      long: "--nodb"
+      description: 不连接数据库
+    - short: ""
+      long: "--norc"
+      description: 不加载配置
+    - short: ""
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--json"
+      description: JSON 输出
+    - short: ""
+      long: "--tls"
+      description: 使用 TLS
+    - short: ""
+      long: "--tlsCertificateKeyFile"
+      description: TLS 证书
+      takes_value: true
+    - short: ""
+      long: "--tlsCAFile"
+      description: TLS CA
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+mongo:
+  name: mongo
+  description: MongoDB 旧版客户端
+  options:
+    - short: ""
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: ""
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-u"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-p"
+      long: "--password"
+      description: 密码
+      takes_value: true
+    - short: ""
+      long: "--authenticationDatabase"
+      description: 认证数据库
+      takes_value: true
+    - short: ""
+      long: "--eval"
+      description: 执行代码
+      takes_value: true
+    - short: ""
+      long: "--shell"
+      description: 进入 Shell
+    - short: ""
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--ssl"
+      description: 使用 SSL
+  subcommands: {}
+
+mongodump:
+  name: mongodump
+  description: MongoDB 备份
+  options:
+    - short: ""
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: ""
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-u"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-p"
+      long: "--password"
+      description: 密码
+      takes_value: true
+    - short: "-d"
+      long: "--db"
+      description: 数据库
+      takes_value: true
+    - short: "-c"
+      long: "--collection"
+      description: 集合
+      takes_value: true
+    - short: "-o"
+      long: "--out"
+      description: 输出目录
+      takes_value: true
+    - short: ""
+      long: "--gzip"
+      description: 压缩
+    - short: ""
+      long: "--archive"
+      description: 归档文件
+      takes_value: true
+    - short: "-q"
+      long: "--query"
+      description: 查询条件
+      takes_value: true
+    - short: ""
+      long: "--oplog"
+      description: 包含 oplog
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+mongorestore:
+  name: mongorestore
+  description: MongoDB 恢复
+  options:
+    - short: ""
+      long: "--host"
+      description: 主机
+      takes_value: true
+    - short: ""
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-u"
+      long: "--username"
+      description: 用户名
+      takes_value: true
+    - short: "-p"
+      long: "--password"
+      description: 密码
+      takes_value: true
+    - short: "-d"
+      long: "--db"
+      description: 目标数据库
+      takes_value: true
+    - short: "-c"
+      long: "--collection"
+      description: 目标集合
+      takes_value: true
+    - short: ""
+      long: "--gzip"
+      description: 解压
+    - short: ""
+      long: "--archive"
+      description: 归档文件
+      takes_value: true
+    - short: ""
+      long: "--drop"
+      description: 先删除
+    - short: ""
+      long: "--nsInclude"
+      description: 包含命名空间
+      takes_value: true
+    - short: ""
+      long: "--nsExclude"
+      description: 排除命名空间
+      takes_value: true
+    - short: ""
+      long: "--oplogReplay"
+      description: 重放 oplog
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+redis-cli:
+  name: redis-cli
+  description: Redis 客户端
+  options:
+    - short: "-h"
+      long: ""
+      description: 主机
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 端口
+      takes_value: true
+    - short: "-a"
+      long: ""
+      description: 密码
+      takes_value: true
+    - short: ""
+      long: "--user"
+      description: 用户名
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 数据库编号
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: URI
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 重复次数
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 间隔时间
+      takes_value: true
+    - short: "-x"
+      long: ""
+      description: 从标准输入读取
+    - short: "-d"
+      long: ""
+      description: 分隔符
+      takes_value: true
+    - short: ""
+      long: "--raw"
+      description: 原始输出
+    - short: ""
+      long: "--csv"
+      description: CSV 输出
+    - short: ""
+      long: "--stat"
+      description: 统计模式
+    - short: ""
+      long: "--latency"
+      description: 延迟模式
+    - short: ""
+      long: "--latency-history"
+      description: 延迟历史
+    - short: ""
+      long: "--bigkeys"
+      description: 大 key 扫描
+    - short: ""
+      long: "--memkeys"
+      description: 内存分析
+    - short: ""
+      long: "--scan"
+      description: SCAN 模式
+    - short: ""
+      long: "--pattern"
+      description: 匹配模式
+      takes_value: true
+    - short: ""
+      long: "--cluster"
+      description: 集群模式
+    - short: ""
+      long: "--pipe"
+      description: 管道模式
+    - short: ""
+      long: "--rdb"
+      description: RDB 文件
+      takes_value: true
+    - short: ""
+      long: "--tls"
+      description: 使用 TLS
+    - short: ""
+      long: "--cert"
+      description: TLS 证书
+      takes_value: true
+    - short: ""
+      long: "--key"
+      description: TLS 密钥
+      takes_value: true
+    - short: ""
+      long: "--cacert"
+      description: CA 证书
+      takes_value: true
+  subcommands: {}
+
+sqlite3:
+  name: sqlite3
+  description: SQLite 客户端
+  options:
+    - short: ""
+      long: "-cmd"
+      description: 执行命令
+      takes_value: true
+    - short: ""
+      long: "-header"
+      description: 显示列头
+    - short: ""
+      long: "-noheader"
+      description: 不显示列头
+    - short: ""
+      long: "-column"
+      description: 列模式
+    - short: ""
+      long: "-csv"
+      description: CSV 模式
+    - short: ""
+      long: "-json"
+      description: JSON 模式
+    - short: ""
+      long: "-table"
+      description: 表格模式
+    - short: ""
+      long: "-line"
+      description: 行模式
+    - short: ""
+      long: "-list"
+      description: 列表模式
+    - short: ""
+      long: "-separator"
+      description: 分隔符
+      takes_value: true
+    - short: ""
+      long: "-nullvalue"
+      description: NULL 显示值
+      takes_value: true
+    - short: ""
+      long: "-init"
+      description: 初始化文件
+      takes_value: true
+    - short: ""
+      long: "-readonly"
+      description: 只读模式
+    - short: ""
+      long: "-version"
+      description: 显示版本
+    - short: ""
+      long: "-help"
+      description: 显示帮助
+    - short: ""
+      long: "-bail"
+      description: 错误退出
+    - short: ""
+      long: "-interactive"
+      description: 交互模式
+    - short: ""
+      long: "-batch"
+      description: 批处理模式
+    - short: ""
+      long: "-echo"
+      description: 回显命令
+    - short: ""
+      long: "-stats"
+      description: 显示统计
+  subcommands: {}
+
+

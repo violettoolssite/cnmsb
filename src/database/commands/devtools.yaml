@@ -1,0 +1,1576 @@
+# 开发工具命令
+# 贡献者可以在此添加更多开发工具命令
+
+npm:
+  name: npm
+  description: Node 包管理器
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-g"
+      long: "--global"
+      description: 全局安装
+    - short: ""
+      long: "--save"
+      description: 保存到 dependencies
+    - short: "-D"
+      long: "--save-dev"
+      description: 保存到 devDependencies
+    - short: ""
+      long: "--registry"
+      description: 指定源
+      takes_value: true
+    - short: ""
+      long: "--legacy-peer-deps"
+      description: 忽略 peer 依赖
+  subcommands:
+    install:
+      name: install
+      description: 安装依赖
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 全局安装
+        - short: "-D"
+          long: "--save-dev"
+          description: 开发依赖
+        - short: ""
+          long: "--save-exact"
+          description: 精确版本
+        - short: ""
+          long: "--legacy-peer-deps"
+          description: 忽略 peer 依赖
+        - short: "-f"
+          long: "--force"
+          description: 强制安装
+    uninstall:
+      name: uninstall
+      description: 卸载包
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 全局卸载
+        - short: "-D"
+          long: "--save-dev"
+          description: 从开发依赖移除
+    run:
+      name: run
+      description: 运行脚本
+      options:
+        - short: ""
+          long: "--"
+          description: 传递参数
+    build:
+      name: build
+      description: 构建项目
+      options: []
+    test:
+      name: test
+      description: 运行测试
+      options:
+        - short: ""
+          long: "--coverage"
+          description: 覆盖率报告
+    start:
+      name: start
+      description: 启动项目
+      options: []
+    init:
+      name: init
+      description: 初始化项目
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 使用默认值
+    publish:
+      name: publish
+      description: 发布包
+      options:
+        - short: ""
+          long: "--access"
+          description: 访问级别
+          takes_value: true
+          values: ["public", "restricted"]
+        - short: ""
+          long: "--tag"
+          description: 标签
+          takes_value: true
+    update:
+      name: update
+      description: 更新依赖
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 更新全局包
+    outdated:
+      name: outdated
+      description: 检查过期依赖
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 检查全局包
+    list:
+      name: list
+      description: 列出依赖
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 列出全局包
+        - short: ""
+          long: "--depth"
+          description: 深度
+          takes_value: true
+    cache:
+      name: cache
+      description: 缓存管理
+      options: []
+    config:
+      name: config
+      description: 配置管理
+      options: []
+    link:
+      name: link
+      description: 链接本地包
+      options: []
+    pack:
+      name: pack
+      description: 打包
+      options: []
+    audit:
+      name: audit
+      description: 安全审计
+      options:
+        - short: ""
+          long: "--fix"
+          description: 自动修复
+    ci:
+      name: ci
+      description: 干净安装
+      options: []
+    exec:
+      name: exec
+      description: 执行包命令
+      options: []
+    npx:
+      name: npx
+      description: 运行包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+
+yarn:
+  name: yarn
+  description: 快速包管理器
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    add:
+      name: add
+      description: 添加依赖
+      options:
+        - short: "-D"
+          long: "--dev"
+          description: 开发依赖
+        - short: "-E"
+          long: "--exact"
+          description: 精确版本
+        - short: "-g"
+          long: "--global"
+          description: 全局安装
+    remove:
+      name: remove
+      description: 移除依赖
+      options: []
+    install:
+      name: install
+      description: 安装依赖
+      options:
+        - short: ""
+          long: "--frozen-lockfile"
+          description: 冻结 lock 文件
+        - short: ""
+          long: "--production"
+          description: 生产依赖
+    run:
+      name: run
+      description: 运行脚本
+      options: []
+    build:
+      name: build
+      description: 构建项目
+      options: []
+    test:
+      name: test
+      description: 运行测试
+      options: []
+    start:
+      name: start
+      description: 启动项目
+      options: []
+    init:
+      name: init
+      description: 初始化项目
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 使用默认值
+    global:
+      name: global
+      description: 全局操作
+      options: []
+    cache:
+      name: cache
+      description: 缓存管理
+      options: []
+    upgrade:
+      name: upgrade
+      description: 升级依赖
+      options:
+        - short: ""
+          long: "--latest"
+          description: 最新版本
+    why:
+      name: why
+      description: 依赖原因
+      options: []
+    workspace:
+      name: workspace
+      description: 工作区操作
+      options: []
+
+pnpm:
+  name: pnpm
+  description: 高效包管理器
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    add:
+      name: add
+      description: 添加依赖
+      options:
+        - short: "-D"
+          long: "--save-dev"
+          description: 开发依赖
+        - short: "-g"
+          long: "--global"
+          description: 全局安装
+        - short: "-E"
+          long: "--save-exact"
+          description: 精确版本
+    remove:
+      name: remove
+      description: 移除依赖
+      options:
+        - short: "-g"
+          long: "--global"
+          description: 全局移除
+    install:
+      name: install
+      description: 安装依赖
+      options:
+        - short: ""
+          long: "--frozen-lockfile"
+          description: 冻结 lock
+        - short: ""
+          long: "--prod"
+          description: 仅生产依赖
+    run:
+      name: run
+      description: 运行脚本
+      options: []
+    dlx:
+      name: dlx
+      description: 运行包
+      options: []
+    exec:
+      name: exec
+      description: 执行命令
+      options: []
+    update:
+      name: update
+      description: 更新依赖
+      options:
+        - short: ""
+          long: "--latest"
+          description: 最新版本
+    store:
+      name: store
+      description: 存储管理
+      options: []
+
+pip:
+  name: pip
+  description: Python 包管理器
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+  subcommands:
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-r"
+          long: "--requirement"
+          description: 从文件安装
+          takes_value: true
+        - short: "-U"
+          long: "--upgrade"
+          description: 升级包
+        - short: ""
+          long: "--user"
+          description: 用户安装
+        - short: "-e"
+          long: "--editable"
+          description: 可编辑安装
+          takes_value: true
+        - short: ""
+          long: "--no-deps"
+          description: 不安装依赖
+        - short: ""
+          long: "--pre"
+          description: 包含预发布版
+        - short: "-i"
+          long: "--index-url"
+          description: 索引 URL
+          takes_value: true
+        - short: ""
+          long: "--trusted-host"
+          description: 信任主机
+          takes_value: true
+        - short: "-t"
+          long: "--target"
+          description: 目标目录
+          takes_value: true
+    uninstall:
+      name: uninstall
+      description: 卸载包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+        - short: "-r"
+          long: "--requirement"
+          description: 从文件卸载
+          takes_value: true
+    list:
+      name: list
+      description: 列出已安装包
+      options:
+        - short: "-o"
+          long: "--outdated"
+          description: 过期包
+        - short: "-u"
+          long: "--uptodate"
+          description: 最新包
+        - short: ""
+          long: "--format"
+          description: 输出格式
+          takes_value: true
+          values: ["columns", "freeze", "json"]
+    freeze:
+      name: freeze
+      description: 输出依赖列表
+      options:
+        - short: "-l"
+          long: "--local"
+          description: 仅本地包
+    show:
+      name: show
+      description: 显示包信息
+      options:
+        - short: "-f"
+          long: "--files"
+          description: 显示文件
+    search:
+      name: search
+      description: 搜索包
+      options: []
+    download:
+      name: download
+      description: 下载包
+      options:
+        - short: "-d"
+          long: "--dest"
+          description: 目标目录
+          takes_value: true
+    wheel:
+      name: wheel
+      description: 构建 wheel
+      options: []
+    check:
+      name: check
+      description: 检查依赖
+      options: []
+    cache:
+      name: cache
+      description: 缓存管理
+      options: []
+    config:
+      name: config
+      description: 配置管理
+      options: []
+
+pip3:
+  name: pip3
+  description: Python3 包管理器
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    install:
+      name: install
+      description: 安装包
+      options:
+        - short: "-r"
+          long: "--requirement"
+          description: 从文件安装
+          takes_value: true
+        - short: "-U"
+          long: "--upgrade"
+          description: 升级包
+        - short: ""
+          long: "--user"
+          description: 用户安装
+        - short: "-e"
+          long: "--editable"
+          description: 可编辑安装
+          takes_value: true
+    uninstall:
+      name: uninstall
+      description: 卸载包
+      options:
+        - short: "-y"
+          long: "--yes"
+          description: 自动确认
+    list:
+      name: list
+      description: 列出已安装包
+      options:
+        - short: "-o"
+          long: "--outdated"
+          description: 过期包
+    freeze:
+      name: freeze
+      description: 输出依赖列表
+      options: []
+    show:
+      name: show
+      description: 显示包信息
+      options: []
+
+cargo:
+  name: cargo
+  description: Rust 包管理器
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--color"
+      description: 颜色输出
+      takes_value: true
+      values: ["auto", "always", "never"]
+  subcommands:
+    build:
+      name: build
+      description: 编译项目
+      options:
+        - short: "-r"
+          long: "--release"
+          description: 发布模式
+        - short: "-p"
+          long: "--package"
+          description: 指定包
+          takes_value: true
+        - short: ""
+          long: "--target"
+          description: 目标平台
+          takes_value: true
+        - short: "-j"
+          long: "--jobs"
+          description: 并行数
+          takes_value: true
+        - short: ""
+          long: "--all-targets"
+          description: 所有目标
+        - short: ""
+          long: "--features"
+          description: 启用特性
+          takes_value: true
+        - short: ""
+          long: "--all-features"
+          description: 所有特性
+        - short: ""
+          long: "--no-default-features"
+          description: 禁用默认特性
+    run:
+      name: run
+      description: 运行项目
+      options:
+        - short: "-r"
+          long: "--release"
+          description: 发布模式
+        - short: "-p"
+          long: "--package"
+          description: 指定包
+          takes_value: true
+        - short: ""
+          long: "--bin"
+          description: 指定二进制
+          takes_value: true
+        - short: ""
+          long: "--example"
+          description: 运行示例
+          takes_value: true
+    test:
+      name: test
+      description: 运行测试
+      options:
+        - short: "-r"
+          long: "--release"
+          description: 发布模式
+        - short: ""
+          long: "--no-run"
+          description: 仅编译
+        - short: ""
+          long: "--lib"
+          description: 仅库测试
+        - short: ""
+          long: "--doc"
+          description: 文档测试
+        - short: ""
+          long: "--all"
+          description: 所有包
+        - short: ""
+          long: "--no-fail-fast"
+          description: 不快速失败
+    new:
+      name: new
+      description: 新建项目
+      options:
+        - short: ""
+          long: "--lib"
+          description: 库项目
+        - short: ""
+          long: "--bin"
+          description: 二进制项目
+        - short: ""
+          long: "--edition"
+          description: Rust 版本
+          takes_value: true
+          values: ["2015", "2018", "2021"]
+        - short: ""
+          long: "--name"
+          description: 项目名
+          takes_value: true
+    init:
+      name: init
+      description: 初始化项目
+      options:
+        - short: ""
+          long: "--lib"
+          description: 库项目
+        - short: ""
+          long: "--bin"
+          description: 二进制项目
+    add:
+      name: add
+      description: 添加依赖
+      options:
+        - short: "-D"
+          long: "--dev"
+          description: 开发依赖
+        - short: "-B"
+          long: "--build"
+          description: 构建依赖
+        - short: ""
+          long: "--features"
+          description: 启用特性
+          takes_value: true
+        - short: ""
+          long: "--optional"
+          description: 可选依赖
+        - short: ""
+          long: "--no-default-features"
+          description: 禁用默认特性
+        - short: "-F"
+          long: ""
+          description: 启用特性
+          takes_value: true
+    remove:
+      name: remove
+      description: 移除依赖
+      options:
+        - short: "-D"
+          long: "--dev"
+          description: 开发依赖
+        - short: "-B"
+          long: "--build"
+          description: 构建依赖
+    update:
+      name: update
+      description: 更新依赖
+      options:
+        - short: "-p"
+          long: "--package"
+          description: 指定包
+          takes_value: true
+        - short: ""
+          long: "--dry-run"
+          description: 试运行
+    publish:
+      name: publish
+      description: 发布到 crates.io
+      options:
+        - short: ""
+          long: "--dry-run"
+          description: 试运行
+        - short: ""
+          long: "--allow-dirty"
+          description: 允许未提交
+        - short: ""
+          long: "--token"
+          description: API 令牌
+          takes_value: true
+    clean:
+      name: clean
+      description: 清理构建
+      options:
+        - short: "-r"
+          long: "--release"
+          description: 清理发布目录
+        - short: "-p"
+          long: "--package"
+          description: 指定包
+          takes_value: true
+    doc:
+      name: doc
+      description: 生成文档
+      options:
+        - short: ""
+          long: "--open"
+          description: 打开浏览器
+        - short: ""
+          long: "--no-deps"
+          description: 不包含依赖
+    check:
+      name: check
+      description: 检查编译
+      options:
+        - short: ""
+          long: "--all-targets"
+          description: 所有目标
+    clippy:
+      name: clippy
+      description: 代码检查
+      options:
+        - short: ""
+          long: "--fix"
+          description: 自动修复
+    fmt:
+      name: fmt
+      description: 格式化代码
+      options:
+        - short: ""
+          long: "--check"
+          description: 仅检查
+    bench:
+      name: bench
+      description: 运行基准测试
+      options: []
+    install:
+      name: install
+      description: 安装二进制
+      options:
+        - short: ""
+          long: "--path"
+          description: 本地路径
+          takes_value: true
+        - short: ""
+          long: "--git"
+          description: Git 仓库
+          takes_value: true
+        - short: "-f"
+          long: "--force"
+          description: 强制安装
+    uninstall:
+      name: uninstall
+      description: 卸载二进制
+      options: []
+    search:
+      name: search
+      description: 搜索包
+      options: []
+    tree:
+      name: tree
+      description: 依赖树
+      options:
+        - short: "-i"
+          long: "--invert"
+          description: 反向显示
+        - short: "-d"
+          long: "--duplicates"
+          description: 重复依赖
+
+go:
+  name: go
+  description: Go 工具链
+  options:
+    - short: ""
+      long: "version"
+      description: 显示版本
+  subcommands:
+    build:
+      name: build
+      description: 编译包
+      options:
+        - short: "-o"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-v"
+          long: ""
+          description: 详细输出
+        - short: "-race"
+          long: ""
+          description: 竞态检测
+        - short: "-ldflags"
+          long: ""
+          description: 链接标志
+          takes_value: true
+        - short: "-tags"
+          long: ""
+          description: 构建标签
+          takes_value: true
+    run:
+      name: run
+      description: 编译运行
+      options:
+        - short: "-race"
+          long: ""
+          description: 竞态检测
+    test:
+      name: test
+      description: 运行测试
+      options:
+        - short: "-v"
+          long: ""
+          description: 详细输出
+        - short: "-race"
+          long: ""
+          description: 竞态检测
+        - short: "-cover"
+          long: ""
+          description: 覆盖率
+        - short: "-coverprofile"
+          long: ""
+          description: 覆盖率文件
+          takes_value: true
+        - short: "-bench"
+          long: ""
+          description: 基准测试
+          takes_value: true
+        - short: "-run"
+          long: ""
+          description: 运行匹配测试
+          takes_value: true
+        - short: "-count"
+          long: ""
+          description: 运行次数
+          takes_value: true
+        - short: "-timeout"
+          long: ""
+          description: 超时时间
+          takes_value: true
+        - short: "-short"
+          long: ""
+          description: 短测试
+    get:
+      name: get
+      description: 下载依赖
+      options:
+        - short: "-u"
+          long: ""
+          description: 更新依赖
+        - short: "-v"
+          long: ""
+          description: 详细输出
+        - short: "-d"
+          long: ""
+          description: 仅下载
+        - short: "-t"
+          long: ""
+          description: 包含测试依赖
+    mod:
+      name: mod
+      description: 模块管理
+      options: []
+    install:
+      name: install
+      description: 编译安装
+      options:
+        - short: "-v"
+          long: ""
+          description: 详细输出
+    fmt:
+      name: fmt
+      description: 格式化代码
+      options:
+        - short: "-w"
+          long: ""
+          description: 写入文件
+        - short: "-s"
+          long: ""
+          description: 简化代码
+    vet:
+      name: vet
+      description: 代码检查
+      options:
+        - short: "-v"
+          long: ""
+          description: 详细输出
+    generate:
+      name: generate
+      description: 代码生成
+      options:
+        - short: "-v"
+          long: ""
+          description: 详细输出
+        - short: "-run"
+          long: ""
+          description: 运行匹配
+          takes_value: true
+    clean:
+      name: clean
+      description: 清理缓存
+      options:
+        - short: "-cache"
+          long: ""
+          description: 清理构建缓存
+        - short: "-modcache"
+          long: ""
+          description: 清理模块缓存
+    env:
+      name: env
+      description: 环境变量
+      options:
+        - short: "-w"
+          long: ""
+          description: 设置变量
+    list:
+      name: list
+      description: 列出包
+      options:
+        - short: "-m"
+          long: ""
+          description: 模块模式
+        - short: "-json"
+          long: ""
+          description: JSON 输出
+    doc:
+      name: doc
+      description: 显示文档
+      options: []
+    version:
+      name: version
+      description: 显示版本
+      options: []
+
+make:
+  name: make
+  description: 构建工具
+  options:
+    - short: "-j"
+      long: ""
+      description: 并行任务数
+      takes_value: true
+    - short: "-f"
+      long: "--file"
+      description: 指定 Makefile
+      takes_value: true
+    - short: "-C"
+      long: "--directory"
+      description: 切换目录
+      takes_value: true
+    - short: "-n"
+      long: "--just-print"
+      description: 仅打印命令
+    - short: "-B"
+      long: "--always-make"
+      description: 强制重新构建
+    - short: "-k"
+      long: "--keep-going"
+      description: 继续执行
+    - short: "-s"
+      long: "--silent"
+      description: 静默模式
+    - short: "-i"
+      long: "--ignore-errors"
+      description: 忽略错误
+    - short: "-w"
+      long: "--print-directory"
+      description: 打印目录
+    - short: "-e"
+      long: "--environment-overrides"
+      description: 环境变量覆盖
+    - short: "-q"
+      long: "--question"
+      description: 询问模式
+  subcommands:
+    clean:
+      name: clean
+      description: 清理构建
+      options: []
+    all:
+      name: all
+      description: 构建全部
+      options: []
+    install:
+      name: install
+      description: 安装
+      options: []
+    test:
+      name: test
+      description: 运行测试
+      options: []
+    check:
+      name: check
+      description: 检查
+      options: []
+    dist:
+      name: dist
+      description: 打包分发
+      options: []
+    distclean:
+      name: distclean
+      description: 完全清理
+      options: []
+
+cmake:
+  name: cmake
+  description: 跨平台构建系统
+  options:
+    - short: "-S"
+      long: ""
+      description: 源目录
+      takes_value: true
+    - short: "-B"
+      long: ""
+      description: 构建目录
+      takes_value: true
+    - short: "-G"
+      long: ""
+      description: 生成器
+      takes_value: true
+      values: ["Unix Makefiles", "Ninja", "Visual Studio 17 2022"]
+    - short: "-D"
+      long: ""
+      description: 定义变量
+      takes_value: true
+    - short: ""
+      long: "--build"
+      description: 构建项目
+      takes_value: true
+    - short: ""
+      long: "--install"
+      description: 安装项目
+      takes_value: true
+    - short: ""
+      long: "--preset"
+      description: 使用预设
+      takes_value: true
+    - short: ""
+      long: "--list-presets"
+      description: 列出预设
+    - short: "-E"
+      long: ""
+      description: 命令模式
+    - short: "-P"
+      long: ""
+      description: 脚本模式
+      takes_value: true
+    - short: ""
+      long: "--target"
+      description: 构建目标
+      takes_value: true
+    - short: "-j"
+      long: "--parallel"
+      description: 并行数
+      takes_value: true
+    - short: ""
+      long: "--config"
+      description: 配置
+      takes_value: true
+      values: ["Debug", "Release", "RelWithDebInfo", "MinSizeRel"]
+    - short: ""
+      long: "--clean-first"
+      description: 先清理
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+rustc:
+  name: rustc
+  description: Rust 编译器
+  options:
+    - short: "-o"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: ""
+      long: "--edition"
+      description: Rust 版本
+      takes_value: true
+      values: ["2015", "2018", "2021"]
+    - short: "-O"
+      long: ""
+      description: 优化
+    - short: "-g"
+      long: ""
+      description: 调试信息
+    - short: ""
+      long: "--emit"
+      description: 输出类型
+      takes_value: true
+      values: ["asm", "llvm-bc", "llvm-ir", "obj", "link", "dep-info"]
+    - short: ""
+      long: "--crate-type"
+      description: crate 类型
+      takes_value: true
+      values: ["bin", "lib", "rlib", "dylib", "cdylib", "staticlib"]
+    - short: ""
+      long: "--target"
+      description: 目标平台
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: 代码生成选项
+      takes_value: true
+    - short: "-W"
+      long: ""
+      description: 警告设置
+      takes_value: true
+    - short: "-A"
+      long: ""
+      description: 允许 lint
+      takes_value: true
+    - short: "-D"
+      long: ""
+      description: 拒绝 lint
+      takes_value: true
+    - short: ""
+      long: "--explain"
+      description: 解释错误码
+      takes_value: true
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+gcc:
+  name: gcc
+  description: GNU C 编译器
+  options:
+    - short: "-o"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 仅编译
+    - short: "-S"
+      long: ""
+      description: 仅汇编
+    - short: "-E"
+      long: ""
+      description: 仅预处理
+    - short: "-O"
+      long: ""
+      description: 优化级别 (0-3)
+    - short: "-O0"
+      long: ""
+      description: 无优化
+    - short: "-O1"
+      long: ""
+      description: 基础优化
+    - short: "-O2"
+      long: ""
+      description: 标准优化
+    - short: "-O3"
+      long: ""
+      description: 激进优化
+    - short: "-Os"
+      long: ""
+      description: 大小优化
+    - short: "-g"
+      long: ""
+      description: 调试信息
+    - short: "-Wall"
+      long: ""
+      description: 所有警告
+    - short: "-Wextra"
+      long: ""
+      description: 额外警告
+    - short: "-Werror"
+      long: ""
+      description: 警告作为错误
+    - short: "-I"
+      long: ""
+      description: 包含目录
+      takes_value: true
+    - short: "-L"
+      long: ""
+      description: 库目录
+      takes_value: true
+    - short: "-l"
+      long: ""
+      description: 链接库
+      takes_value: true
+    - short: "-D"
+      long: ""
+      description: 定义宏
+      takes_value: true
+    - short: "-U"
+      long: ""
+      description: 取消宏
+      takes_value: true
+    - short: "-std"
+      long: ""
+      description: 语言标准
+      takes_value: true
+      values: ["c89", "c99", "c11", "c17", "c2x", "gnu89", "gnu99", "gnu11"]
+    - short: "-pthread"
+      long: ""
+      description: 线程支持
+    - short: "-shared"
+      long: ""
+      description: 共享库
+    - short: "-static"
+      long: ""
+      description: 静态链接
+    - short: "-fPIC"
+      long: ""
+      description: 位置无关代码
+    - short: "-m32"
+      long: ""
+      description: 32 位模式
+    - short: "-m64"
+      long: ""
+      description: 64 位模式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+g++:
+  name: g++
+  description: GNU C++ 编译器
+  options:
+    - short: "-o"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 仅编译
+    - short: "-S"
+      long: ""
+      description: 仅汇编
+    - short: "-E"
+      long: ""
+      description: 仅预处理
+    - short: "-O0"
+      long: ""
+      description: 无优化
+    - short: "-O1"
+      long: ""
+      description: 基础优化
+    - short: "-O2"
+      long: ""
+      description: 标准优化
+    - short: "-O3"
+      long: ""
+      description: 激进优化
+    - short: "-Os"
+      long: ""
+      description: 大小优化
+    - short: "-g"
+      long: ""
+      description: 调试信息
+    - short: "-Wall"
+      long: ""
+      description: 所有警告
+    - short: "-Wextra"
+      long: ""
+      description: 额外警告
+    - short: "-Werror"
+      long: ""
+      description: 警告作为错误
+    - short: "-I"
+      long: ""
+      description: 包含目录
+      takes_value: true
+    - short: "-L"
+      long: ""
+      description: 库目录
+      takes_value: true
+    - short: "-l"
+      long: ""
+      description: 链接库
+      takes_value: true
+    - short: "-D"
+      long: ""
+      description: 定义宏
+      takes_value: true
+    - short: "-std"
+      long: ""
+      description: 语言标准
+      takes_value: true
+      values: ["c++98", "c++11", "c++14", "c++17", "c++20", "c++23", "gnu++11", "gnu++17"]
+    - short: "-pthread"
+      long: ""
+      description: 线程支持
+    - short: "-shared"
+      long: ""
+      description: 共享库
+    - short: "-static"
+      long: ""
+      description: 静态链接
+    - short: "-fPIC"
+      long: ""
+      description: 位置无关代码
+    - short: "-v"
+      long: ""
+      description: 详细输出
+  subcommands: {}
+
+python:
+  name: python
+  description: Python 解释器
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-c"
+      long: ""
+      description: 执行代码
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 运行模块
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 交互模式
+    - short: "-u"
+      long: ""
+      description: 无缓冲输出
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-O"
+      long: ""
+      description: 优化模式
+    - short: "-OO"
+      long: ""
+      description: 更多优化
+    - short: "-B"
+      long: ""
+      description: 不写 .pyc
+    - short: "-E"
+      long: ""
+      description: 忽略环境变量
+    - short: "-W"
+      long: ""
+      description: 警告控制
+      takes_value: true
+      values: ["error", "ignore", "always", "default", "module", "once"]
+  subcommands: {}
+
+python3:
+  name: python3
+  description: Python3 解释器
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-c"
+      long: ""
+      description: 执行代码
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 运行模块
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 交互模式
+    - short: "-u"
+      long: ""
+      description: 无缓冲输出
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-O"
+      long: ""
+      description: 优化模式
+    - short: "-B"
+      long: ""
+      description: 不写 .pyc
+  subcommands: {}
+
+node:
+  name: node
+  description: Node.js 运行时
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-e"
+      long: "--eval"
+      description: 执行代码
+      takes_value: true
+    - short: "-p"
+      long: "--print"
+      description: 打印结果
+      takes_value: true
+    - short: "-c"
+      long: "--check"
+      description: 语法检查
+    - short: "-i"
+      long: "--interactive"
+      description: 交互模式
+    - short: ""
+      long: "--inspect"
+      description: 启用调试
+    - short: ""
+      long: "--inspect-brk"
+      description: 调试断点
+    - short: "-r"
+      long: "--require"
+      description: 预加载模块
+      takes_value: true
+    - short: ""
+      long: "--experimental-modules"
+      description: ES 模块
+    - short: ""
+      long: "--max-old-space-size"
+      description: 最大堆内存
+      takes_value: true
+    - short: ""
+      long: "--trace-warnings"
+      description: 追踪警告
+  subcommands: {}
+
+deno:
+  name: deno
+  description: Deno 运行时
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    run:
+      name: run
+      description: 运行脚本
+      options:
+        - short: "-A"
+          long: "--allow-all"
+          description: 所有权限
+        - short: ""
+          long: "--allow-read"
+          description: 读权限
+        - short: ""
+          long: "--allow-write"
+          description: 写权限
+        - short: ""
+          long: "--allow-net"
+          description: 网络权限
+        - short: ""
+          long: "--allow-env"
+          description: 环境变量权限
+        - short: ""
+          long: "--unstable"
+          description: 不稳定 API
+    compile:
+      name: compile
+      description: 编译可执行
+      options:
+        - short: "-o"
+          long: "--output"
+          description: 输出文件
+          takes_value: true
+    test:
+      name: test
+      description: 运行测试
+      options:
+        - short: ""
+          long: "--filter"
+          description: 过滤测试
+          takes_value: true
+    fmt:
+      name: fmt
+      description: 格式化代码
+      options:
+        - short: ""
+          long: "--check"
+          description: 仅检查
+    lint:
+      name: lint
+      description: 代码检查
+      options: []
+    bundle:
+      name: bundle
+      description: 打包
+      options: []
+    cache:
+      name: cache
+      description: 缓存依赖
+      options: []
+    doc:
+      name: doc
+      description: 生成文档
+      options: []
+    info:
+      name: info
+      description: 显示信息
+      options: []
+    install:
+      name: install
+      description: 安装脚本
+      options:
+        - short: "-n"
+          long: "--name"
+          description: 命令名
+          takes_value: true
+
+bun:
+  name: bun
+  description: Bun 运行时
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    run:
+      name: run
+      description: 运行脚本
+      options:
+        - short: ""
+          long: "--watch"
+          description: 监视模式
+        - short: ""
+          long: "--hot"
+          description: 热重载
+    install:
+      name: install
+      description: 安装依赖
+      options:
+        - short: "-d"
+          long: "--dev"
+          description: 开发依赖
+        - short: "-g"
+          long: "--global"
+          description: 全局安装
+    add:
+      name: add
+      description: 添加依赖
+      options:
+        - short: "-d"
+          long: "--dev"
+          description: 开发依赖
+        - short: "-g"
+          long: "--global"
+          description: 全局安装
+    remove:
+      name: remove
+      description: 移除依赖
+      options: []
+    build:
+      name: build
+      description: 构建项目
+      options:
+        - short: ""
+          long: "--outdir"
+          description: 输出目录
+          takes_value: true
+        - short: ""
+          long: "--minify"
+          description: 压缩
+    test:
+      name: test
+      description: 运行测试
+      options:
+        - short: ""
+          long: "--watch"
+          description: 监视模式
+    init:
+      name: init
+      description: 初始化项目
+      options: []
+    x:
+      name: x
+      description: 执行包
+      options: []
+
+

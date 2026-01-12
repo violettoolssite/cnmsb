@@ -1,0 +1,889 @@
+# 安全工具命令
+# 贡献者可以在此添加更多安全命令
+
+gpg:
+  name: gpg
+  description: GPG 加密工具
+  options:
+    - short: "-c"
+      long: "--symmetric"
+      description: 对称加密
+    - short: "-e"
+      long: "--encrypt"
+      description: 加密
+    - short: "-d"
+      long: "--decrypt"
+      description: 解密
+    - short: "-s"
+      long: "--sign"
+      description: 签名
+    - short: "-b"
+      long: "--detach-sign"
+      description: 分离签名
+    - short: ""
+      long: "--clearsign"
+      description: 明文签名
+    - short: ""
+      long: "--verify"
+      description: 验证签名
+    - short: "-r"
+      long: "--recipient"
+      description: 接收者
+      takes_value: true
+    - short: "-u"
+      long: "--local-user"
+      description: 本地用户
+      takes_value: true
+    - short: "-o"
+      long: "--output"
+      description: 输出文件
+      takes_value: true
+    - short: "-a"
+      long: "--armor"
+      description: ASCII 输出
+    - short: ""
+      long: "--gen-key"
+      description: 生成密钥
+    - short: ""
+      long: "--full-gen-key"
+      description: 完整生成
+    - short: ""
+      long: "--list-keys"
+      description: 列出公钥
+    - short: "-k"
+      long: "--list-keys"
+      description: 列出公钥
+    - short: "-K"
+      long: "--list-secret-keys"
+      description: 列出私钥
+    - short: ""
+      long: "--delete-key"
+      description: 删除公钥
+    - short: ""
+      long: "--delete-secret-key"
+      description: 删除私钥
+    - short: ""
+      long: "--export"
+      description: 导出公钥
+    - short: ""
+      long: "--export-secret-keys"
+      description: 导出私钥
+    - short: ""
+      long: "--import"
+      description: 导入密钥
+    - short: ""
+      long: "--edit-key"
+      description: 编辑密钥
+    - short: ""
+      long: "--fingerprint"
+      description: 指纹
+    - short: ""
+      long: "--keyserver"
+      description: 密钥服务器
+      takes_value: true
+    - short: ""
+      long: "--send-keys"
+      description: 发送密钥
+    - short: ""
+      long: "--recv-keys"
+      description: 接收密钥
+    - short: ""
+      long: "--search-keys"
+      description: 搜索密钥
+    - short: ""
+      long: "--refresh-keys"
+      description: 刷新密钥
+    - short: ""
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+openssl:
+  name: openssl
+  description: OpenSSL 工具
+  options:
+    - short: ""
+      long: "version"
+      description: 显示版本
+    - short: ""
+      long: "help"
+      description: 显示帮助
+  subcommands:
+    genrsa:
+      name: genrsa
+      description: 生成 RSA 密钥
+      options:
+        - short: "-out"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-aes256"
+          long: ""
+          description: AES256 加密
+        - short: "-aes128"
+          long: ""
+          description: AES128 加密
+        - short: "-des3"
+          long: ""
+          description: 3DES 加密
+    rsa:
+      name: rsa
+      description: RSA 密钥处理
+      options:
+        - short: "-in"
+          long: ""
+          description: 输入文件
+          takes_value: true
+        - short: "-out"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-pubout"
+          long: ""
+          description: 输出公钥
+        - short: "-pubin"
+          long: ""
+          description: 输入公钥
+        - short: "-text"
+          long: ""
+          description: 文本输出
+        - short: "-noout"
+          long: ""
+          description: 不输出密钥
+    req:
+      name: req
+      description: 证书请求
+      options:
+        - short: "-new"
+          long: ""
+          description: 新请求
+        - short: "-x509"
+          long: ""
+          description: 自签名
+        - short: "-key"
+          long: ""
+          description: 私钥文件
+          takes_value: true
+        - short: "-out"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-days"
+          long: ""
+          description: 有效天数
+          takes_value: true
+        - short: "-nodes"
+          long: ""
+          description: 不加密私钥
+        - short: "-newkey"
+          long: ""
+          description: 新密钥
+          takes_value: true
+        - short: "-subj"
+          long: ""
+          description: 主题
+          takes_value: true
+        - short: "-config"
+          long: ""
+          description: 配置文件
+          takes_value: true
+    x509:
+      name: x509
+      description: 证书处理
+      options:
+        - short: "-in"
+          long: ""
+          description: 输入文件
+          takes_value: true
+        - short: "-out"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-text"
+          long: ""
+          description: 文本输出
+        - short: "-noout"
+          long: ""
+          description: 不输出证书
+        - short: "-dates"
+          long: ""
+          description: 显示日期
+        - short: "-subject"
+          long: ""
+          description: 显示主题
+        - short: "-issuer"
+          long: ""
+          description: 显示颁发者
+        - short: "-serial"
+          long: ""
+          description: 显示序列号
+        - short: "-fingerprint"
+          long: ""
+          description: 指纹
+        - short: "-req"
+          long: ""
+          description: 输入是请求
+        - short: "-signkey"
+          long: ""
+          description: 签名密钥
+          takes_value: true
+        - short: "-CA"
+          long: ""
+          description: CA 证书
+          takes_value: true
+        - short: "-CAkey"
+          long: ""
+          description: CA 私钥
+          takes_value: true
+        - short: "-days"
+          long: ""
+          description: 有效天数
+          takes_value: true
+    enc:
+      name: enc
+      description: 加密解密
+      options:
+        - short: "-e"
+          long: ""
+          description: 加密
+        - short: "-d"
+          long: ""
+          description: 解密
+        - short: "-in"
+          long: ""
+          description: 输入文件
+          takes_value: true
+        - short: "-out"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-k"
+          long: ""
+          description: 密码
+          takes_value: true
+        - short: "-kfile"
+          long: ""
+          description: 密码文件
+          takes_value: true
+        - short: "-a"
+          long: ""
+          description: Base64
+        - short: "-base64"
+          long: ""
+          description: Base64
+        - short: "-aes-256-cbc"
+          long: ""
+          description: AES-256-CBC
+        - short: "-aes-128-cbc"
+          long: ""
+          description: AES-128-CBC
+    dgst:
+      name: dgst
+      description: 摘要计算
+      options:
+        - short: "-md5"
+          long: ""
+          description: MD5
+        - short: "-sha1"
+          long: ""
+          description: SHA1
+        - short: "-sha256"
+          long: ""
+          description: SHA256
+        - short: "-sha512"
+          long: ""
+          description: SHA512
+        - short: "-sign"
+          long: ""
+          description: 签名
+          takes_value: true
+        - short: "-verify"
+          long: ""
+          description: 验证
+          takes_value: true
+        - short: "-signature"
+          long: ""
+          description: 签名文件
+          takes_value: true
+        - short: "-out"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-hex"
+          long: ""
+          description: 十六进制
+        - short: "-binary"
+          long: ""
+          description: 二进制
+    s_client:
+      name: s_client
+      description: SSL/TLS 客户端
+      options:
+        - short: "-connect"
+          long: ""
+          description: 连接地址
+          takes_value: true
+        - short: "-servername"
+          long: ""
+          description: SNI 主机名
+          takes_value: true
+        - short: "-showcerts"
+          long: ""
+          description: 显示证书
+        - short: "-cert"
+          long: ""
+          description: 客户端证书
+          takes_value: true
+        - short: "-key"
+          long: ""
+          description: 客户端密钥
+          takes_value: true
+        - short: "-CAfile"
+          long: ""
+          description: CA 文件
+          takes_value: true
+        - short: "-tls1_2"
+          long: ""
+          description: TLS 1.2
+        - short: "-tls1_3"
+          long: ""
+          description: TLS 1.3
+        - short: "-verify"
+          long: ""
+          description: 验证深度
+          takes_value: true
+    rand:
+      name: rand
+      description: 随机数
+      options:
+        - short: "-out"
+          long: ""
+          description: 输出文件
+          takes_value: true
+        - short: "-base64"
+          long: ""
+          description: Base64 输出
+        - short: "-hex"
+          long: ""
+          description: 十六进制输出
+
+ssh-keygen:
+  name: ssh-keygen
+  description: SSH 密钥生成
+  options:
+    - short: "-t"
+      long: ""
+      description: 密钥类型
+      takes_value: true
+      values: ["rsa", "dsa", "ecdsa", "ed25519"]
+    - short: "-b"
+      long: ""
+      description: 位数
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 密钥文件
+      takes_value: true
+    - short: "-N"
+      long: ""
+      description: 新密码
+      takes_value: true
+    - short: "-P"
+      long: ""
+      description: 旧密码
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: 注释
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 更改密码
+    - short: "-l"
+      long: ""
+      description: 显示指纹
+    - short: "-E"
+      long: ""
+      description: 指纹哈希
+      takes_value: true
+      values: ["md5", "sha256"]
+    - short: "-y"
+      long: ""
+      description: 读取私钥输出公钥
+    - short: "-e"
+      long: ""
+      description: 导出密钥
+    - short: "-i"
+      long: ""
+      description: 导入密钥
+    - short: "-m"
+      long: ""
+      description: 密钥格式
+      takes_value: true
+      values: ["RFC4716", "PKCS8", "PEM"]
+    - short: "-R"
+      long: ""
+      description: 删除主机
+      takes_value: true
+    - short: "-H"
+      long: ""
+      description: 哈希 known_hosts
+    - short: "-F"
+      long: ""
+      description: 查找主机
+      takes_value: true
+    - short: "-A"
+      long: ""
+      description: 生成所有类型
+    - short: "-q"
+      long: ""
+      description: 静默模式
+  subcommands: {}
+
+ssh-agent:
+  name: ssh-agent
+  description: SSH 认证代理
+  options:
+    - short: "-a"
+      long: ""
+      description: 绑定地址
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: C-shell 语法
+    - short: "-s"
+      long: ""
+      description: Bourne shell 语法
+    - short: "-d"
+      long: ""
+      description: 调试模式
+    - short: "-k"
+      long: ""
+      description: 终止代理
+    - short: "-t"
+      long: ""
+      description: 密钥生存时间
+      takes_value: true
+    - short: "-D"
+      long: ""
+      description: 前台运行
+  subcommands: {}
+
+ssh-add:
+  name: ssh-add
+  description: 添加 SSH 密钥
+  options:
+    - short: "-l"
+      long: ""
+      description: 列出指纹
+    - short: "-L"
+      long: ""
+      description: 列出公钥
+    - short: "-d"
+      long: ""
+      description: 删除密钥
+    - short: "-D"
+      long: ""
+      description: 删除所有密钥
+    - short: "-x"
+      long: ""
+      description: 锁定代理
+    - short: "-X"
+      long: ""
+      description: 解锁代理
+    - short: "-t"
+      long: ""
+      description: 生存时间
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 使用时确认
+    - short: "-k"
+      long: ""
+      description: 仅加载密钥
+    - short: "-K"
+      long: ""
+      description: 加载 PKCS#11
+    - short: "-s"
+      long: ""
+      description: PKCS#11 库
+      takes_value: true
+    - short: "-e"
+      long: ""
+      description: 删除 PKCS#11
+      takes_value: true
+    - short: "-q"
+      long: ""
+      description: 静默模式
+  subcommands: {}
+
+ssh-copy-id:
+  name: ssh-copy-id
+  description: 复制 SSH 公钥
+  options:
+    - short: "-i"
+      long: ""
+      description: 身份文件
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 强制模式
+    - short: "-n"
+      long: ""
+      description: 试运行
+    - short: "-o"
+      long: ""
+      description: SSH 选项
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 端口
+      takes_value: true
+  subcommands: {}
+
+ufw:
+  name: ufw
+  description: 简单防火墙
+  options:
+    - short: ""
+      long: "--dry-run"
+      description: 试运行
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands:
+    enable:
+      name: enable
+      description: 启用防火墙
+      options: []
+    disable:
+      name: disable
+      description: 禁用防火墙
+      options: []
+    reload:
+      name: reload
+      description: 重载规则
+      options: []
+    reset:
+      name: reset
+      description: 重置规则
+      options: []
+    status:
+      name: status
+      description: 查看状态
+      options:
+        - short: ""
+          long: "verbose"
+          description: 详细输出
+        - short: ""
+          long: "numbered"
+          description: 显示编号
+    allow:
+      name: allow
+      description: 允许规则
+      options:
+        - short: ""
+          long: "from"
+          description: 来源地址
+          takes_value: true
+        - short: ""
+          long: "to"
+          description: 目标地址
+          takes_value: true
+        - short: ""
+          long: "port"
+          description: 端口
+          takes_value: true
+        - short: ""
+          long: "proto"
+          description: 协议
+          takes_value: true
+    deny:
+      name: deny
+      description: 拒绝规则
+      options:
+        - short: ""
+          long: "from"
+          description: 来源地址
+          takes_value: true
+        - short: ""
+          long: "to"
+          description: 目标地址
+          takes_value: true
+        - short: ""
+          long: "port"
+          description: 端口
+          takes_value: true
+    reject:
+      name: reject
+      description: 拒绝并回应
+      options: []
+    limit:
+      name: limit
+      description: 限制连接
+      options: []
+    delete:
+      name: delete
+      description: 删除规则
+      options: []
+    insert:
+      name: insert
+      description: 插入规则
+      options: []
+    logging:
+      name: logging
+      description: 日志设置
+      options: []
+    default:
+      name: default
+      description: 默认策略
+      options: []
+    app:
+      name: app
+      description: 应用规则
+      options: []
+    route:
+      name: route
+      description: 路由规则
+      options: []
+
+apparmor_status:
+  name: apparmor_status
+  description: AppArmor 状态
+  options:
+    - short: ""
+      long: "--enabled"
+      description: 检查是否启用
+    - short: ""
+      long: "--profiled"
+      description: 检查配置文件
+    - short: ""
+      long: "--enforced"
+      description: 检查强制模式
+    - short: ""
+      long: "--complaining"
+      description: 检查投诉模式
+    - short: ""
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+aa-status:
+  name: aa-status
+  description: AppArmor 状态
+  options:
+    - short: ""
+      long: "--enabled"
+      description: 检查是否启用
+    - short: ""
+      long: "--profiled"
+      description: 检查配置文件
+    - short: ""
+      long: "--enforced"
+      description: 检查强制模式
+    - short: ""
+      long: "--complaining"
+      description: 检查投诉模式
+    - short: ""
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--json"
+      description: JSON 输出
+    - short: ""
+      long: "--pretty-json"
+      description: 格式化 JSON
+  subcommands: {}
+
+aa-enforce:
+  name: aa-enforce
+  description: 设置 AppArmor 强制模式
+  options:
+    - short: "-d"
+      long: ""
+      description: 配置目录
+      takes_value: true
+  subcommands: {}
+
+aa-complain:
+  name: aa-complain
+  description: 设置 AppArmor 投诉模式
+  options:
+    - short: "-d"
+      long: ""
+      description: 配置目录
+      takes_value: true
+  subcommands: {}
+
+aa-disable:
+  name: aa-disable
+  description: 禁用 AppArmor 配置
+  options:
+    - short: "-d"
+      long: ""
+      description: 配置目录
+      takes_value: true
+  subcommands: {}
+
+fail2ban-client:
+  name: fail2ban-client
+  description: Fail2ban 客户端
+  options:
+    - short: "-c"
+      long: ""
+      description: 配置目录
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: Socket 路径
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: PID 文件
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 转储配置
+    - short: "-i"
+      long: ""
+      description: 交互模式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-q"
+      long: ""
+      description: 静默模式
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands:
+    start:
+      name: start
+      description: 启动服务
+      options: []
+    stop:
+      name: stop
+      description: 停止服务
+      options: []
+    reload:
+      name: reload
+      description: 重载配置
+      options: []
+    restart:
+      name: restart
+      description: 重启服务
+      options: []
+    status:
+      name: status
+      description: 查看状态
+      options: []
+    ping:
+      name: ping
+      description: 测试连接
+      options: []
+    set:
+      name: set
+      description: 设置参数
+      options: []
+    get:
+      name: get
+      description: 获取参数
+      options: []
+    unban:
+      name: unban
+      description: 解封 IP
+      options: []
+    banned:
+      name: banned
+      description: 查看封禁
+      options: []
+
+passwd:
+  name: passwd
+  description: 修改密码
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有用户
+    - short: "-d"
+      long: "--delete"
+      description: 删除密码
+    - short: "-e"
+      long: "--expire"
+      description: 过期密码
+    - short: "-i"
+      long: "--inactive"
+      description: 不活动天数
+      takes_value: true
+    - short: "-k"
+      long: "--keep-tokens"
+      description: 保留令牌
+    - short: "-l"
+      long: "--lock"
+      description: 锁定账户
+    - short: "-n"
+      long: "--mindays"
+      description: 最小天数
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-S"
+      long: "--status"
+      description: 显示状态
+    - short: "-u"
+      long: "--unlock"
+      description: 解锁账户
+    - short: "-w"
+      long: "--warndays"
+      description: 警告天数
+      takes_value: true
+    - short: "-x"
+      long: "--maxdays"
+      description: 最大天数
+      takes_value: true
+  subcommands: {}
+
+chage:
+  name: chage
+  description: 密码过期管理
+  options:
+    - short: "-d"
+      long: "--lastday"
+      description: 最后修改日
+      takes_value: true
+    - short: "-E"
+      long: "--expiredate"
+      description: 过期日期
+      takes_value: true
+    - short: "-I"
+      long: "--inactive"
+      description: 不活动天数
+      takes_value: true
+    - short: "-l"
+      long: "--list"
+      description: 列出信息
+    - short: "-m"
+      long: "--mindays"
+      description: 最小天数
+      takes_value: true
+    - short: "-M"
+      long: "--maxdays"
+      description: 最大天数
+      takes_value: true
+    - short: "-W"
+      long: "--warndays"
+      description: 警告天数
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+

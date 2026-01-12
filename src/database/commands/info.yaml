@@ -1,0 +1,747 @@
+# 系统信息命令
+# 贡献者可以在此添加更多系统信息命令
+
+uname:
+  name: uname
+  description: 系统信息
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有信息
+    - short: "-s"
+      long: "--kernel-name"
+      description: 内核名称
+    - short: "-n"
+      long: "--nodename"
+      description: 主机名
+    - short: "-r"
+      long: "--kernel-release"
+      description: 内核版本
+    - short: "-v"
+      long: "--kernel-version"
+      description: 内核发行
+    - short: "-m"
+      long: "--machine"
+      description: 机器类型
+    - short: "-p"
+      long: "--processor"
+      description: 处理器
+    - short: "-i"
+      long: "--hardware-platform"
+      description: 硬件平台
+    - short: "-o"
+      long: "--operating-system"
+      description: 操作系统
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+hostname:
+  name: hostname
+  description: 主机名
+  options:
+    - short: "-a"
+      long: "--alias"
+      description: 别名
+    - short: "-A"
+      long: "--all-fqdns"
+      description: 所有 FQDN
+    - short: "-b"
+      long: "--boot"
+      description: 启动默认
+    - short: "-d"
+      long: "--domain"
+      description: DNS 域名
+    - short: "-f"
+      long: "--fqdn"
+      description: 完整域名
+    - short: "-F"
+      long: "--file"
+      description: 从文件设置
+      takes_value: true
+    - short: "-i"
+      long: "--ip-address"
+      description: IP 地址
+    - short: "-I"
+      long: "--all-ip-addresses"
+      description: 所有 IP
+    - short: "-s"
+      long: "--short"
+      description: 短主机名
+    - short: "-y"
+      long: "--yp"
+      description: NIS 域名
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+hostnamectl:
+  name: hostnamectl
+  description: 主机名控制
+  options:
+    - short: "-H"
+      long: "--host"
+      description: 远程主机
+      takes_value: true
+    - short: "-M"
+      long: "--machine"
+      description: 本地容器
+      takes_value: true
+    - short: ""
+      long: "--no-ask-password"
+      description: 不询问密码
+    - short: ""
+      long: "--static"
+      description: 静态主机名
+    - short: ""
+      long: "--transient"
+      description: 临时主机名
+    - short: ""
+      long: "--pretty"
+      description: 漂亮主机名
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands:
+    status:
+      name: status
+      description: 显示状态
+      options: []
+    set-hostname:
+      name: set-hostname
+      description: 设置主机名
+      options: []
+    set-icon-name:
+      name: set-icon-name
+      description: 设置图标名
+      options: []
+    set-chassis:
+      name: set-chassis
+      description: 设置机箱类型
+      options: []
+    set-deployment:
+      name: set-deployment
+      description: 设置部署环境
+      options: []
+    set-location:
+      name: set-location
+      description: 设置位置
+      options: []
+
+timedatectl:
+  name: timedatectl
+  description: 时间日期控制
+  options:
+    - short: "-H"
+      long: "--host"
+      description: 远程主机
+      takes_value: true
+    - short: "-M"
+      long: "--machine"
+      description: 本地容器
+      takes_value: true
+    - short: ""
+      long: "--no-ask-password"
+      description: 不询问密码
+    - short: ""
+      long: "--no-pager"
+      description: 不分页
+    - short: "-a"
+      long: "--all"
+      description: 所有属性
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands:
+    status:
+      name: status
+      description: 显示状态
+      options: []
+    show:
+      name: show
+      description: 显示属性
+      options:
+        - short: "-p"
+          long: "--property"
+          description: 属性名
+          takes_value: true
+    set-time:
+      name: set-time
+      description: 设置时间
+      options: []
+    set-timezone:
+      name: set-timezone
+      description: 设置时区
+      options: []
+    list-timezones:
+      name: list-timezones
+      description: 列出时区
+      options: []
+    set-local-rtc:
+      name: set-local-rtc
+      description: 设置本地 RTC
+      options: []
+    set-ntp:
+      name: set-ntp
+      description: 设置 NTP
+      options: []
+
+localectl:
+  name: localectl
+  description: 区域设置控制
+  options:
+    - short: "-H"
+      long: "--host"
+      description: 远程主机
+      takes_value: true
+    - short: "-M"
+      long: "--machine"
+      description: 本地容器
+      takes_value: true
+    - short: ""
+      long: "--no-ask-password"
+      description: 不询问密码
+    - short: ""
+      long: "--no-convert"
+      description: 不转换
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands:
+    status:
+      name: status
+      description: 显示状态
+      options: []
+    set-locale:
+      name: set-locale
+      description: 设置区域
+      options: []
+    list-locales:
+      name: list-locales
+      description: 列出区域
+      options: []
+    set-keymap:
+      name: set-keymap
+      description: 设置键盘映射
+      options: []
+    list-keymaps:
+      name: list-keymaps
+      description: 列出键盘映射
+      options: []
+    set-x11-keymap:
+      name: set-x11-keymap
+      description: 设置 X11 键盘映射
+      options: []
+    list-x11-keymap-models:
+      name: list-x11-keymap-models
+      description: 列出 X11 键盘模型
+      options: []
+    list-x11-keymap-layouts:
+      name: list-x11-keymap-layouts
+      description: 列出 X11 键盘布局
+      options: []
+    list-x11-keymap-variants:
+      name: list-x11-keymap-variants
+      description: 列出 X11 键盘变体
+      options: []
+    list-x11-keymap-options:
+      name: list-x11-keymap-options
+      description: 列出 X11 键盘选项
+      options: []
+
+date:
+  name: date
+  description: 日期时间
+  options:
+    - short: "-d"
+      long: "--date"
+      description: 指定日期
+      takes_value: true
+    - short: "-f"
+      long: "--file"
+      description: 从文件读取
+      takes_value: true
+    - short: "-I"
+      long: "--iso-8601"
+      description: ISO 8601 格式
+    - short: "-r"
+      long: "--reference"
+      description: 引用文件时间
+      takes_value: true
+    - short: "-R"
+      long: "--rfc-email"
+      description: RFC 5322 格式
+    - short: ""
+      long: "--rfc-3339"
+      description: RFC 3339 格式
+      takes_value: true
+      values: ["date", "seconds", "ns"]
+    - short: "-s"
+      long: "--set"
+      description: 设置时间
+      takes_value: true
+    - short: "-u"
+      long: "--utc"
+      description: UTC 时间
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+cal:
+  name: cal
+  description: 日历
+  options:
+    - short: "-1"
+      long: "--one"
+      description: 显示一个月
+    - short: "-3"
+      long: "--three"
+      description: 显示三个月
+    - short: "-n"
+      long: "--months"
+      description: 显示月数
+      takes_value: true
+    - short: "-s"
+      long: "--sunday"
+      description: 周日开始
+    - short: "-m"
+      long: "--monday"
+      description: 周一开始
+    - short: "-j"
+      long: "--julian"
+      description: 儒略日
+    - short: "-y"
+      long: "--year"
+      description: 显示全年
+    - short: "-w"
+      long: "--week"
+      description: 显示周号
+    - short: "--color"
+      long: ""
+      description: 颜色
+      takes_value: true
+      values: ["auto", "always", "never"]
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+uptime:
+  name: uptime
+  description: 运行时间
+  options:
+    - short: "-p"
+      long: "--pretty"
+      description: 漂亮格式
+    - short: "-s"
+      long: "--since"
+      description: 启动时间
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+who:
+  name: who
+  description: 登录用户
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有信息
+    - short: "-b"
+      long: "--boot"
+      description: 启动时间
+    - short: "-d"
+      long: "--dead"
+      description: 死进程
+    - short: "-H"
+      long: "--heading"
+      description: 显示标题
+    - short: "-l"
+      long: "--login"
+      description: 登录进程
+    - short: "-m"
+      long: ""
+      description: 当前终端
+    - short: "-p"
+      long: "--process"
+      description: 活动进程
+    - short: "-q"
+      long: "--count"
+      description: 用户计数
+    - short: "-r"
+      long: "--runlevel"
+      description: 运行级别
+    - short: "-s"
+      long: "--short"
+      description: 简短格式
+    - short: "-t"
+      long: "--time"
+      description: 时间更改
+    - short: "-T"
+      long: "--mesg"
+      description: 消息状态
+    - short: "-u"
+      long: "--users"
+      description: 用户列表
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+w:
+  name: w
+  description: 登录用户和活动
+  options:
+    - short: "-h"
+      long: "--no-header"
+      description: 不显示标题
+    - short: "-u"
+      long: "--no-current"
+      description: 忽略当前进程
+    - short: "-s"
+      long: "--short"
+      description: 简短格式
+    - short: "-f"
+      long: "--from"
+      description: 显示来源
+    - short: "-i"
+      long: "--ip-addr"
+      description: 显示 IP
+    - short: "-o"
+      long: "--old-style"
+      description: 旧格式
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+whoami:
+  name: whoami
+  description: 当前用户名
+  options:
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+id:
+  name: id
+  description: 用户 ID 信息
+  options:
+    - short: "-g"
+      long: "--group"
+      description: 组 ID
+    - short: "-G"
+      long: "--groups"
+      description: 所有组 ID
+    - short: "-n"
+      long: "--name"
+      description: 名称而非 ID
+    - short: "-r"
+      long: "--real"
+      description: 真实 ID
+    - short: "-u"
+      long: "--user"
+      description: 用户 ID
+    - short: "-Z"
+      long: "--context"
+      description: 安全上下文
+    - short: "-z"
+      long: "--zero"
+      description: 空字符分隔
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+groups:
+  name: groups
+  description: 用户组
+  options:
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+last:
+  name: last
+  description: 登录记录
+  options:
+    - short: "-a"
+      long: ""
+      description: 最后显示主机
+    - short: "-d"
+      long: ""
+      description: DNS 解析
+    - short: "-f"
+      long: ""
+      description: 文件
+      takes_value: true
+    - short: "-F"
+      long: ""
+      description: 完整时间
+    - short: "-i"
+      long: ""
+      description: 显示 IP
+    - short: "-n"
+      long: ""
+      description: 显示行数
+      takes_value: true
+    - short: "-R"
+      long: ""
+      description: 不显示主机
+    - short: "-s"
+      long: ""
+      description: 开始时间
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 结束时间
+      takes_value: true
+    - short: "-w"
+      long: ""
+      description: 显示用户名
+    - short: "-x"
+      long: ""
+      description: 显示关机
+  subcommands: {}
+
+lastb:
+  name: lastb
+  description: 失败登录记录
+  options:
+    - short: "-a"
+      long: ""
+      description: 最后显示主机
+    - short: "-d"
+      long: ""
+      description: DNS 解析
+    - short: "-f"
+      long: ""
+      description: 文件
+      takes_value: true
+    - short: "-F"
+      long: ""
+      description: 完整时间
+    - short: "-i"
+      long: ""
+      description: 显示 IP
+    - short: "-n"
+      long: ""
+      description: 显示行数
+      takes_value: true
+    - short: "-R"
+      long: ""
+      description: 不显示主机
+    - short: "-w"
+      long: ""
+      description: 显示用户名
+  subcommands: {}
+
+lastlog:
+  name: lastlog
+  description: 最后登录时间
+  options:
+    - short: "-b"
+      long: "--before"
+      description: 之前天数
+      takes_value: true
+    - short: "-t"
+      long: "--time"
+      description: 之内天数
+      takes_value: true
+    - short: "-u"
+      long: "--user"
+      description: 指定用户
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+finger:
+  name: finger
+  description: 用户信息
+  options:
+    - short: "-l"
+      long: ""
+      description: 长格式
+    - short: "-m"
+      long: ""
+      description: 匹配用户名
+    - short: "-s"
+      long: ""
+      description: 短格式
+    - short: "-p"
+      long: ""
+      description: 不显示计划
+  subcommands: {}
+
+env:
+  name: env
+  description: 环境变量
+  options:
+    - short: "-i"
+      long: "--ignore-environment"
+      description: 清空环境
+    - short: "-0"
+      long: "--null"
+      description: 空字符结尾
+    - short: "-u"
+      long: "--unset"
+      description: 取消变量
+      takes_value: true
+    - short: "-C"
+      long: "--chdir"
+      description: 切换目录
+      takes_value: true
+    - short: "-S"
+      long: "--split-string"
+      description: 分割字符串
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+printenv:
+  name: printenv
+  description: 打印环境变量
+  options:
+    - short: "-0"
+      long: "--null"
+      description: 空字符结尾
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+export:
+  name: export
+  description: 导出环境变量
+  options:
+    - short: "-f"
+      long: ""
+      description: 导出函数
+    - short: "-n"
+      long: ""
+      description: 取消导出
+    - short: "-p"
+      long: ""
+      description: 显示所有
+  subcommands: {}
+
+unset:
+  name: unset
+  description: 取消变量
+  options:
+    - short: "-f"
+      long: ""
+      description: 函数
+    - short: "-v"
+      long: ""
+      description: 变量
+    - short: "-n"
+      long: ""
+      description: 名称引用
+  subcommands: {}
+
+alias:
+  name: alias
+  description: 定义别名
+  options:
+    - short: "-p"
+      long: ""
+      description: 打印所有
+  subcommands: {}
+
+unalias:
+  name: unalias
+  description: 取消别名
+  options:
+    - short: "-a"
+      long: ""
+      description: 取消所有
+  subcommands: {}
+
+history:
+  name: history
+  description: 命令历史
+  options:
+    - short: "-c"
+      long: ""
+      description: 清空历史
+    - short: "-d"
+      long: ""
+      description: 删除条目
+      takes_value: true
+    - short: "-a"
+      long: ""
+      description: 追加到文件
+    - short: "-n"
+      long: ""
+      description: 读取新行
+    - short: "-r"
+      long: ""
+      description: 读取文件
+    - short: "-w"
+      long: ""
+      description: 写入文件
+    - short: "-p"
+      long: ""
+      description: 历史展开
+    - short: "-s"
+      long: ""
+      description: 添加条目
+  subcommands: {}
+
+

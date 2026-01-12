@@ -255,4 +255,811 @@ docker:
       name: cp
       description: 复制文件
       options: []
+    login:
+      name: login
+      description: 登录仓库
+      options:
+        - short: "-u"
+          long: "--username"
+          description: 用户名
+          takes_value: true
+        - short: "-p"
+          long: "--password"
+          description: 密码
+          takes_value: true
+        - short: ""
+          long: "--password-stdin"
+          description: 从标准输入读取密码
+    logout:
+      name: logout
+      description: 登出仓库
+      options: []
+    stats:
+      name: stats
+      description: 容器统计
+      options:
+        - short: "-a"
+          long: "--all"
+          description: 所有容器
+        - short: ""
+          long: "--no-stream"
+          description: 不持续刷新
+        - short: ""
+          long: "--format"
+          description: 格式化输出
+          takes_value: true
+    top:
+      name: top
+      description: 容器进程
+      options: []
+    diff:
+      name: diff
+      description: 容器变化
+      options: []
+    commit:
+      name: commit
+      description: 从容器创建镜像
+      options:
+        - short: "-a"
+          long: "--author"
+          description: 作者
+          takes_value: true
+        - short: "-m"
+          long: "--message"
+          description: 提交信息
+          takes_value: true
+    export:
+      name: export
+      description: 导出容器
+      options:
+        - short: "-o"
+          long: "--output"
+          description: 输出文件
+          takes_value: true
+    import:
+      name: import
+      description: 导入镜像
+      options: []
+    save:
+      name: save
+      description: 保存镜像
+      options:
+        - short: "-o"
+          long: "--output"
+          description: 输出文件
+          takes_value: true
+    load:
+      name: load
+      description: 加载镜像
+      options:
+        - short: "-i"
+          long: "--input"
+          description: 输入文件
+          takes_value: true
+    history:
+      name: history
+      description: 镜像历史
+      options:
+        - short: ""
+          long: "--no-trunc"
+          description: 不截断输出
+        - short: "-q"
+          long: "--quiet"
+          description: 仅显示 ID
+
+podman:
+  name: podman
+  description: 无守护进程容器引擎
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--remote"
+      description: 远程连接
+    - short: "-c"
+      long: "--connection"
+      description: 连接名
+      takes_value: true
+  subcommands:
+    run:
+      name: run
+      description: 运行容器
+      options:
+        - short: "-d"
+          long: "--detach"
+          description: 后台运行
+        - short: "-i"
+          long: "--interactive"
+          description: 交互模式
+        - short: "-t"
+          long: "--tty"
+          description: 分配 TTY
+        - short: ""
+          long: "--rm"
+          description: 退出后删除
+        - short: "-p"
+          long: "--publish"
+          description: 端口映射
+          takes_value: true
+        - short: "-v"
+          long: "--volume"
+          description: 挂载卷
+          takes_value: true
+        - short: "-e"
+          long: "--env"
+          description: 环境变量
+          takes_value: true
+        - short: ""
+          long: "--name"
+          description: 容器名称
+          takes_value: true
+        - short: ""
+          long: "--network"
+          description: 网络
+          takes_value: true
+        - short: ""
+          long: "--pod"
+          description: Pod
+          takes_value: true
+        - short: ""
+          long: "--privileged"
+          description: 特权模式
+        - short: ""
+          long: "--userns"
+          description: 用户命名空间
+          takes_value: true
+    build:
+      name: build
+      description: 构建镜像
+      options:
+        - short: "-t"
+          long: "--tag"
+          description: 镜像标签
+          takes_value: true
+        - short: "-f"
+          long: "--file"
+          description: Containerfile 路径
+          takes_value: true
+        - short: ""
+          long: "--no-cache"
+          description: 不使用缓存
+        - short: ""
+          long: "--layers"
+          description: 缓存层
+    ps:
+      name: ps
+      description: 列出容器
+      options:
+        - short: "-a"
+          long: "--all"
+          description: 显示所有
+        - short: "-q"
+          long: "--quiet"
+          description: 仅显示 ID
+        - short: ""
+          long: "--pod"
+          description: 显示 Pod
+    images:
+      name: images
+      description: 列出镜像
+      options:
+        - short: "-a"
+          long: "--all"
+          description: 显示所有
+        - short: "-q"
+          long: "--quiet"
+          description: 仅显示 ID
+    exec:
+      name: exec
+      description: 在容器中执行
+      options:
+        - short: "-i"
+          long: "--interactive"
+          description: 交互模式
+        - short: "-t"
+          long: "--tty"
+          description: 分配 TTY
+        - short: "-d"
+          long: "--detach"
+          description: 后台执行
+    stop:
+      name: stop
+      description: 停止容器
+      options:
+        - short: "-t"
+          long: "--time"
+          description: 超时时间
+          takes_value: true
+        - short: "-a"
+          long: "--all"
+          description: 停止所有
+    start:
+      name: start
+      description: 启动容器
+      options:
+        - short: "-a"
+          long: "--attach"
+          description: 附加输出
+    rm:
+      name: rm
+      description: 删除容器
+      options:
+        - short: "-f"
+          long: "--force"
+          description: 强制删除
+        - short: "-a"
+          long: "--all"
+          description: 删除所有
+    rmi:
+      name: rmi
+      description: 删除镜像
+      options:
+        - short: "-f"
+          long: "--force"
+          description: 强制删除
+        - short: "-a"
+          long: "--all"
+          description: 删除所有
+    logs:
+      name: logs
+      description: 查看日志
+      options:
+        - short: "-f"
+          long: "--follow"
+          description: 跟踪日志
+        - short: ""
+          long: "--tail"
+          description: 显示行数
+          takes_value: true
+    pod:
+      name: pod
+      description: Pod 管理
+      options: []
+    system:
+      name: system
+      description: 系统管理
+      options: []
+    generate:
+      name: generate
+      description: 生成配置
+      options: []
+    play:
+      name: play
+      description: 运行配置
+      options: []
+    machine:
+      name: machine
+      description: 虚拟机管理
+      options: []
+
+docker-compose:
+  name: docker-compose
+  description: 多容器编排
+  options:
+    - short: "-f"
+      long: "--file"
+      description: Compose 文件
+      takes_value: true
+    - short: "-p"
+      long: "--project-name"
+      description: 项目名
+      takes_value: true
+    - short: ""
+      long: "--profile"
+      description: 配置文件
+      takes_value: true
+    - short: ""
+      long: "--env-file"
+      description: 环境变量文件
+      takes_value: true
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    up:
+      name: up
+      description: 启动服务
+      options:
+        - short: "-d"
+          long: "--detach"
+          description: 后台运行
+        - short: ""
+          long: "--build"
+          description: 构建镜像
+        - short: ""
+          long: "--force-recreate"
+          description: 强制重建
+        - short: ""
+          long: "--no-deps"
+          description: 不启动依赖
+        - short: ""
+          long: "--no-build"
+          description: 不构建
+        - short: ""
+          long: "--remove-orphans"
+          description: 删除孤立容器
+        - short: ""
+          long: "--scale"
+          description: 扩缩容
+          takes_value: true
+        - short: ""
+          long: "--wait"
+          description: 等待健康
+    down:
+      name: down
+      description: 停止并删除
+      options:
+        - short: "-v"
+          long: "--volumes"
+          description: 删除卷
+        - short: ""
+          long: "--rmi"
+          description: 删除镜像
+          takes_value: true
+          values: ["all", "local"]
+        - short: ""
+          long: "--remove-orphans"
+          description: 删除孤立容器
+        - short: "-t"
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+    ps:
+      name: ps
+      description: 列出容器
+      options:
+        - short: "-a"
+          long: "--all"
+          description: 显示所有
+        - short: "-q"
+          long: "--quiet"
+          description: 仅显示 ID
+        - short: ""
+          long: "--services"
+          description: 显示服务名
+    logs:
+      name: logs
+      description: 查看日志
+      options:
+        - short: "-f"
+          long: "--follow"
+          description: 跟踪日志
+        - short: ""
+          long: "--tail"
+          description: 显示行数
+          takes_value: true
+        - short: "-t"
+          long: "--timestamps"
+          description: 显示时间戳
+        - short: ""
+          long: "--since"
+          description: 开始时间
+          takes_value: true
+    build:
+      name: build
+      description: 构建服务
+      options:
+        - short: ""
+          long: "--no-cache"
+          description: 不使用缓存
+        - short: ""
+          long: "--pull"
+          description: 总是拉取
+        - short: ""
+          long: "--parallel"
+          description: 并行构建
+        - short: ""
+          long: "--build-arg"
+          description: 构建参数
+          takes_value: true
+    pull:
+      name: pull
+      description: 拉取镜像
+      options:
+        - short: "-q"
+          long: "--quiet"
+          description: 静默模式
+        - short: ""
+          long: "--include-deps"
+          description: 包含依赖
+    push:
+      name: push
+      description: 推送镜像
+      options: []
+    exec:
+      name: exec
+      description: 执行命令
+      options:
+        - short: "-d"
+          long: "--detach"
+          description: 后台执行
+        - short: "-T"
+          long: ""
+          description: 禁用 TTY
+        - short: "-u"
+          long: "--user"
+          description: 用户
+          takes_value: true
+        - short: "-e"
+          long: "--env"
+          description: 环境变量
+          takes_value: true
+    run:
+      name: run
+      description: 运行一次性命令
+      options:
+        - short: "-d"
+          long: "--detach"
+          description: 后台运行
+        - short: ""
+          long: "--rm"
+          description: 退出后删除
+        - short: ""
+          long: "--no-deps"
+          description: 不启动依赖
+        - short: "-e"
+          long: "--env"
+          description: 环境变量
+          takes_value: true
+        - short: "-v"
+          long: "--volume"
+          description: 挂载卷
+          takes_value: true
+        - short: "-u"
+          long: "--user"
+          description: 用户
+          takes_value: true
+    start:
+      name: start
+      description: 启动服务
+      options: []
+    stop:
+      name: stop
+      description: 停止服务
+      options:
+        - short: "-t"
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+    restart:
+      name: restart
+      description: 重启服务
+      options:
+        - short: "-t"
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+    kill:
+      name: kill
+      description: 杀死容器
+      options:
+        - short: "-s"
+          long: ""
+          description: 信号
+          takes_value: true
+    rm:
+      name: rm
+      description: 删除容器
+      options:
+        - short: "-f"
+          long: "--force"
+          description: 强制删除
+        - short: "-v"
+          long: ""
+          description: 删除卷
+        - short: "-s"
+          long: "--stop"
+          description: 先停止
+    config:
+      name: config
+      description: 验证配置
+      options:
+        - short: "-q"
+          long: "--quiet"
+          description: 静默模式
+        - short: ""
+          long: "--services"
+          description: 列出服务
+        - short: ""
+          long: "--volumes"
+          description: 列出卷
+
+helm:
+  name: helm
+  description: Kubernetes 包管理器
+  options:
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--debug"
+      description: 调试模式
+    - short: "-n"
+      long: "--namespace"
+      description: 命名空间
+      takes_value: true
+    - short: ""
+      long: "--kubeconfig"
+      description: kubeconfig 文件
+      takes_value: true
+    - short: ""
+      long: "--kube-context"
+      description: Kubernetes 上下文
+      takes_value: true
+  subcommands:
+    install:
+      name: install
+      description: 安装 Chart
+      options:
+        - short: "-f"
+          long: "--values"
+          description: values 文件
+          takes_value: true
+        - short: ""
+          long: "--set"
+          description: 设置值
+          takes_value: true
+        - short: ""
+          long: "--set-string"
+          description: 设置字符串值
+          takes_value: true
+        - short: ""
+          long: "--set-file"
+          description: 从文件设置
+          takes_value: true
+        - short: ""
+          long: "--dry-run"
+          description: 试运行
+        - short: ""
+          long: "--wait"
+          description: 等待完成
+        - short: ""
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+        - short: ""
+          long: "--create-namespace"
+          description: 创建命名空间
+        - short: ""
+          long: "--dependency-update"
+          description: 更新依赖
+        - short: ""
+          long: "--generate-name"
+          description: 生成名称
+        - short: ""
+          long: "--atomic"
+          description: 原子操作
+        - short: ""
+          long: "--version"
+          description: Chart 版本
+          takes_value: true
+    upgrade:
+      name: upgrade
+      description: 升级发布
+      options:
+        - short: "-f"
+          long: "--values"
+          description: values 文件
+          takes_value: true
+        - short: ""
+          long: "--set"
+          description: 设置值
+          takes_value: true
+        - short: ""
+          long: "--dry-run"
+          description: 试运行
+        - short: ""
+          long: "--wait"
+          description: 等待完成
+        - short: ""
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+        - short: "-i"
+          long: "--install"
+          description: 不存在则安装
+        - short: ""
+          long: "--atomic"
+          description: 原子操作
+        - short: ""
+          long: "--reset-values"
+          description: 重置值
+        - short: ""
+          long: "--reuse-values"
+          description: 重用值
+        - short: ""
+          long: "--version"
+          description: Chart 版本
+          takes_value: true
+        - short: ""
+          long: "--force"
+          description: 强制更新
+    uninstall:
+      name: uninstall
+      description: 卸载发布
+      options:
+        - short: ""
+          long: "--dry-run"
+          description: 试运行
+        - short: ""
+          long: "--keep-history"
+          description: 保留历史
+        - short: ""
+          long: "--wait"
+          description: 等待完成
+        - short: ""
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+    list:
+      name: list
+      description: 列出发布
+      options:
+        - short: "-a"
+          long: "--all"
+          description: 显示所有
+        - short: "-A"
+          long: "--all-namespaces"
+          description: 所有命名空间
+        - short: "-q"
+          long: "--short"
+          description: 简短输出
+        - short: ""
+          long: "--deployed"
+          description: 已部署
+        - short: ""
+          long: "--failed"
+          description: 失败的
+        - short: ""
+          long: "--pending"
+          description: 挂起的
+        - short: "-o"
+          long: "--output"
+          description: 输出格式
+          takes_value: true
+          values: ["json", "yaml", "table"]
+    status:
+      name: status
+      description: 发布状态
+      options:
+        - short: "-o"
+          long: "--output"
+          description: 输出格式
+          takes_value: true
+        - short: ""
+          long: "--revision"
+          description: 版本号
+          takes_value: true
+    history:
+      name: history
+      description: 发布历史
+      options:
+        - short: ""
+          long: "--max"
+          description: 最大条数
+          takes_value: true
+        - short: "-o"
+          long: "--output"
+          description: 输出格式
+          takes_value: true
+    rollback:
+      name: rollback
+      description: 回滚发布
+      options:
+        - short: ""
+          long: "--dry-run"
+          description: 试运行
+        - short: ""
+          long: "--wait"
+          description: 等待完成
+        - short: ""
+          long: "--timeout"
+          description: 超时时间
+          takes_value: true
+        - short: ""
+          long: "--force"
+          description: 强制回滚
+    repo:
+      name: repo
+      description: 仓库管理
+      options: []
+    search:
+      name: search
+      description: 搜索 Chart
+      options: []
+    show:
+      name: show
+      description: 显示 Chart 信息
+      options: []
+    template:
+      name: template
+      description: 渲染模板
+      options:
+        - short: "-f"
+          long: "--values"
+          description: values 文件
+          takes_value: true
+        - short: ""
+          long: "--set"
+          description: 设置值
+          takes_value: true
+        - short: ""
+          long: "--output-dir"
+          description: 输出目录
+          takes_value: true
+        - short: ""
+          long: "--validate"
+          description: 验证
+    get:
+      name: get
+      description: 获取发布信息
+      options: []
+    pull:
+      name: pull
+      description: 下载 Chart
+      options:
+        - short: ""
+          long: "--untar"
+          description: 解压
+        - short: ""
+          long: "--version"
+          description: 版本
+          takes_value: true
+        - short: "-d"
+          long: "--destination"
+          description: 目标目录
+          takes_value: true
+    push:
+      name: push
+      description: 推送 Chart
+      options: []
+    package:
+      name: package
+      description: 打包 Chart
+      options:
+        - short: "-d"
+          long: "--destination"
+          description: 目标目录
+          takes_value: true
+        - short: ""
+          long: "--version"
+          description: 设置版本
+          takes_value: true
+    lint:
+      name: lint
+      description: 检查 Chart
+      options:
+        - short: "-f"
+          long: "--values"
+          description: values 文件
+          takes_value: true
+        - short: ""
+          long: "--strict"
+          description: 严格模式
+    create:
+      name: create
+      description: 创建 Chart
+      options: []
+    dependency:
+      name: dependency
+      description: 依赖管理
+      options: []
+    env:
+      name: env
+      description: 环境信息
+      options: []
+    version:
+      name: version
+      description: 显示版本
+      options:
+        - short: ""
+          long: "--short"
+          description: 简短输出
 

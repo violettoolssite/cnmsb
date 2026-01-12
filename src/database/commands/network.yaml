@@ -389,3 +389,773 @@ netstat:
       description: 路由表
   subcommands: {}
 
+iptables:
+  name: iptables
+  description: 防火墙规则管理
+  options:
+    - short: "-A"
+      long: "--append"
+      description: 追加规则
+      takes_value: true
+      values: ["INPUT", "OUTPUT", "FORWARD", "PREROUTING", "POSTROUTING"]
+    - short: "-D"
+      long: "--delete"
+      description: 删除规则
+      takes_value: true
+    - short: "-I"
+      long: "--insert"
+      description: 插入规则
+      takes_value: true
+    - short: "-R"
+      long: "--replace"
+      description: 替换规则
+      takes_value: true
+    - short: "-L"
+      long: "--list"
+      description: 列出规则
+    - short: "-F"
+      long: "--flush"
+      description: 清空规则
+    - short: "-Z"
+      long: "--zero"
+      description: 清零计数器
+    - short: "-N"
+      long: "--new-chain"
+      description: 新建链
+      takes_value: true
+    - short: "-X"
+      long: "--delete-chain"
+      description: 删除链
+      takes_value: true
+    - short: "-P"
+      long: "--policy"
+      description: 默认策略
+      takes_value: true
+      values: ["ACCEPT", "DROP", "REJECT"]
+    - short: "-t"
+      long: "--table"
+      description: 表
+      takes_value: true
+      values: ["filter", "nat", "mangle", "raw", "security"]
+    - short: "-j"
+      long: "--jump"
+      description: 目标
+      takes_value: true
+      values: ["ACCEPT", "DROP", "REJECT", "LOG", "DNAT", "SNAT", "MASQUERADE", "REDIRECT"]
+    - short: "-p"
+      long: "--protocol"
+      description: 协议
+      takes_value: true
+      values: ["tcp", "udp", "icmp", "all"]
+    - short: "-s"
+      long: "--source"
+      description: 源地址
+      takes_value: true
+    - short: "-d"
+      long: "--destination"
+      description: 目标地址
+      takes_value: true
+    - short: "-i"
+      long: "--in-interface"
+      description: 入接口
+      takes_value: true
+    - short: "-o"
+      long: "--out-interface"
+      description: 出接口
+      takes_value: true
+    - short: ""
+      long: "--dport"
+      description: 目标端口
+      takes_value: true
+    - short: ""
+      long: "--sport"
+      description: 源端口
+      takes_value: true
+    - short: "-m"
+      long: "--match"
+      description: 匹配模块
+      takes_value: true
+      values: ["state", "multiport", "tcp", "udp", "conntrack", "limit", "comment"]
+    - short: ""
+      long: "--state"
+      description: 连接状态
+      takes_value: true
+      values: ["NEW", "ESTABLISHED", "RELATED", "INVALID"]
+    - short: ""
+      long: "--to-destination"
+      description: DNAT 目标
+      takes_value: true
+    - short: ""
+      long: "--to-source"
+      description: SNAT 源
+      takes_value: true
+    - short: "-n"
+      long: "--numeric"
+      description: 数字显示
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--line-numbers"
+      description: 显示行号
+  subcommands: {}
+
+ip6tables:
+  name: ip6tables
+  description: IPv6 防火墙规则
+  options:
+    - short: "-A"
+      long: "--append"
+      description: 追加规则
+      takes_value: true
+    - short: "-D"
+      long: "--delete"
+      description: 删除规则
+      takes_value: true
+    - short: "-L"
+      long: "--list"
+      description: 列出规则
+    - short: "-F"
+      long: "--flush"
+      description: 清空规则
+    - short: "-P"
+      long: "--policy"
+      description: 默认策略
+      takes_value: true
+    - short: "-t"
+      long: "--table"
+      description: 表
+      takes_value: true
+    - short: "-j"
+      long: "--jump"
+      description: 目标
+      takes_value: true
+    - short: "-p"
+      long: "--protocol"
+      description: 协议
+      takes_value: true
+    - short: "-n"
+      long: "--numeric"
+      description: 数字显示
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands: {}
+
+nftables:
+  name: nft
+  description: nftables 防火墙
+  options:
+    - short: "-f"
+      long: "--file"
+      description: 规则文件
+      takes_value: true
+    - short: "-i"
+      long: "--interactive"
+      description: 交互模式
+    - short: "-n"
+      long: "--numeric"
+      description: 数字显示
+    - short: "-s"
+      long: "--stateless"
+      description: 无状态
+    - short: "-c"
+      long: "--check"
+      description: 检查语法
+    - short: "-j"
+      long: "--json"
+      description: JSON 输出
+  subcommands:
+    list:
+      name: list
+      description: 列出规则
+      options: []
+    add:
+      name: add
+      description: 添加规则
+      options: []
+    delete:
+      name: delete
+      description: 删除规则
+      options: []
+    flush:
+      name: flush
+      description: 清空规则
+      options: []
+
+nmap:
+  name: nmap
+  description: 网络扫描器
+  options:
+    - short: "-sS"
+      long: ""
+      description: TCP SYN 扫描
+    - short: "-sT"
+      long: ""
+      description: TCP 连接扫描
+    - short: "-sU"
+      long: ""
+      description: UDP 扫描
+    - short: "-sn"
+      long: ""
+      description: Ping 扫描
+    - short: "-sV"
+      long: ""
+      description: 版本检测
+    - short: "-sC"
+      long: ""
+      description: 脚本扫描
+    - short: "-O"
+      long: ""
+      description: 系统检测
+    - short: "-A"
+      long: ""
+      description: 激进扫描
+    - short: "-p"
+      long: ""
+      description: 端口范围
+      takes_value: true
+    - short: ""
+      long: "--top-ports"
+      description: 常用端口数
+      takes_value: true
+    - short: "-F"
+      long: ""
+      description: 快速扫描
+    - short: "-Pn"
+      long: ""
+      description: 跳过 Ping
+    - short: "-n"
+      long: ""
+      description: 不 DNS 解析
+    - short: "-T"
+      long: ""
+      description: 时间模板 (0-5)
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-vv"
+      long: ""
+      description: 更详细
+    - short: "-oN"
+      long: ""
+      description: 普通输出
+      takes_value: true
+    - short: "-oX"
+      long: ""
+      description: XML 输出
+      takes_value: true
+    - short: "-oG"
+      long: ""
+      description: Grep 输出
+      takes_value: true
+    - short: "-oA"
+      long: ""
+      description: 所有格式输出
+      takes_value: true
+    - short: ""
+      long: "--script"
+      description: NSE 脚本
+      takes_value: true
+    - short: ""
+      long: "--script-args"
+      description: 脚本参数
+      takes_value: true
+    - short: "-iL"
+      long: ""
+      description: 从文件读取目标
+      takes_value: true
+    - short: ""
+      long: "--exclude"
+      description: 排除目标
+      takes_value: true
+    - short: "-e"
+      long: ""
+      description: 指定接口
+      takes_value: true
+    - short: "-S"
+      long: ""
+      description: 源地址
+      takes_value: true
+    - short: ""
+      long: "--spoof-mac"
+      description: 欺骗 MAC
+      takes_value: true
+    - short: ""
+      long: "--data-length"
+      description: 包大小
+      takes_value: true
+    - short: "-6"
+      long: ""
+      description: IPv6 扫描
+  subcommands: {}
+
+tcpdump:
+  name: tcpdump
+  description: 数据包捕获
+  options:
+    - short: "-i"
+      long: ""
+      description: 接口
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 捕获数量
+      takes_value: true
+    - short: "-w"
+      long: ""
+      description: 写入文件
+      takes_value: true
+    - short: "-r"
+      long: ""
+      description: 读取文件
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 不解析主机名
+    - short: "-nn"
+      long: ""
+      description: 不解析主机名和端口
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-vv"
+      long: ""
+      description: 更详细
+    - short: "-vvv"
+      long: ""
+      description: 最详细
+    - short: "-X"
+      long: ""
+      description: 十六进制和 ASCII
+    - short: "-XX"
+      long: ""
+      description: 包含链路层
+    - short: "-A"
+      long: ""
+      description: ASCII 输出
+    - short: "-e"
+      long: ""
+      description: 显示链路层
+    - short: "-q"
+      long: ""
+      description: 快速输出
+    - short: "-s"
+      long: ""
+      description: 快照长度
+      takes_value: true
+    - short: "-S"
+      long: ""
+      description: 绝对序号
+    - short: "-t"
+      long: ""
+      description: 不显示时间戳
+    - short: "-tt"
+      long: ""
+      description: Unix 时间戳
+    - short: "-ttt"
+      long: ""
+      description: 时间差
+    - short: "-tttt"
+      long: ""
+      description: 完整日期时间
+    - short: "-D"
+      long: ""
+      description: 列出接口
+    - short: "-G"
+      long: ""
+      description: 轮转间隔
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: 文件大小限制
+      takes_value: true
+    - short: "-Z"
+      long: ""
+      description: 切换用户
+      takes_value: true
+  subcommands: {}
+
+dig:
+  name: dig
+  description: DNS 查询工具
+  options:
+    - short: "-4"
+      long: ""
+      description: 仅 IPv4
+    - short: "-6"
+      long: ""
+      description: 仅 IPv6
+    - short: "-b"
+      long: ""
+      description: 绑定地址
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 查询类
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 批处理文件
+      takes_value: true
+    - short: "-k"
+      long: ""
+      description: TSIG 密钥
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 端口
+      takes_value: true
+    - short: "-q"
+      long: ""
+      description: 查询名
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 查询类型
+      takes_value: true
+      values: ["A", "AAAA", "ANY", "CNAME", "MX", "NS", "PTR", "SOA", "SRV", "TXT"]
+    - short: "-x"
+      long: ""
+      description: 反向查询
+    - short: ""
+      long: "+short"
+      description: 简短输出
+    - short: ""
+      long: "+trace"
+      description: 追踪查询
+    - short: ""
+      long: "+noall"
+      description: 关闭所有
+    - short: ""
+      long: "+answer"
+      description: 显示答案
+    - short: ""
+      long: "+comments"
+      description: 显示注释
+    - short: ""
+      long: "+question"
+      description: 显示问题
+    - short: ""
+      long: "+stats"
+      description: 显示统计
+    - short: ""
+      long: "+tcp"
+      description: 使用 TCP
+    - short: ""
+      long: "+nssearch"
+      description: NS 搜索
+    - short: ""
+      long: "+multi"
+      description: 多行输出
+  subcommands: {}
+
+nslookup:
+  name: nslookup
+  description: DNS 解析
+  options:
+    - short: "-type"
+      long: ""
+      description: 查询类型
+      takes_value: true
+      values: ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "SOA", "TXT"]
+    - short: "-port"
+      long: ""
+      description: 端口
+      takes_value: true
+    - short: "-timeout"
+      long: ""
+      description: 超时时间
+      takes_value: true
+    - short: "-retry"
+      long: ""
+      description: 重试次数
+      takes_value: true
+    - short: "-debug"
+      long: ""
+      description: 调试模式
+    - short: "-vc"
+      long: ""
+      description: 使用 TCP
+  subcommands: {}
+
+host:
+  name: host
+  description: DNS 查询
+  options:
+    - short: "-t"
+      long: ""
+      description: 查询类型
+      takes_value: true
+    - short: "-a"
+      long: ""
+      description: 所有记录
+    - short: "-l"
+      long: ""
+      description: 区域传输
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-4"
+      long: ""
+      description: 仅 IPv4
+    - short: "-6"
+      long: ""
+      description: 仅 IPv6
+    - short: "-C"
+      long: ""
+      description: 比较 SOA
+    - short: "-W"
+      long: ""
+      description: 超时时间
+      takes_value: true
+    - short: "-R"
+      long: ""
+      description: 重试次数
+      takes_value: true
+  subcommands: {}
+
+traceroute:
+  name: traceroute
+  description: 路由追踪
+  options:
+    - short: "-n"
+      long: ""
+      description: 不解析主机名
+    - short: "-m"
+      long: ""
+      description: 最大跳数
+      takes_value: true
+    - short: "-w"
+      long: ""
+      description: 超时时间
+      takes_value: true
+    - short: "-q"
+      long: ""
+      description: 探测数量
+      takes_value: true
+    - short: "-I"
+      long: ""
+      description: 使用 ICMP
+    - short: "-T"
+      long: ""
+      description: 使用 TCP
+    - short: "-U"
+      long: ""
+      description: 使用 UDP
+    - short: "-p"
+      long: ""
+      description: 端口
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 起始 TTL
+      takes_value: true
+    - short: "-4"
+      long: ""
+      description: 仅 IPv4
+    - short: "-6"
+      long: ""
+      description: 仅 IPv6
+    - short: "-i"
+      long: ""
+      description: 指定接口
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 源地址
+      takes_value: true
+  subcommands: {}
+
+mtr:
+  name: mtr
+  description: 网络诊断工具
+  options:
+    - short: "-r"
+      long: "--report"
+      description: 报告模式
+    - short: "-c"
+      long: "--report-cycles"
+      description: 循环次数
+      takes_value: true
+    - short: "-w"
+      long: "--report-wide"
+      description: 宽报告
+    - short: "-n"
+      long: "--no-dns"
+      description: 不解析主机名
+    - short: "-b"
+      long: "--show-ips"
+      description: 显示 IP 和主机名
+    - short: "-i"
+      long: "--interval"
+      description: 间隔时间
+      takes_value: true
+    - short: "-m"
+      long: "--max-ttl"
+      description: 最大 TTL
+      takes_value: true
+    - short: "-u"
+      long: "--udp"
+      description: 使用 UDP
+    - short: "-T"
+      long: "--tcp"
+      description: 使用 TCP
+    - short: "-P"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-4"
+      long: ""
+      description: 仅 IPv4
+    - short: "-6"
+      long: ""
+      description: 仅 IPv6
+    - short: "-j"
+      long: "--json"
+      description: JSON 输出
+  subcommands: {}
+
+nc:
+  name: nc
+  description: 网络工具 (netcat)
+  options:
+    - short: "-l"
+      long: ""
+      description: 监听模式
+    - short: "-p"
+      long: ""
+      description: 本地端口
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: UDP 模式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-w"
+      long: ""
+      description: 超时时间
+      takes_value: true
+    - short: "-z"
+      long: ""
+      description: 扫描模式
+    - short: "-n"
+      long: ""
+      description: 不解析主机名
+    - short: "-k"
+      long: ""
+      description: 保持连接
+    - short: "-e"
+      long: ""
+      description: 执行程序
+      takes_value: true
+    - short: "-c"
+      long: ""
+      description: 执行命令
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 源地址
+      takes_value: true
+    - short: "-4"
+      long: ""
+      description: 仅 IPv4
+    - short: "-6"
+      long: ""
+      description: 仅 IPv6
+  subcommands: {}
+
+arp:
+  name: arp
+  description: ARP 表管理
+  options:
+    - short: "-a"
+      long: ""
+      description: 显示所有
+    - short: "-d"
+      long: ""
+      description: 删除条目
+    - short: "-s"
+      long: ""
+      description: 添加静态条目
+    - short: "-n"
+      long: ""
+      description: 数字显示
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "-i"
+      long: ""
+      description: 指定接口
+      takes_value: true
+  subcommands: {}
+
+ifconfig:
+  name: ifconfig
+  description: 网络接口配置
+  options:
+    - short: "-a"
+      long: ""
+      description: 显示所有接口
+    - short: "-s"
+      long: ""
+      description: 简短格式
+    - short: "-v"
+      long: ""
+      description: 详细输出
+    - short: "up"
+      long: ""
+      description: 启用接口
+    - short: "down"
+      long: ""
+      description: 禁用接口
+  subcommands: {}
+
+ethtool:
+  name: ethtool
+  description: 网卡配置
+  options:
+    - short: "-i"
+      long: ""
+      description: 驱动信息
+    - short: "-S"
+      long: ""
+      description: 统计信息
+    - short: "-k"
+      long: ""
+      description: 卸载特性
+    - short: "-K"
+      long: ""
+      description: 设置卸载特性
+    - short: "-a"
+      long: ""
+      description: 暂停参数
+    - short: "-A"
+      long: ""
+      description: 设置暂停参数
+    - short: "-c"
+      long: ""
+      description: 合并参数
+    - short: "-C"
+      long: ""
+      description: 设置合并参数
+    - short: "-g"
+      long: ""
+      description: 环形缓冲区
+    - short: "-G"
+      long: ""
+      description: 设置环形缓冲区
+    - short: "-s"
+      long: ""
+      description: 设置参数
+    - short: "-p"
+      long: ""
+      description: 闪烁 LED
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 自检
+  subcommands: {}
+

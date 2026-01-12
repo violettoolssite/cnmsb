@@ -1,0 +1,764 @@
+# 内核模块命令
+# 贡献者可以在此添加更多内核命令
+
+modprobe:
+  name: modprobe
+  description: 加载内核模块
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 加载所有
+    - short: "-r"
+      long: "--remove"
+      description: 卸载模块
+    - short: "-R"
+      long: "--resolve-alias"
+      description: 解析别名
+    - short: "-D"
+      long: "--show-depends"
+      description: 显示依赖
+    - short: "-c"
+      long: "--showconfig"
+      description: 显示配置
+    - short: ""
+      long: "--show-modversions"
+      description: 显示模块版本
+    - short: ""
+      long: "--dump-modversions"
+      description: 转储模块版本
+    - short: "-f"
+      long: "--force"
+      description: 强制加载
+    - short: ""
+      long: "--force-vermagic"
+      description: 忽略版本魔数
+    - short: ""
+      long: "--force-modversion"
+      description: 忽略模块版本
+    - short: "-i"
+      long: "--ignore-install"
+      description: 忽略安装命令
+    - short: ""
+      long: "--ignore-remove"
+      description: 忽略卸载命令
+    - short: "-n"
+      long: "--dry-run"
+      description: 试运行
+    - short: "-b"
+      long: "--use-blacklist"
+      description: 使用黑名单
+    - short: "-d"
+      long: "--dirname"
+      description: 模块目录
+      takes_value: true
+    - short: "-S"
+      long: "--set-version"
+      description: 设置版本
+      takes_value: true
+    - short: "-s"
+      long: "--syslog"
+      description: 使用 syslog
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+lsmod:
+  name: lsmod
+  description: 列出加载的模块
+  options: []
+  subcommands: {}
+
+rmmod:
+  name: rmmod
+  description: 卸载内核模块
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制卸载
+    - short: "-s"
+      long: "--syslog"
+      description: 使用 syslog
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-w"
+      long: "--wait"
+      description: 等待引用归零
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+insmod:
+  name: insmod
+  description: 插入内核模块
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制加载
+    - short: "-s"
+      long: "--syslog"
+      description: 使用 syslog
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+modinfo:
+  name: modinfo
+  description: 模块信息
+  options:
+    - short: "-0"
+      long: "--null"
+      description: 空字符分隔
+    - short: "-a"
+      long: "--author"
+      description: 作者
+    - short: "-d"
+      long: "--description"
+      description: 描述
+    - short: "-l"
+      long: "--license"
+      description: 许可证
+    - short: "-p"
+      long: "--parameters"
+      description: 参数
+    - short: "-n"
+      long: "--filename"
+      description: 文件名
+    - short: "-k"
+      long: "--set-version"
+      description: 设置版本
+      takes_value: true
+    - short: "-b"
+      long: "--basedir"
+      description: 基础目录
+      takes_value: true
+    - short: "-F"
+      long: "--field"
+      description: 指定字段
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+depmod:
+  name: depmod
+  description: 生成模块依赖
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有模块
+    - short: "-A"
+      long: "--quick"
+      description: 快速检查
+    - short: "-b"
+      long: "--basedir"
+      description: 基础目录
+      takes_value: true
+    - short: "-e"
+      long: "--errsyms"
+      description: 显示未解析符号
+    - short: "-E"
+      long: "--symvers"
+      description: 符号版本文件
+      takes_value: true
+    - short: "-F"
+      long: "--filesyms"
+      description: System.map 文件
+      takes_value: true
+    - short: "-n"
+      long: "--show"
+      description: 显示而不写入
+    - short: "-w"
+      long: ""
+      description: 警告重复
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+sysctl:
+  name: sysctl
+  description: 内核参数
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 显示所有
+    - short: "-A"
+      long: ""
+      description: 表格格式
+    - short: "-b"
+      long: "--binary"
+      description: 二进制输出
+    - short: "-d"
+      long: "--deprecated"
+      description: 显示已弃用
+    - short: "-e"
+      long: "--ignore"
+      description: 忽略错误
+    - short: "-N"
+      long: "--names"
+      description: 只显示名称
+    - short: "-n"
+      long: "--values"
+      description: 只显示值
+    - short: "-p"
+      long: "--load"
+      description: 加载文件
+      takes_value: true
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--system"
+      description: 加载系统配置
+    - short: "-r"
+      long: "--pattern"
+      description: 正则过滤
+      takes_value: true
+    - short: "-w"
+      long: "--write"
+      description: 写入值
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+dmesg:
+  name: dmesg
+  description: 内核环形缓冲区
+  options:
+    - short: "-c"
+      long: "--clear"
+      description: 读取并清空
+    - short: "-C"
+      long: "--console-off"
+      description: 禁用控制台
+    - short: "-D"
+      long: "--console-on"
+      description: 启用控制台
+    - short: "-d"
+      long: "--show-delta"
+      description: 显示时间差
+    - short: "-E"
+      long: "--console-level"
+      description: 控制台级别
+      takes_value: true
+    - short: "-e"
+      long: "--reltime"
+      description: 相对时间
+    - short: "-f"
+      long: "--facility"
+      description: 设施
+      takes_value: true
+    - short: "-H"
+      long: "--human"
+      description: 人类可读
+    - short: "-k"
+      long: "--kernel"
+      description: 内核消息
+    - short: "-l"
+      long: "--level"
+      description: 级别
+      takes_value: true
+    - short: "-n"
+      long: "--console-level"
+      description: 控制台级别
+      takes_value: true
+    - short: "-P"
+      long: "--nopager"
+      description: 不分页
+    - short: "-r"
+      long: "--raw"
+      description: 原始输出
+    - short: "-S"
+      long: "--syslog"
+      description: 使用 syslog
+    - short: "-s"
+      long: "--buffer-size"
+      description: 缓冲区大小
+      takes_value: true
+    - short: "-T"
+      long: "--ctime"
+      description: 人类可读时间
+    - short: "-t"
+      long: "--notime"
+      description: 不显示时间
+    - short: "-u"
+      long: "--userspace"
+      description: 用户空间消息
+    - short: "-w"
+      long: "--follow"
+      description: 持续输出
+    - short: "-W"
+      long: "--follow-new"
+      description: 只显示新消息
+    - short: "-x"
+      long: "--decode"
+      description: 解码设施和级别
+    - short: "--color"
+      long: ""
+      description: 颜色
+      takes_value: true
+      values: ["auto", "always", "never"]
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+journalctl:
+  name: journalctl
+  description: 查询系统日志
+  options:
+    - short: "-f"
+      long: "--follow"
+      description: 持续输出
+    - short: "-e"
+      long: "--pager-end"
+      description: 跳到末尾
+    - short: "-n"
+      long: "--lines"
+      description: 行数
+      takes_value: true
+    - short: "-r"
+      long: "--reverse"
+      description: 逆序
+    - short: "-o"
+      long: "--output"
+      description: 输出格式
+      takes_value: true
+      values: ["short", "short-full", "short-iso", "short-precise", "cat", "verbose", "export", "json", "json-pretty"]
+    - short: "-x"
+      long: "--catalog"
+      description: 添加消息解释
+    - short: "-k"
+      long: "--dmesg"
+      description: 内核消息
+    - short: "-b"
+      long: "--boot"
+      description: 启动日志
+    - short: "-u"
+      long: "--unit"
+      description: 服务单元
+      takes_value: true
+    - short: "-t"
+      long: "--identifier"
+      description: 标识符
+      takes_value: true
+    - short: "-p"
+      long: "--priority"
+      description: 优先级
+      takes_value: true
+      values: ["emerg", "alert", "crit", "err", "warning", "notice", "info", "debug"]
+    - short: "-S"
+      long: "--since"
+      description: 开始时间
+      takes_value: true
+    - short: "-U"
+      long: "--until"
+      description: 结束时间
+      takes_value: true
+    - short: "-g"
+      long: "--grep"
+      description: 正则过滤
+      takes_value: true
+    - short: ""
+      long: "--disk-usage"
+      description: 磁盘使用
+    - short: ""
+      long: "--vacuum-size"
+      description: 清理到指定大小
+      takes_value: true
+    - short: ""
+      long: "--vacuum-time"
+      description: 清理超时日志
+      takes_value: true
+    - short: ""
+      long: "--vacuum-files"
+      description: 清理到指定文件数
+      takes_value: true
+    - short: ""
+      long: "--rotate"
+      description: 轮转日志
+    - short: ""
+      long: "--sync"
+      description: 同步日志
+    - short: ""
+      long: "--flush"
+      description: 刷新日志
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+logger:
+  name: logger
+  description: 写入系统日志
+  options:
+    - short: "-d"
+      long: "--udp"
+      description: 使用 UDP
+    - short: "-e"
+      long: "--skip-empty"
+      description: 跳过空行
+    - short: "-f"
+      long: "--file"
+      description: 从文件读取
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 记录 PID
+    - short: ""
+      long: "--id"
+      description: 记录指定 ID
+      takes_value: true
+    - short: "-n"
+      long: "--server"
+      description: 服务器地址
+      takes_value: true
+    - short: "-P"
+      long: "--port"
+      description: 端口
+      takes_value: true
+    - short: "-p"
+      long: "--priority"
+      description: 优先级
+      takes_value: true
+    - short: "-s"
+      long: "--stderr"
+      description: 同时输出到 stderr
+    - short: "-S"
+      long: "--size"
+      description: 消息大小
+      takes_value: true
+    - short: "-t"
+      long: "--tag"
+      description: 标签
+      takes_value: true
+    - short: "-T"
+      long: "--tcp"
+      description: 使用 TCP
+    - short: "-u"
+      long: "--socket"
+      description: 使用 socket
+      takes_value: true
+    - short: ""
+      long: "--journald"
+      description: 写入 journald
+    - short: ""
+      long: "--msgid"
+      description: 消息 ID
+      takes_value: true
+    - short: ""
+      long: "--sd-id"
+      description: 结构化数据 ID
+      takes_value: true
+    - short: ""
+      long: "--sd-param"
+      description: 结构化数据参数
+      takes_value: true
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+free:
+  name: free
+  description: 内存使用
+  options:
+    - short: "-b"
+      long: "--bytes"
+      description: 字节显示
+    - short: "-k"
+      long: "--kilo"
+      description: KB 显示
+    - short: "-m"
+      long: "--mega"
+      description: MB 显示
+    - short: "-g"
+      long: "--giga"
+      description: GB 显示
+    - short: ""
+      long: "--tera"
+      description: TB 显示
+    - short: ""
+      long: "--peta"
+      description: PB 显示
+    - short: "-h"
+      long: "--human"
+      description: 人类可读
+    - short: ""
+      long: "--si"
+      description: 1000 进制
+    - short: "-l"
+      long: "--lohi"
+      description: 低高内存
+    - short: "-t"
+      long: "--total"
+      description: 显示总计
+    - short: "-s"
+      long: "--seconds"
+      description: 刷新间隔
+      takes_value: true
+    - short: "-c"
+      long: "--count"
+      description: 刷新次数
+      takes_value: true
+    - short: "-w"
+      long: "--wide"
+      description: 宽输出
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+vmstat:
+  name: vmstat
+  description: 虚拟内存统计
+  options:
+    - short: "-a"
+      long: "--active"
+      description: 活动/非活动内存
+    - short: "-f"
+      long: "--forks"
+      description: fork 计数
+    - short: "-m"
+      long: "--slabs"
+      description: slab 信息
+    - short: "-n"
+      long: "--one-header"
+      description: 只显示一次标题
+    - short: "-s"
+      long: "--stats"
+      description: 内存统计
+    - short: "-d"
+      long: "--disk"
+      description: 磁盘统计
+    - short: "-D"
+      long: "--disk-sum"
+      description: 磁盘汇总
+    - short: "-p"
+      long: "--partition"
+      description: 分区统计
+      takes_value: true
+    - short: "-S"
+      long: "--unit"
+      description: 单位
+      takes_value: true
+      values: ["k", "K", "m", "M"]
+    - short: "-t"
+      long: "--timestamp"
+      description: 显示时间戳
+    - short: "-w"
+      long: "--wide"
+      description: 宽输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+iostat:
+  name: iostat
+  description: CPU 和 I/O 统计
+  options:
+    - short: "-c"
+      long: ""
+      description: CPU 统计
+    - short: "-d"
+      long: ""
+      description: 设备统计
+    - short: "-g"
+      long: ""
+      description: 组统计
+      takes_value: true
+    - short: "-h"
+      long: ""
+      description: 人类可读
+    - short: "-j"
+      long: ""
+      description: 设备名称类型
+      takes_value: true
+    - short: "-k"
+      long: ""
+      description: KB 显示
+    - short: "-m"
+      long: ""
+      description: MB 显示
+    - short: "-N"
+      long: ""
+      description: 设备映射名称
+    - short: "-o"
+      long: ""
+      description: JSON 输出
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 块设备和分区
+    - short: "-s"
+      long: ""
+      description: 压缩输出
+    - short: "-t"
+      long: ""
+      description: 显示时间
+    - short: "-x"
+      long: ""
+      description: 扩展统计
+    - short: "-y"
+      long: ""
+      description: 跳过第一个报告
+    - short: "-z"
+      long: ""
+      description: 跳过零活动
+    - short: "-V"
+      long: ""
+      description: 显示版本
+  subcommands: {}
+
+sar:
+  name: sar
+  description: 系统活动报告
+  options:
+    - short: "-A"
+      long: ""
+      description: 所有报告
+    - short: "-b"
+      long: ""
+      description: I/O 统计
+    - short: "-B"
+      long: ""
+      description: 分页统计
+    - short: "-C"
+      long: ""
+      description: 进程创建
+    - short: "-d"
+      long: ""
+      description: 块设备活动
+    - short: "-F"
+      long: ""
+      description: 文件系统统计
+    - short: "-H"
+      long: ""
+      description: 大页统计
+    - short: "-I"
+      long: ""
+      description: 中断统计
+      takes_value: true
+    - short: "-m"
+      long: ""
+      description: 电源管理
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 网络统计
+      takes_value: true
+      values: ["DEV", "EDEV", "NFS", "NFSD", "SOCK", "IP", "TCP", "UDP"]
+    - short: "-o"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: "-P"
+      long: ""
+      description: 指定 CPU
+      takes_value: true
+    - short: "-q"
+      long: ""
+      description: 队列长度
+    - short: "-r"
+      long: ""
+      description: 内存利用
+    - short: "-R"
+      long: ""
+      description: 内存统计
+    - short: "-S"
+      long: ""
+      description: 交换空间
+    - short: "-u"
+      long: ""
+      description: CPU 利用率
+    - short: "-v"
+      long: ""
+      description: 内核表
+    - short: "-w"
+      long: ""
+      description: 任务切换
+    - short: "-W"
+      long: ""
+      description: 交换统计
+    - short: "-y"
+      long: ""
+      description: TTY 设备
+    - short: "-f"
+      long: ""
+      description: 数据文件
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 开始时间
+      takes_value: true
+    - short: "-e"
+      long: ""
+      description: 结束时间
+      takes_value: true
+    - short: "-h"
+      long: ""
+      description: 人类可读
+    - short: "-j"
+      long: ""
+      description: JSON 输出
+    - short: "-V"
+      long: ""
+      description: 显示版本
+  subcommands: {}
+
+

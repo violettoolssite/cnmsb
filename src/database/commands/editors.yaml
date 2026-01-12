@@ -1,0 +1,542 @@
+# 编辑器命令
+# 贡献者可以在此添加更多编辑器命令
+
+vim:
+  name: vim
+  description: Vi 改进版编辑器
+  options:
+    - short: "-c"
+      long: ""
+      description: 执行命令
+      takes_value: true
+    - short: "-S"
+      long: ""
+      description: 执行脚本
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: 指定 vimrc
+      takes_value: true
+    - short: "-N"
+      long: ""
+      description: 不兼容模式
+    - short: "-n"
+      long: ""
+      description: 不使用交换文件
+    - short: "-R"
+      long: ""
+      description: 只读模式
+    - short: "-r"
+      long: ""
+      description: 恢复文件
+    - short: "-d"
+      long: ""
+      description: Diff 模式
+    - short: "-b"
+      long: ""
+      description: 二进制模式
+    - short: "-e"
+      long: ""
+      description: Ex 模式
+    - short: "-E"
+      long: ""
+      description: 改进 Ex 模式
+    - short: "-s"
+      long: ""
+      description: 静默模式
+    - short: "-v"
+      long: ""
+      description: Vi 模式
+    - short: "-y"
+      long: ""
+      description: 简易模式
+    - short: "-o"
+      long: ""
+      description: 水平分割窗口
+      takes_value: true
+    - short: "-O"
+      long: ""
+      description: 垂直分割窗口
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 标签页打开
+      takes_value: true
+    - short: "+"
+      long: ""
+      description: 从末尾开始
+    - short: "+/"
+      long: ""
+      description: 搜索模式
+      takes_value: true
+    - short: ""
+      long: "--version"
+      description: 显示版本
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--noplugin"
+      description: 不加载插件
+    - short: ""
+      long: "--clean"
+      description: 干净启动
+  subcommands: {}
+
+vi:
+  name: vi
+  description: Vi 编辑器
+  options:
+    - short: "-c"
+      long: ""
+      description: 执行命令
+      takes_value: true
+    - short: "-R"
+      long: ""
+      description: 只读模式
+    - short: "-r"
+      long: ""
+      description: 恢复文件
+    - short: "+"
+      long: ""
+      description: 从末尾开始
+  subcommands: {}
+
+nvim:
+  name: nvim
+  description: Neovim 编辑器
+  options:
+    - short: "-c"
+      long: ""
+      description: 执行命令
+      takes_value: true
+    - short: "-S"
+      long: ""
+      description: 执行脚本
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: 指定配置
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 不使用交换文件
+    - short: "-R"
+      long: ""
+      description: 只读模式
+    - short: "-d"
+      long: ""
+      description: Diff 模式
+    - short: "-o"
+      long: ""
+      description: 水平分割
+      takes_value: true
+    - short: "-O"
+      long: ""
+      description: 垂直分割
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: 标签页
+      takes_value: true
+    - short: ""
+      long: "--headless"
+      description: 无界面模式
+    - short: ""
+      long: "--embed"
+      description: 嵌入模式
+    - short: ""
+      long: "--listen"
+      description: 监听地址
+      takes_value: true
+    - short: ""
+      long: "--clean"
+      description: 干净启动
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+nano:
+  name: nano
+  description: 简单文本编辑器
+  options:
+    - short: "-A"
+      long: "--smarthome"
+      description: 智能 Home 键
+    - short: "-B"
+      long: "--backup"
+      description: 保存备份
+    - short: "-C"
+      long: "--backupdir"
+      description: 备份目录
+      takes_value: true
+    - short: "-D"
+      long: "--boldtext"
+      description: 粗体文本
+    - short: "-E"
+      long: "--tabstospaces"
+      description: Tab 转空格
+    - short: "-F"
+      long: "--multibuffer"
+      description: 多缓冲区
+    - short: "-G"
+      long: "--locking"
+      description: 文件锁定
+    - short: "-H"
+      long: "--historylog"
+      description: 历史日志
+    - short: "-I"
+      long: "--ignorercfiles"
+      description: 忽略配置
+    - short: "-K"
+      long: "--rawsequences"
+      description: 原始序列
+    - short: "-L"
+      long: "--nonewlines"
+      description: 不添加换行
+    - short: "-M"
+      long: "--trimblanks"
+      description: 去除尾空格
+    - short: "-N"
+      long: "--noconvert"
+      description: 不转换
+    - short: "-O"
+      long: "--morespace"
+      description: 更多空间
+    - short: "-P"
+      long: "--positionlog"
+      description: 位置日志
+    - short: "-R"
+      long: "--restricted"
+      description: 受限模式
+    - short: "-S"
+      long: "--smooth"
+      description: 平滑滚动
+    - short: "-T"
+      long: "--tabsize"
+      description: Tab 大小
+      takes_value: true
+    - short: "-U"
+      long: "--quickblank"
+      description: 快速清空状态栏
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-W"
+      long: "--wordbounds"
+      description: 单词边界
+    - short: "-Y"
+      long: "--syntax"
+      description: 语法高亮
+      takes_value: true
+    - short: "-c"
+      long: "--constantshow"
+      description: 常显光标位置
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-i"
+      long: "--autoindent"
+      description: 自动缩进
+    - short: "-k"
+      long: "--cutfromcursor"
+      description: 从光标剪切
+    - short: "-l"
+      long: "--linenumbers"
+      description: 显示行号
+    - short: "-m"
+      long: "--mouse"
+      description: 启用鼠标
+    - short: "-n"
+      long: "--noread"
+      description: 不读取文件
+    - short: "-p"
+      long: "--preserve"
+      description: 保留 XON/XOFF
+    - short: "-r"
+      long: "--fill"
+      description: 填充宽度
+      takes_value: true
+    - short: "-s"
+      long: "--speller"
+      description: 拼写检查器
+      takes_value: true
+    - short: "-t"
+      long: "--tempfile"
+      description: 自动保存
+    - short: "-v"
+      long: "--view"
+      description: 只读模式
+    - short: "-w"
+      long: "--nowrap"
+      description: 不换行
+    - short: "-x"
+      long: "--nohelp"
+      description: 不显示帮助栏
+    - short: "-z"
+      long: "--suspend"
+      description: 允许挂起
+  subcommands: {}
+
+emacs:
+  name: emacs
+  description: Emacs 编辑器
+  options:
+    - short: "-nw"
+      long: "--no-window-system"
+      description: 终端模式
+    - short: "-q"
+      long: "--no-init-file"
+      description: 不加载 init
+    - short: "-Q"
+      long: "--quick"
+      description: 快速启动
+    - short: "-l"
+      long: "--load"
+      description: 加载文件
+      takes_value: true
+    - short: "-f"
+      long: "--funcall"
+      description: 调用函数
+      takes_value: true
+    - short: ""
+      long: "--eval"
+      description: 求值表达式
+      takes_value: true
+    - short: ""
+      long: "--batch"
+      description: 批处理模式
+    - short: ""
+      long: "--script"
+      description: 脚本模式
+      takes_value: true
+    - short: ""
+      long: "--daemon"
+      description: 守护进程
+    - short: ""
+      long: "--debug-init"
+      description: 调试初始化
+    - short: "-u"
+      long: "--user"
+      description: 指定用户
+      takes_value: true
+    - short: ""
+      long: "--no-site-file"
+      description: 不加载站点文件
+    - short: ""
+      long: "--no-splash"
+      description: 不显示启动画面
+    - short: ""
+      long: "--version"
+      description: 显示版本
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+sed:
+  name: sed
+  description: 流编辑器
+  options:
+    - short: "-n"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-e"
+      long: "--expression"
+      description: 添加脚本
+      takes_value: true
+    - short: "-f"
+      long: "--file"
+      description: 脚本文件
+      takes_value: true
+    - short: "-i"
+      long: "--in-place"
+      description: 原地编辑
+    - short: "-l"
+      long: "--line-length"
+      description: 行长度
+      takes_value: true
+    - short: "-r"
+      long: "--regexp-extended"
+      description: 扩展正则
+    - short: "-E"
+      long: ""
+      description: 扩展正则
+    - short: "-s"
+      long: "--separate"
+      description: 分别处理
+    - short: "-u"
+      long: "--unbuffered"
+      description: 无缓冲
+    - short: "-z"
+      long: "--null-data"
+      description: 空字符分隔
+    - short: ""
+      long: "--follow-symlinks"
+      description: 跟随链接
+    - short: ""
+      long: "--version"
+      description: 显示版本
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+awk:
+  name: awk
+  description: 文本处理语言
+  options:
+    - short: "-F"
+      long: "--field-separator"
+      description: 字段分隔符
+      takes_value: true
+    - short: "-v"
+      long: "--assign"
+      description: 赋值变量
+      takes_value: true
+    - short: "-f"
+      long: "--file"
+      description: 程序文件
+      takes_value: true
+    - short: "-W"
+      long: ""
+      description: 兼容选项
+      takes_value: true
+    - short: "-b"
+      long: "--characters-as-bytes"
+      description: 字节处理
+    - short: "-c"
+      long: "--traditional"
+      description: 传统模式
+    - short: "-C"
+      long: "--copyright"
+      description: 版权信息
+    - short: "-d"
+      long: "--dump-variables"
+      description: 转储变量
+    - short: "-e"
+      long: "--source"
+      description: 程序源码
+      takes_value: true
+    - short: "-E"
+      long: "--exec"
+      description: 执行文件
+      takes_value: true
+    - short: "-g"
+      long: "--gen-pot"
+      description: 生成 POT
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-L"
+      long: "--lint"
+      description: 语法检查
+    - short: "-n"
+      long: "--non-decimal-data"
+      description: 非十进制
+    - short: "-N"
+      long: "--use-lc-numeric"
+      description: 使用区域数字
+    - short: "-o"
+      long: "--pretty-print"
+      description: 格式化输出
+    - short: "-O"
+      long: "--optimize"
+      description: 优化
+    - short: "-p"
+      long: "--profile"
+      description: 性能分析
+    - short: "-P"
+      long: "--posix"
+      description: POSIX 模式
+    - short: "-r"
+      long: "--re-interval"
+      description: 正则间隔
+    - short: "-s"
+      long: "--no-optimize"
+      description: 不优化
+    - short: "-S"
+      long: "--sandbox"
+      description: 沙盒模式
+    - short: "-t"
+      long: "--lint-old"
+      description: 旧版检查
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+gawk:
+  name: gawk
+  description: GNU AWK
+  options:
+    - short: "-F"
+      long: "--field-separator"
+      description: 字段分隔符
+      takes_value: true
+    - short: "-v"
+      long: "--assign"
+      description: 赋值变量
+      takes_value: true
+    - short: "-f"
+      long: "--file"
+      description: 程序文件
+      takes_value: true
+    - short: "-e"
+      long: "--source"
+      description: 程序源码
+      takes_value: true
+    - short: "-i"
+      long: "--include"
+      description: 包含文件
+      takes_value: true
+    - short: "-l"
+      long: "--load"
+      description: 加载扩展
+      takes_value: true
+    - short: "-b"
+      long: "--characters-as-bytes"
+      description: 字节处理
+    - short: "-c"
+      long: "--traditional"
+      description: 传统模式
+    - short: "-d"
+      long: "--dump-variables"
+      description: 转储变量
+    - short: "-D"
+      long: "--debug"
+      description: 调试模式
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-L"
+      long: "--lint"
+      description: 语法检查
+    - short: "-M"
+      long: "--bignum"
+      description: 大数支持
+    - short: "-n"
+      long: "--non-decimal-data"
+      description: 非十进制
+    - short: "-o"
+      long: "--pretty-print"
+      description: 格式化输出
+    - short: "-O"
+      long: "--optimize"
+      description: 优化
+    - short: "-p"
+      long: "--profile"
+      description: 性能分析
+    - short: "-P"
+      long: "--posix"
+      description: POSIX 模式
+    - short: "-S"
+      long: "--sandbox"
+      description: 沙盒模式
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+

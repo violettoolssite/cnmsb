@@ -1,5 +1,7 @@
 //! 命令行解析器
 
+use crate::database::CommandDatabase;
+
 /// 解析后的命令行结构
 #[derive(Debug, Clone)]
 pub struct ParsedCommand {
@@ -20,19 +22,33 @@ pub struct ParsedCommand {
 }
 
 /// 命令行解析器
-pub struct CommandParser;
+pub struct CommandParser {
+    database: CommandDatabase,
+}
 
 impl CommandParser {
     pub fn new() -> Self {
-        CommandParser
+        CommandParser {
+            database: CommandDatabase::new(),
+        }
     }
 
     /// 解析命令行
     pub fn parse(&self, line: &str, cursor: usize) -> ParsedCommand {
-        let line_to_cursor = if cursor <= line.len() {
-            &line[..cursor]
-        } else {
+        // 处理 UTF-8 字符边界
+        let line_to_cursor = if cursor >= line.len() {
             line
+        } else {
+            // 找到有效的 UTF-8 边界
+            let mut end = cursor;
+            while end < line.len() && !line.is_char_boundary(end) {
+                end += 1;
+            }
+            if end > line.len() {
+                line
+            } else {
+                &line[..end]
+            }
         };
 
         let words: Vec<&str> = line_to_cursor.split_whitespace().collect();
@@ -51,7 +67,7 @@ impl CommandParser {
         let command = words_before.first().map(|s| s.to_string()).unwrap_or_default();
         
         // 检测子命令（对于 git, docker 等多级命令）
-        let subcommand = if Self::has_subcommands(&command) && words_before.len() > 1 {
+        let subcommand = if self.has_subcommands(&command) && words_before.len() > 1 {
             let potential_sub = words_before.get(1).map(|s| s.to_string());
             // 只有不以 - 开头的才算子命令
             potential_sub.filter(|s| !s.starts_with('-'))
@@ -86,14 +102,14 @@ impl CommandParser {
         }
     }
 
-    /// 检查命令是否有子命令
-    fn has_subcommands(cmd: &str) -> bool {
-        matches!(
-            cmd,
-            "git" | "docker" | "kubectl" | "apt" | "apt-get" | "systemctl" 
-            | "npm" | "cargo" | "pip" | "conda" | "brew" | "pacman" | "yum"
-            | "dnf" | "zypper" | "snap" | "flatpak" | "journalctl" | "ip"
-        )
+    /// 检查命令是否有子命令（从数据库动态加载）
+    fn has_subcommands(&self, cmd: &str) -> bool {
+        // 从数据库检查命令是否定义了子命令
+        if let Some(cmd_def) = self.database.get_command(cmd) {
+            !cmd_def.subcommands.is_empty()
+        } else {
+            false
+        }
     }
 }
 

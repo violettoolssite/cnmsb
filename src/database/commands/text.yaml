@@ -362,3 +362,1041 @@ jq:
       description: Tab 缩进
   subcommands: {}
 
+paste:
+  name: paste
+  description: 合并文件列
+  options:
+    - short: "-d"
+      long: "--delimiters"
+      description: 分隔符
+      takes_value: true
+    - short: "-s"
+      long: "--serial"
+      description: 串行模式
+    - short: "-z"
+      long: "--zero-terminated"
+      description: 空字符分隔
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+join:
+  name: join
+  description: 连接文件行
+  options:
+    - short: "-a"
+      long: ""
+      description: 未匹配行
+      takes_value: true
+      values: ["1", "2"]
+    - short: "-e"
+      long: ""
+      description: 替换空字段
+      takes_value: true
+    - short: "-i"
+      long: "--ignore-case"
+      description: 忽略大小写
+    - short: "-j"
+      long: ""
+      description: 连接字段
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 输出格式
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 分隔符
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 只显示未匹配
+      takes_value: true
+    - short: "-1"
+      long: ""
+      description: 文件 1 字段
+      takes_value: true
+    - short: "-2"
+      long: ""
+      description: 文件 2 字段
+      takes_value: true
+    - short: ""
+      long: "--header"
+      description: 有标题行
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+split:
+  name: split
+  description: 分割文件
+  options:
+    - short: "-a"
+      long: "--suffix-length"
+      description: 后缀长度
+      takes_value: true
+    - short: "-b"
+      long: "--bytes"
+      description: 按字节分割
+      takes_value: true
+    - short: "-C"
+      long: "--line-bytes"
+      description: 按行字节分割
+      takes_value: true
+    - short: "-d"
+      long: "--numeric-suffixes"
+      description: 数字后缀
+    - short: "-x"
+      long: "--hex-suffixes"
+      description: 十六进制后缀
+    - short: "-e"
+      long: "--elide-empty-files"
+      description: 不创建空文件
+    - short: "-l"
+      long: "--lines"
+      description: 按行数分割
+      takes_value: true
+    - short: "-n"
+      long: "--number"
+      description: 分割成 N 份
+      takes_value: true
+    - short: "-t"
+      long: "--separator"
+      description: 行分隔符
+      takes_value: true
+    - short: "-u"
+      long: "--unbuffered"
+      description: 无缓冲
+    - short: ""
+      long: "--additional-suffix"
+      description: 额外后缀
+      takes_value: true
+    - short: ""
+      long: "--filter"
+      description: 过滤命令
+      takes_value: true
+    - short: ""
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+csplit:
+  name: csplit
+  description: 按模式分割文件
+  options:
+    - short: "-b"
+      long: "--suffix-format"
+      description: 后缀格式
+      takes_value: true
+    - short: "-f"
+      long: "--prefix"
+      description: 前缀
+      takes_value: true
+    - short: "-k"
+      long: "--keep-files"
+      description: 保留文件
+    - short: "-m"
+      long: "--suppress-matched"
+      description: 不包含匹配行
+    - short: "-n"
+      long: "--digits"
+      description: 数字位数
+      takes_value: true
+    - short: "-s"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-z"
+      long: "--elide-empty-files"
+      description: 不创建空文件
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+column:
+  name: column
+  description: 列格式化
+  options:
+    - short: "-c"
+      long: "--output-width"
+      description: 输出宽度
+      takes_value: true
+    - short: "-e"
+      long: "--table-empty-lines"
+      description: 保留空行
+    - short: "-J"
+      long: "--json"
+      description: JSON 输出
+    - short: "-L"
+      long: "--keep-empty-lines"
+      description: 保留空行
+    - short: "-n"
+      long: "--table-name"
+      description: 表名
+      takes_value: true
+    - short: "-N"
+      long: "--table-columns"
+      description: 列名
+      takes_value: true
+    - short: "-O"
+      long: "--table-order"
+      description: 列顺序
+      takes_value: true
+    - short: "-R"
+      long: "--table-right"
+      description: 右对齐列
+      takes_value: true
+    - short: "-s"
+      long: "--separator"
+      description: 分隔符
+      takes_value: true
+    - short: "-t"
+      long: "--table"
+      description: 表格模式
+    - short: "-x"
+      long: "--fillrows"
+      description: 按行填充
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+fold:
+  name: fold
+  description: 折叠长行
+  options:
+    - short: "-b"
+      long: "--bytes"
+      description: 按字节折叠
+    - short: "-s"
+      long: "--spaces"
+      description: 在空格处折叠
+    - short: "-w"
+      long: "--width"
+      description: 折叠宽度
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+fmt:
+  name: fmt
+  description: 简单文本格式化
+  options:
+    - short: "-c"
+      long: "--crown-margin"
+      description: 保留首行缩进
+    - short: "-p"
+      long: "--prefix"
+      description: 只格式化有前缀的行
+      takes_value: true
+    - short: "-s"
+      long: "--split-only"
+      description: 只分割长行
+    - short: "-t"
+      long: "--tagged-paragraph"
+      description: 标记段落
+    - short: "-u"
+      long: "--uniform-spacing"
+      description: 统一间距
+    - short: "-w"
+      long: "--width"
+      description: 行宽
+      takes_value: true
+    - short: "-g"
+      long: "--goal"
+      description: 目标宽度
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+pr:
+  name: pr
+  description: 分页打印
+  options:
+    - short: "-a"
+      long: "--across"
+      description: 横向打印
+    - short: "-c"
+      long: "--show-control-chars"
+      description: 显示控制字符
+    - short: "-d"
+      long: "--double-space"
+      description: 双倍行距
+    - short: "-D"
+      long: "--date-format"
+      description: 日期格式
+      takes_value: true
+    - short: "-e"
+      long: "--expand-tabs"
+      description: 展开 Tab
+    - short: "-F"
+      long: "--form-feed"
+      description: 换页符
+    - short: "-h"
+      long: "--header"
+      description: 页眉
+      takes_value: true
+    - short: "-J"
+      long: "--join-lines"
+      description: 合并行
+    - short: "-l"
+      long: "--length"
+      description: 页长
+      takes_value: true
+    - short: "-m"
+      long: "--merge"
+      description: 合并文件
+    - short: "-n"
+      long: "--number-lines"
+      description: 行号
+    - short: "-N"
+      long: "--first-line-number"
+      description: 起始行号
+      takes_value: true
+    - short: "-o"
+      long: "--indent"
+      description: 左边距
+      takes_value: true
+    - short: "-r"
+      long: "--no-file-warnings"
+      description: 不显示文件警告
+    - short: "-s"
+      long: "--separator"
+      description: 列分隔符
+      takes_value: true
+    - short: "-t"
+      long: "--omit-header"
+      description: 省略页眉页脚
+    - short: "-T"
+      long: "--omit-pagination"
+      description: 省略分页
+    - short: "-v"
+      long: "--show-nonprinting"
+      description: 显示不可打印字符
+    - short: "-w"
+      long: "--page-width"
+      description: 页宽
+      takes_value: true
+    - short: "-W"
+      long: "--page-width"
+      description: 页宽(不截断)
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+nl:
+  name: nl
+  description: 行号
+  options:
+    - short: "-b"
+      long: "--body-numbering"
+      description: 正文编号样式
+      takes_value: true
+      values: ["a", "t", "n", "pBRE"]
+    - short: "-d"
+      long: "--section-delimiter"
+      description: 节分隔符
+      takes_value: true
+    - short: "-f"
+      long: "--footer-numbering"
+      description: 页脚编号样式
+      takes_value: true
+    - short: "-h"
+      long: "--header-numbering"
+      description: 页眉编号样式
+      takes_value: true
+    - short: "-i"
+      long: "--line-increment"
+      description: 行号增量
+      takes_value: true
+    - short: "-l"
+      long: "--join-blank-lines"
+      description: 空行计数
+      takes_value: true
+    - short: "-n"
+      long: "--number-format"
+      description: 行号格式
+      takes_value: true
+      values: ["ln", "rn", "rz"]
+    - short: "-p"
+      long: "--no-renumber"
+      description: 不重置行号
+    - short: "-s"
+      long: "--number-separator"
+      description: 行号分隔符
+      takes_value: true
+    - short: "-v"
+      long: "--starting-line-number"
+      description: 起始行号
+      takes_value: true
+    - short: "-w"
+      long: "--number-width"
+      description: 行号宽度
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+expand:
+  name: expand
+  description: Tab 转空格
+  options:
+    - short: "-i"
+      long: "--initial"
+      description: 只转换行首
+    - short: "-t"
+      long: "--tabs"
+      description: Tab 宽度
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+unexpand:
+  name: unexpand
+  description: 空格转 Tab
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 转换所有
+    - short: ""
+      long: "--first-only"
+      description: 只转换行首
+    - short: "-t"
+      long: "--tabs"
+      description: Tab 宽度
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+rev:
+  name: rev
+  description: 反转行
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+tac:
+  name: tac
+  description: 反向显示文件
+  options:
+    - short: "-b"
+      long: "--before"
+      description: 分隔符在前
+    - short: "-r"
+      long: "--regex"
+      description: 正则分隔符
+    - short: "-s"
+      long: "--separator"
+      description: 分隔符
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+more:
+  name: more
+  description: 分页查看
+  options:
+    - short: "-d"
+      long: ""
+      description: 友好提示
+    - short: "-f"
+      long: ""
+      description: 计数逻辑行
+    - short: "-l"
+      long: ""
+      description: 忽略换页
+    - short: "-c"
+      long: ""
+      description: 清屏模式
+    - short: "-p"
+      long: ""
+      description: 清屏模式(不滚动)
+    - short: "-s"
+      long: ""
+      description: 压缩空行
+    - short: "-u"
+      long: ""
+      description: 抑制下划线
+    - short: "-n"
+      long: ""
+      description: 行数
+      takes_value: true
+    - short: "+"
+      long: ""
+      description: 起始行
+      takes_value: true
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+strings:
+  name: strings
+  description: 提取可打印字符串
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 扫描整个文件
+    - short: "-d"
+      long: "--data"
+      description: 只扫描数据段
+    - short: "-e"
+      long: "--encoding"
+      description: 编码
+      takes_value: true
+      values: ["s", "S", "b", "l", "B", "L"]
+    - short: "-f"
+      long: "--print-file-name"
+      description: 显示文件名
+    - short: "-n"
+      long: "--bytes"
+      description: 最小长度
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 显示偏移
+    - short: "-t"
+      long: "--radix"
+      description: 偏移格式
+      takes_value: true
+      values: ["o", "d", "x"]
+    - short: "-w"
+      long: "--include-all-whitespace"
+      description: 包含空白
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+od:
+  name: od
+  description: 八进制转储
+  options:
+    - short: "-A"
+      long: "--address-radix"
+      description: 地址格式
+      takes_value: true
+      values: ["d", "o", "x", "n"]
+    - short: "-j"
+      long: "--skip-bytes"
+      description: 跳过字节
+      takes_value: true
+    - short: "-N"
+      long: "--read-bytes"
+      description: 读取字节数
+      takes_value: true
+    - short: "-t"
+      long: "--format"
+      description: 输出格式
+      takes_value: true
+    - short: "-v"
+      long: "--output-duplicates"
+      description: 不压缩重复
+    - short: "-w"
+      long: "--width"
+      description: 每行字节
+      takes_value: true
+    - short: "-a"
+      long: ""
+      description: 命名字符
+    - short: "-b"
+      long: ""
+      description: 八进制字节
+    - short: "-c"
+      long: ""
+      description: ASCII 或转义
+    - short: "-d"
+      long: ""
+      description: 无符号十进制
+    - short: "-f"
+      long: ""
+      description: 浮点
+    - short: "-i"
+      long: ""
+      description: 有符号十进制
+    - short: "-l"
+      long: ""
+      description: 长整数
+    - short: "-o"
+      long: ""
+      description: 八进制
+    - short: "-s"
+      long: ""
+      description: 短整数
+    - short: "-x"
+      long: ""
+      description: 十六进制
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+xxd:
+  name: xxd
+  description: 十六进制转储
+  options:
+    - short: "-a"
+      long: ""
+      description: 自动跳过
+    - short: "-b"
+      long: ""
+      description: 二进制输出
+    - short: "-c"
+      long: ""
+      description: 每行字节数
+      takes_value: true
+    - short: "-C"
+      long: ""
+      description: 大写十六进制
+    - short: "-e"
+      long: ""
+      description: 小端模式
+    - short: "-g"
+      long: ""
+      description: 分组字节
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: C 包含文件
+    - short: "-l"
+      long: ""
+      description: 输出长度
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 添加偏移
+      takes_value: true
+    - short: "-p"
+      long: ""
+      description: PostScript 格式
+    - short: "-r"
+      long: ""
+      description: 反向转换
+    - short: "-s"
+      long: ""
+      description: 起始偏移
+      takes_value: true
+    - short: "-u"
+      long: ""
+      description: 大写十六进制
+    - short: "-v"
+      long: ""
+      description: 显示版本
+  subcommands: {}
+
+hexdump:
+  name: hexdump
+  description: 十六进制/八进制/ASCII 转储
+  options:
+    - short: "-b"
+      long: ""
+      description: 八进制字节
+    - short: "-c"
+      long: ""
+      description: ASCII 字符
+    - short: "-C"
+      long: ""
+      description: 规范格式
+    - short: "-d"
+      long: ""
+      description: 十进制双字节
+    - short: "-e"
+      long: ""
+      description: 格式字符串
+      takes_value: true
+    - short: "-f"
+      long: ""
+      description: 格式文件
+      takes_value: true
+    - short: "-L"
+      long: "--color"
+      description: 颜色
+      takes_value: true
+    - short: "-n"
+      long: ""
+      description: 字节长度
+      takes_value: true
+    - short: "-o"
+      long: ""
+      description: 八进制双字节
+    - short: "-s"
+      long: ""
+      description: 跳过字节
+      takes_value: true
+    - short: "-v"
+      long: ""
+      description: 不压缩
+    - short: "-x"
+      long: ""
+      description: 十六进制双字节
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+comm:
+  name: comm
+  description: 比较排序文件
+  options:
+    - short: "-1"
+      long: ""
+      description: 不显示第一列
+    - short: "-2"
+      long: ""
+      description: 不显示第二列
+    - short: "-3"
+      long: ""
+      description: 不显示第三列
+    - short: "-i"
+      long: "--ignore-case"
+      description: 忽略大小写
+    - short: ""
+      long: "--check-order"
+      description: 检查排序
+    - short: ""
+      long: "--nocheck-order"
+      description: 不检查排序
+    - short: ""
+      long: "--output-delimiter"
+      description: 输出分隔符
+      takes_value: true
+    - short: ""
+      long: "--total"
+      description: 显示总计
+    - short: "-z"
+      long: "--zero-terminated"
+      description: 空字符分隔
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+cmp:
+  name: cmp
+  description: 逐字节比较
+  options:
+    - short: "-b"
+      long: "--print-bytes"
+      description: 打印不同字节
+    - short: "-i"
+      long: "--ignore-initial"
+      description: 跳过字节
+      takes_value: true
+    - short: "-l"
+      long: "--verbose"
+      description: 输出所有差异
+    - short: "-n"
+      long: "--bytes"
+      description: 比较字节数
+      takes_value: true
+    - short: "-s"
+      long: "--silent"
+      description: 静默模式
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+colrm:
+  name: colrm
+  description: 删除列
+  options:
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands: {}
+
+iconv:
+  name: iconv
+  description: 字符编码转换
+  options:
+    - short: "-f"
+      long: "--from-code"
+      description: 源编码
+      takes_value: true
+    - short: "-t"
+      long: "--to-code"
+      description: 目标编码
+      takes_value: true
+    - short: "-l"
+      long: "--list"
+      description: 列出编码
+    - short: "-c"
+      long: ""
+      description: 忽略无效字符
+    - short: "-o"
+      long: "--output"
+      description: 输出文件
+      takes_value: true
+    - short: "-s"
+      long: "--silent"
+      description: 静默模式
+    - short: ""
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+base64:
+  name: base64
+  description: Base64 编解码
+  options:
+    - short: "-d"
+      long: "--decode"
+      description: 解码
+    - short: "-i"
+      long: "--ignore-garbage"
+      description: 忽略非字母
+    - short: "-w"
+      long: "--wrap"
+      description: 换行列数
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+md5sum:
+  name: md5sum
+  description: MD5 校验
+  options:
+    - short: "-b"
+      long: "--binary"
+      description: 二进制模式
+    - short: "-c"
+      long: "--check"
+      description: 校验文件
+    - short: ""
+      long: "--ignore-missing"
+      description: 忽略缺失
+    - short: ""
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--status"
+      description: 不输出
+    - short: ""
+      long: "--strict"
+      description: 严格校验
+    - short: "-t"
+      long: "--text"
+      description: 文本模式
+    - short: "-w"
+      long: "--warn"
+      description: 格式警告
+    - short: "-z"
+      long: "--zero"
+      description: 空字符结尾
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+sha1sum:
+  name: sha1sum
+  description: SHA1 校验
+  options:
+    - short: "-b"
+      long: "--binary"
+      description: 二进制模式
+    - short: "-c"
+      long: "--check"
+      description: 校验文件
+    - short: ""
+      long: "--ignore-missing"
+      description: 忽略缺失
+    - short: ""
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--status"
+      description: 不输出
+    - short: ""
+      long: "--strict"
+      description: 严格校验
+    - short: "-t"
+      long: "--text"
+      description: 文本模式
+    - short: "-w"
+      long: "--warn"
+      description: 格式警告
+    - short: "-z"
+      long: "--zero"
+      description: 空字符结尾
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+sha256sum:
+  name: sha256sum
+  description: SHA256 校验
+  options:
+    - short: "-b"
+      long: "--binary"
+      description: 二进制模式
+    - short: "-c"
+      long: "--check"
+      description: 校验文件
+    - short: ""
+      long: "--ignore-missing"
+      description: 忽略缺失
+    - short: ""
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--status"
+      description: 不输出
+    - short: ""
+      long: "--strict"
+      description: 严格校验
+    - short: "-t"
+      long: "--text"
+      description: 文本模式
+    - short: "-w"
+      long: "--warn"
+      description: 格式警告
+    - short: "-z"
+      long: "--zero"
+      description: 空字符结尾
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+sha512sum:
+  name: sha512sum
+  description: SHA512 校验
+  options:
+    - short: "-b"
+      long: "--binary"
+      description: 二进制模式
+    - short: "-c"
+      long: "--check"
+      description: 校验文件
+    - short: ""
+      long: "--ignore-missing"
+      description: 忽略缺失
+    - short: ""
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--status"
+      description: 不输出
+    - short: ""
+      long: "--strict"
+      description: 严格校验
+    - short: "-t"
+      long: "--text"
+      description: 文本模式
+    - short: "-w"
+      long: "--warn"
+      description: 格式警告
+    - short: "-z"
+      long: "--zero"
+      description: 空字符结尾
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+

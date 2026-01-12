@@ -312,3 +312,835 @@ tree:
       takes_value: true
   subcommands: {}
 
+stat:
+  name: stat
+  description: 显示文件状态
+  options:
+    - short: "-L"
+      long: "--dereference"
+      description: 跟随符号链接
+    - short: "-f"
+      long: "--file-system"
+      description: 文件系统信息
+    - short: "-c"
+      long: "--format"
+      description: 格式输出
+      takes_value: true
+    - short: ""
+      long: "--printf"
+      description: 格式输出(无换行)
+      takes_value: true
+    - short: "-t"
+      long: "--terse"
+      description: 简洁格式
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+file:
+  name: file
+  description: 确定文件类型
+  options:
+    - short: "-b"
+      long: "--brief"
+      description: 不显示文件名
+    - short: "-c"
+      long: "--checking-printout"
+      description: 检查魔数
+    - short: "-C"
+      long: "--compile"
+      description: 编译魔数
+    - short: "-e"
+      long: "--exclude"
+      description: 排除测试
+      takes_value: true
+    - short: "-f"
+      long: "--files-from"
+      description: 从文件读取列表
+      takes_value: true
+    - short: "-i"
+      long: "--mime"
+      description: MIME 类型
+    - short: ""
+      long: "--mime-type"
+      description: 只显示 MIME 类型
+    - short: ""
+      long: "--mime-encoding"
+      description: 只显示编码
+    - short: "-k"
+      long: "--keep-going"
+      description: 不在首次匹配停止
+    - short: "-L"
+      long: "--dereference"
+      description: 跟随符号链接
+    - short: "-n"
+      long: "--no-buffer"
+      description: 刷新输出
+    - short: "-N"
+      long: "--no-pad"
+      description: 不填充文件名
+    - short: "-p"
+      long: "--preserve-date"
+      description: 保留访问时间
+    - short: "-r"
+      long: "--raw"
+      description: 原始输出
+    - short: "-s"
+      long: "--special-files"
+      description: 读取特殊文件
+    - short: "-z"
+      long: "--uncompress"
+      description: 解压缩查看
+    - short: "-0"
+      long: "--print0"
+      description: 空字符分隔
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+basename:
+  name: basename
+  description: 提取文件名
+  options:
+    - short: "-a"
+      long: "--multiple"
+      description: 处理多个参数
+    - short: "-s"
+      long: "--suffix"
+      description: 移除后缀
+      takes_value: true
+    - short: "-z"
+      long: "--zero"
+      description: 空字符分隔
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+dirname:
+  name: dirname
+  description: 提取目录名
+  options:
+    - short: "-z"
+      long: "--zero"
+      description: 空字符分隔
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+realpath:
+  name: realpath
+  description: 解析绝对路径
+  options:
+    - short: "-e"
+      long: "--canonicalize-existing"
+      description: 所有组件必须存在
+    - short: "-m"
+      long: "--canonicalize-missing"
+      description: 允许不存在
+    - short: "-L"
+      long: "--logical"
+      description: 逻辑路径
+    - short: "-P"
+      long: "--physical"
+      description: 物理路径
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--relative-to"
+      description: 相对于目录
+      takes_value: true
+    - short: ""
+      long: "--relative-base"
+      description: 相对基础
+      takes_value: true
+    - short: "-s"
+      long: "--strip"
+      description: 去除符号链接
+    - short: "-z"
+      long: "--zero"
+      description: 空字符分隔
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+readlink:
+  name: readlink
+  description: 显示符号链接目标
+  options:
+    - short: "-f"
+      long: "--canonicalize"
+      description: 规范化路径
+    - short: "-e"
+      long: "--canonicalize-existing"
+      description: 所有组件必须存在
+    - short: "-m"
+      long: "--canonicalize-missing"
+      description: 允许不存在
+    - short: "-n"
+      long: "--no-newline"
+      description: 不输出换行
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-s"
+      long: "--silent"
+      description: 静默模式
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-z"
+      long: "--zero"
+      description: 空字符分隔
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+mktemp:
+  name: mktemp
+  description: 创建临时文件
+  options:
+    - short: "-d"
+      long: "--directory"
+      description: 创建目录
+    - short: "-u"
+      long: "--dry-run"
+      description: 不创建
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--suffix"
+      description: 后缀
+      takes_value: true
+    - short: "-p"
+      long: "--tmpdir"
+      description: 目录
+      takes_value: true
+    - short: "-t"
+      long: ""
+      description: 模板解释
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+install:
+  name: install
+  description: 复制文件并设置属性
+  options:
+    - short: "-b"
+      long: "--backup"
+      description: 备份
+    - short: "-c"
+      long: ""
+      description: 忽略(兼容)
+    - short: "-C"
+      long: "--compare"
+      description: 比较
+    - short: "-d"
+      long: "--directory"
+      description: 创建目录
+    - short: "-D"
+      long: ""
+      description: 创建父目录
+    - short: "-g"
+      long: "--group"
+      description: 设置组
+      takes_value: true
+    - short: "-m"
+      long: "--mode"
+      description: 设置权限
+      takes_value: true
+    - short: "-o"
+      long: "--owner"
+      description: 设置所有者
+      takes_value: true
+    - short: "-p"
+      long: "--preserve-timestamps"
+      description: 保留时间戳
+    - short: "-s"
+      long: "--strip"
+      description: 去除符号
+    - short: "-S"
+      long: "--suffix"
+      description: 备份后缀
+      takes_value: true
+    - short: "-t"
+      long: "--target-directory"
+      description: 目标目录
+      takes_value: true
+    - short: "-T"
+      long: "--no-target-directory"
+      description: 目标非目录
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-Z"
+      long: "--context"
+      description: SELinux 上下文
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+shred:
+  name: shred
+  description: 安全删除文件
+  options:
+    - short: "-f"
+      long: "--force"
+      description: 强制权限
+    - short: "-n"
+      long: "--iterations"
+      description: 覆写次数
+      takes_value: true
+    - short: ""
+      long: "--random-source"
+      description: 随机源
+      takes_value: true
+    - short: "-s"
+      long: "--size"
+      description: 截断大小
+      takes_value: true
+    - short: "-u"
+      long: "--remove"
+      description: 覆写后删除
+    - short: ""
+      long: "--remove=unlink"
+      description: 删除方式
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-x"
+      long: "--exact"
+      description: 精确大小
+    - short: "-z"
+      long: "--zero"
+      description: 最后用零覆写
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+truncate:
+  name: truncate
+  description: 调整文件大小
+  options:
+    - short: "-c"
+      long: "--no-create"
+      description: 不创建文件
+    - short: "-o"
+      long: "--io-blocks"
+      description: IO 块单位
+    - short: "-r"
+      long: "--reference"
+      description: 参考文件
+      takes_value: true
+    - short: "-s"
+      long: "--size"
+      description: 设置大小
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+du:
+  name: du
+  description: 磁盘使用统计
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有文件
+    - short: "-b"
+      long: "--bytes"
+      description: 字节显示
+    - short: "-c"
+      long: "--total"
+      description: 显示总计
+    - short: "-d"
+      long: "--max-depth"
+      description: 最大深度
+      takes_value: true
+    - short: "-h"
+      long: "--human-readable"
+      description: 人类可读
+    - short: "-k"
+      long: ""
+      description: KB 显示
+    - short: "-m"
+      long: ""
+      description: MB 显示
+    - short: "-s"
+      long: "--summarize"
+      description: 只显示总计
+    - short: "-S"
+      long: "--separate-dirs"
+      description: 不包含子目录
+    - short: "-x"
+      long: "--one-file-system"
+      description: 不跨文件系统
+    - short: "-0"
+      long: "--null"
+      description: 空字符结尾
+    - short: ""
+      long: "--apparent-size"
+      description: 表面大小
+    - short: ""
+      long: "--exclude"
+      description: 排除模式
+      takes_value: true
+    - short: "-L"
+      long: "--dereference"
+      description: 跟随符号链接
+    - short: ""
+      long: "--time"
+      description: 显示时间
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+df:
+  name: df
+  description: 磁盘空间使用
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 所有文件系统
+    - short: "-B"
+      long: "--block-size"
+      description: 块大小
+      takes_value: true
+    - short: "-h"
+      long: "--human-readable"
+      description: 人类可读
+    - short: "-H"
+      long: "--si"
+      description: 1000 进制
+    - short: "-i"
+      long: "--inodes"
+      description: inode 信息
+    - short: "-k"
+      long: ""
+      description: KB 显示
+    - short: "-l"
+      long: "--local"
+      description: 只显示本地
+    - short: ""
+      long: "--no-sync"
+      description: 不同步
+    - short: ""
+      long: "--output"
+      description: 输出列
+      takes_value: true
+    - short: "-P"
+      long: "--portability"
+      description: POSIX 格式
+    - short: ""
+      long: "--sync"
+      description: 同步后显示
+    - short: ""
+      long: "--total"
+      description: 显示总计
+    - short: "-t"
+      long: "--type"
+      description: 文件系统类型
+      takes_value: true
+    - short: "-T"
+      long: "--print-type"
+      description: 显示类型
+    - short: "-x"
+      long: "--exclude-type"
+      description: 排除类型
+      takes_value: true
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+dd:
+  name: dd
+  description: 转换和复制文件
+  options:
+    - short: "bs"
+      long: ""
+      description: 块大小
+      takes_value: true
+    - short: "cbs"
+      long: ""
+      description: 转换块大小
+      takes_value: true
+    - short: "conv"
+      long: ""
+      description: 转换选项
+      takes_value: true
+    - short: "count"
+      long: ""
+      description: 复制块数
+      takes_value: true
+    - short: "ibs"
+      long: ""
+      description: 输入块大小
+      takes_value: true
+    - short: "if"
+      long: ""
+      description: 输入文件
+      takes_value: true
+    - short: "iflag"
+      long: ""
+      description: 输入标志
+      takes_value: true
+    - short: "obs"
+      long: ""
+      description: 输出块大小
+      takes_value: true
+    - short: "of"
+      long: ""
+      description: 输出文件
+      takes_value: true
+    - short: "oflag"
+      long: ""
+      description: 输出标志
+      takes_value: true
+    - short: "seek"
+      long: ""
+      description: 跳过输出块
+      takes_value: true
+    - short: "skip"
+      long: ""
+      description: 跳过输入块
+      takes_value: true
+    - short: "status"
+      long: ""
+      description: 状态输出
+      takes_value: true
+      values: ["none", "noxfer", "progress"]
+  subcommands: {}
+
+sync:
+  name: sync
+  description: 刷新文件系统缓冲区
+  options:
+    - short: "-d"
+      long: "--data"
+      description: 只同步数据
+    - short: "-f"
+      long: "--file-system"
+      description: 同步文件系统
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+chgrp:
+  name: chgrp
+  description: 修改文件组
+  options:
+    - short: "-c"
+      long: "--changes"
+      description: 报告变更
+    - short: "-f"
+      long: "--silent"
+      description: 静默模式
+    - short: "-h"
+      long: "--no-dereference"
+      description: 修改链接本身
+    - short: ""
+      long: "--dereference"
+      description: 跟随链接
+    - short: ""
+      long: "--no-preserve-root"
+      description: 不保护根目录
+    - short: ""
+      long: "--preserve-root"
+      description: 保护根目录
+    - short: ""
+      long: "--reference"
+      description: 参考文件
+      takes_value: true
+    - short: "-R"
+      long: "--recursive"
+      description: 递归处理
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: ""
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+lsof:
+  name: lsof
+  description: 列出打开的文件
+  options:
+    - short: "-a"
+      long: ""
+      description: AND 条件
+    - short: "-c"
+      long: ""
+      description: 命令名称
+      takes_value: true
+    - short: "-d"
+      long: ""
+      description: 文件描述符
+      takes_value: true
+    - short: "+d"
+      long: ""
+      description: 目录
+      takes_value: true
+    - short: "+D"
+      long: ""
+      description: 递归目录
+      takes_value: true
+    - short: "-g"
+      long: ""
+      description: 进程组 ID
+      takes_value: true
+    - short: "-i"
+      long: ""
+      description: 网络文件
+    - short: "-l"
+      long: ""
+      description: 不解析用户 ID
+    - short: "-n"
+      long: ""
+      description: 不解析主机名
+    - short: "-p"
+      long: ""
+      description: 进程 ID
+      takes_value: true
+    - short: "-P"
+      long: ""
+      description: 不解析端口
+    - short: "-r"
+      long: ""
+      description: 重复模式
+      takes_value: true
+    - short: "-s"
+      long: ""
+      description: 文件大小
+    - short: "-t"
+      long: ""
+      description: 简洁输出
+    - short: "-u"
+      long: ""
+      description: 用户名
+      takes_value: true
+    - short: "-U"
+      long: ""
+      description: Unix 域套接字
+    - short: "-w"
+      long: ""
+      description: 禁止警告
+    - short: "+w"
+      long: ""
+      description: 启用警告
+  subcommands: {}
+
+fuser:
+  name: fuser
+  description: 显示使用文件的进程
+  options:
+    - short: "-a"
+      long: "--all"
+      description: 显示所有
+    - short: "-c"
+      long: ""
+      description: 挂载点
+    - short: "-k"
+      long: "--kill"
+      description: 终止进程
+    - short: "-i"
+      long: "--interactive"
+      description: 交互确认
+    - short: "-l"
+      long: "--list-signals"
+      description: 列出信号
+    - short: "-m"
+      long: "--mount"
+      description: 挂载点
+    - short: "-M"
+      long: "--ismountpoint"
+      description: 只限挂载点
+    - short: "-n"
+      long: "--namespace"
+      description: 名称空间
+      takes_value: true
+      values: ["file", "udp", "tcp"]
+    - short: "-s"
+      long: "--silent"
+      description: 静默模式
+    - short: "-u"
+      long: "--user"
+      description: 显示用户
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-4"
+      long: "--ipv4"
+      description: IPv4
+    - short: "-6"
+      long: "--ipv6"
+      description: IPv6
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+locate:
+  name: locate
+  description: 快速查找文件
+  options:
+    - short: "-A"
+      long: "--all"
+      description: 匹配所有模式
+    - short: "-b"
+      long: "--basename"
+      description: 只匹配基名
+    - short: "-c"
+      long: "--count"
+      description: 只显示计数
+    - short: "-d"
+      long: "--database"
+      description: 数据库文件
+      takes_value: true
+    - short: "-e"
+      long: "--existing"
+      description: 只显示存在的
+    - short: "-i"
+      long: "--ignore-case"
+      description: 忽略大小写
+    - short: "-l"
+      long: "--limit"
+      description: 限制输出数
+      takes_value: true
+    - short: "-L"
+      long: "--follow"
+      description: 跟随符号链接
+    - short: "-0"
+      long: "--null"
+      description: 空字符分隔
+    - short: "-P"
+      long: "--nofollow"
+      description: 不跟随链接
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: "-r"
+      long: "--regexp"
+      description: 正则表达式
+    - short: "-w"
+      long: "--wholename"
+      description: 匹配全路径
+    - short: "-S"
+      long: "--statistics"
+      description: 数据库统计
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+
+updatedb:
+  name: updatedb
+  description: 更新 locate 数据库
+  options:
+    - short: "-U"
+      long: "--database-root"
+      description: 扫描根目录
+      takes_value: true
+    - short: ""
+      long: "--findoptions"
+      description: find 选项
+      takes_value: true
+    - short: "-l"
+      long: "--require-visibility"
+      description: 检查可见性
+      takes_value: true
+    - short: ""
+      long: "--localpaths"
+      description: 本地路径
+      takes_value: true
+    - short: ""
+      long: "--netpaths"
+      description: 网络路径
+      takes_value: true
+    - short: "-o"
+      long: "--output"
+      description: 输出文件
+      takes_value: true
+    - short: ""
+      long: "--prunefs"
+      description: 忽略文件系统
+      takes_value: true
+    - short: ""
+      long: "--prunenames"
+      description: 忽略名称
+      takes_value: true
+    - short: ""
+      long: "--prunepaths"
+      description: 忽略路径
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-V"
+      long: "--version"
+      description: 显示版本
+  subcommands: {}
+

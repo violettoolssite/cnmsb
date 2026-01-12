@@ -1,0 +1,163 @@
+# cnmsb - 操你妈傻逼 命令行智能补全工具自身的命令定义
+# 让这个工具也能补全它自己的命令，牛逼不牛逼？
+
+cnmsb:
+  name: cnmsb
+  description: "操你妈傻逼 - Linux 命令行智能补全工具"
+  options:
+    - short: "-h"
+      long: "--help"
+      description: "显示帮助信息"
+    - short: "-V"
+      long: "--version"
+      description: "显示版本信息"
+  subcommands:
+    complete:
+      name: complete
+      description: "获取补全建议（内部使用）"
+      options:
+        - short: "-l"
+          long: "--line"
+          description: "当前命令行输入"
+          takes_value: true
+        - short: "-c"
+          long: "--cursor"
+          description: "光标位置"
+          takes_value: true
+        - short: "-s"
+          long: "--shell"
+          description: "shell 类型"
+          takes_value: true
+          values:
+            - bash
+            - zsh
+    help:
+      name: help
+      description: "显示命令帮助"
+      options:
+        - short: "-c"
+          long: "--command"
+          description: "指定命令名称（如 git, tar）"
+          takes_value: true
+    init:
+      name: init
+      description: "初始化 shell 集成"
+      subcommands:
+        bash:
+          name: bash
+          description: "初始化 Bash 集成脚本"
+        zsh:
+          name: zsh
+          description: "初始化 Zsh 集成脚本"
+    shell:
+      name: shell
+      description: "启动交互式 shell（带内联建议）"
+    sql:
+      name: sql
+      description: "启动 SQL 智能补全客户端"
+      options:
+        - short: "-d"
+          long: "--db-type"
+          description: "数据库类型"
+          takes_value: true
+          values:
+            - mysql
+            - postgresql
+            - sqlite
+            - mariadb
+            - oracle
+            - sqlserver
+      subcommands:
+        mysql:
+          name: mysql
+          description: "连接 MySQL 数据库"
+        postgresql:
+          name: postgresql
+          description: "连接 PostgreSQL 数据库"
+        postgres:
+          name: postgres
+          description: "连接 PostgreSQL 数据库（别名）"
+        psql:
+          name: psql
+          description: "连接 PostgreSQL 数据库（别名）"
+        sqlite:
+          name: sqlite
+          description: "连接 SQLite 数据库"
+        sqlite3:
+          name: sqlite3
+          description: "连接 SQLite 数据库（别名）"
+        mariadb:
+          name: mariadb
+          description: "连接 MariaDB 数据库"
+        oracle:
+          name: oracle
+          description: "连接 Oracle 数据库"
+        sqlserver:
+          name: sqlserver
+          description: "连接 SQL Server 数据库"
+        mssql:
+          name: mssql
+          description: "连接 SQL Server 数据库（别名）"
+    version:
+      name: version
+      description: "显示版本信息"
+
+# cnmsb-sql 作为独立命令
+cnmsb-sql:
+  name: cnmsb-sql
+  description: "SQL 智能补全客户端（cnmsb sql 的别名）"
+  options:
+    - short: "-d"
+      long: "--db-type"
+      description: "数据库类型"
+      takes_value: true
+      values:
+        - mysql
+        - postgresql
+        - sqlite
+        - mariadb
+        - oracle
+        - sqlserver
+  subcommands:
+    mysql:
+      name: mysql
+      description: "连接 MySQL 数据库"
+    postgresql:
+      name: postgresql
+      description: "连接 PostgreSQL 数据库"
+    sqlite:
+      name: sqlite
+      description: "连接 SQLite 数据库"
+    mariadb:
+      name: mariadb
+      description: "连接 MariaDB 数据库"
+    oracle:
+      name: oracle
+      description: "连接 Oracle 数据库"
+    sqlserver:
+      name: sqlserver
+      description: "连接 SQL Server 数据库"
+
+# 中文别名
+操你妈傻逼:
+  name: 操你妈傻逼
+  description: "cnmsb 的中文别名"
+  subcommands:
+    complete:
+      name: complete
+      description: "获取补全建议"
+    help:
+      name: help
+      description: "显示命令帮助"
+    init:
+      name: init
+      description: "初始化 shell 集成"
+    shell:
+      name: shell
+      description: "启动交互式 shell"
+    sql:
+      name: sql
+      description: "启动 SQL 客户端"
+    version:
+      name: version
+      description: "显示版本信息"

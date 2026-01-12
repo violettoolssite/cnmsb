@@ -1,0 +1,742 @@
+# 云服务命令
+# 贡献者可以在此添加更多云服务命令
+
+aws:
+  name: aws
+  description: AWS 命令行
+  options:
+    - short: ""
+      long: "--profile"
+      description: 配置文件
+      takes_value: true
+    - short: ""
+      long: "--region"
+      description: 区域
+      takes_value: true
+    - short: ""
+      long: "--output"
+      description: 输出格式
+      takes_value: true
+      values: ["json", "text", "table", "yaml"]
+    - short: ""
+      long: "--no-paginate"
+      description: 禁用分页
+    - short: ""
+      long: "--debug"
+      description: 调试模式
+    - short: ""
+      long: "--endpoint-url"
+      description: 端点 URL
+      takes_value: true
+  subcommands:
+    s3:
+      name: s3
+      description: S3 存储
+      options: []
+    s3api:
+      name: s3api
+      description: S3 API
+      options: []
+    ec2:
+      name: ec2
+      description: EC2 计算
+      options: []
+    ecs:
+      name: ecs
+      description: 容器服务
+      options: []
+    eks:
+      name: eks
+      description: Kubernetes 服务
+      options: []
+    lambda:
+      name: lambda
+      description: 无服务器计算
+      options: []
+    iam:
+      name: iam
+      description: 身份管理
+      options: []
+    rds:
+      name: rds
+      description: 关系数据库
+      options: []
+    dynamodb:
+      name: dynamodb
+      description: NoSQL 数据库
+      options: []
+    sqs:
+      name: sqs
+      description: 消息队列
+      options: []
+    sns:
+      name: sns
+      description: 通知服务
+      options: []
+    cloudformation:
+      name: cloudformation
+      description: 基础设施即代码
+      options: []
+    cloudwatch:
+      name: cloudwatch
+      description: 监控服务
+      options: []
+    logs:
+      name: logs
+      description: CloudWatch Logs
+      options: []
+    ssm:
+      name: ssm
+      description: 系统管理
+      options: []
+    secretsmanager:
+      name: secretsmanager
+      description: 密钥管理
+      options: []
+    configure:
+      name: configure
+      description: 配置 AWS CLI
+      options:
+        - short: ""
+          long: "--profile"
+          description: 配置文件
+          takes_value: true
+    sts:
+      name: sts
+      description: 安全令牌服务
+      options: []
+    route53:
+      name: route53
+      description: DNS 服务
+      options: []
+    ecr:
+      name: ecr
+      description: 容器镜像仓库
+      options: []
+
+gcloud:
+  name: gcloud
+  description: Google Cloud CLI
+  options:
+    - short: ""
+      long: "--project"
+      description: 项目 ID
+      takes_value: true
+    - short: ""
+      long: "--account"
+      description: 账户
+      takes_value: true
+    - short: ""
+      long: "--configuration"
+      description: 配置
+      takes_value: true
+    - short: ""
+      long: "--format"
+      description: 输出格式
+      takes_value: true
+      values: ["json", "yaml", "text", "table", "csv"]
+    - short: "-q"
+      long: "--quiet"
+      description: 静默模式
+    - short: ""
+      long: "--verbosity"
+      description: 日志级别
+      takes_value: true
+      values: ["debug", "info", "warning", "error", "none"]
+  subcommands:
+    auth:
+      name: auth
+      description: 认证管理
+      options: []
+    config:
+      name: config
+      description: 配置管理
+      options: []
+    compute:
+      name: compute
+      description: Compute Engine
+      options: []
+    container:
+      name: container
+      description: GKE 容器
+      options: []
+    storage:
+      name: storage
+      description: Cloud Storage
+      options: []
+    sql:
+      name: sql
+      description: Cloud SQL
+      options: []
+    functions:
+      name: functions
+      description: Cloud Functions
+      options: []
+    run:
+      name: run
+      description: Cloud Run
+      options: []
+    pubsub:
+      name: pubsub
+      description: Pub/Sub
+      options: []
+    iam:
+      name: iam
+      description: IAM 管理
+      options: []
+    projects:
+      name: projects
+      description: 项目管理
+      options: []
+    logging:
+      name: logging
+      description: Cloud Logging
+      options: []
+    services:
+      name: services
+      description: 服务管理
+      options: []
+    builds:
+      name: builds
+      description: Cloud Build
+      options: []
+    artifacts:
+      name: artifacts
+      description: Artifact Registry
+      options: []
+    secrets:
+      name: secrets
+      description: Secret Manager
+      options: []
+    init:
+      name: init
+      description: 初始化配置
+      options: []
+
+az:
+  name: az
+  description: Azure CLI
+  options:
+    - short: "-o"
+      long: "--output"
+      description: 输出格式
+      takes_value: true
+      values: ["json", "jsonc", "table", "tsv", "yaml", "none"]
+    - short: ""
+      long: "--subscription"
+      description: 订阅 ID
+      takes_value: true
+    - short: ""
+      long: "--debug"
+      description: 调试模式
+    - short: ""
+      long: "--verbose"
+      description: 详细输出
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+  subcommands:
+    login:
+      name: login
+      description: 登录 Azure
+      options:
+        - short: "-u"
+          long: "--username"
+          description: 用户名
+          takes_value: true
+        - short: ""
+          long: "--service-principal"
+          description: 服务主体
+        - short: ""
+          long: "--tenant"
+          description: 租户 ID
+          takes_value: true
+        - short: ""
+          long: "--use-device-code"
+          description: 设备代码
+    logout:
+      name: logout
+      description: 登出
+      options: []
+    account:
+      name: account
+      description: 账户管理
+      options: []
+    group:
+      name: group
+      description: 资源组
+      options: []
+    vm:
+      name: vm
+      description: 虚拟机
+      options: []
+    storage:
+      name: storage
+      description: 存储服务
+      options: []
+    network:
+      name: network
+      description: 网络服务
+      options: []
+    aks:
+      name: aks
+      description: Kubernetes 服务
+      options: []
+    acr:
+      name: acr
+      description: 容器注册表
+      options: []
+    webapp:
+      name: webapp
+      description: Web 应用
+      options: []
+    functionapp:
+      name: functionapp
+      description: 函数应用
+      options: []
+    sql:
+      name: sql
+      description: SQL 数据库
+      options: []
+    cosmosdb:
+      name: cosmosdb
+      description: CosmosDB
+      options: []
+    keyvault:
+      name: keyvault
+      description: 密钥保管库
+      options: []
+    ad:
+      name: ad
+      description: Active Directory
+      options: []
+    monitor:
+      name: monitor
+      description: 监控服务
+      options: []
+    configure:
+      name: configure
+      description: 配置 CLI
+      options: []
+
+terraform:
+  name: terraform
+  description: 基础设施即代码
+  options:
+    - short: "-v"
+      long: "--version"
+      description: 显示版本
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: ""
+      long: "-chdir"
+      description: 切换目录
+      takes_value: true
+  subcommands:
+    init:
+      name: init
+      description: 初始化配置
+      options:
+        - short: ""
+          long: "-backend"
+          description: 配置后端
+          takes_value: true
+          values: ["true", "false"]
+        - short: ""
+          long: "-backend-config"
+          description: 后端配置
+          takes_value: true
+        - short: ""
+          long: "-upgrade"
+          description: 升级模块
+        - short: ""
+          long: "-reconfigure"
+          description: 重新配置
+        - short: ""
+          long: "-migrate-state"
+          description: 迁移状态
+    plan:
+      name: plan
+      description: 生成执行计划
+      options:
+        - short: ""
+          long: "-out"
+          description: 保存计划
+          takes_value: true
+        - short: ""
+          long: "-var"
+          description: 设置变量
+          takes_value: true
+        - short: ""
+          long: "-var-file"
+          description: 变量文件
+          takes_value: true
+        - short: ""
+          long: "-target"
+          description: 目标资源
+          takes_value: true
+        - short: ""
+          long: "-destroy"
+          description: 销毁计划
+        - short: ""
+          long: "-refresh-only"
+          description: 仅刷新
+    apply:
+      name: apply
+      description: 应用更改
+      options:
+        - short: ""
+          long: "-auto-approve"
+          description: 自动确认
+        - short: ""
+          long: "-var"
+          description: 设置变量
+          takes_value: true
+        - short: ""
+          long: "-var-file"
+          description: 变量文件
+          takes_value: true
+        - short: ""
+          long: "-target"
+          description: 目标资源
+          takes_value: true
+        - short: ""
+          long: "-parallelism"
+          description: 并行数
+          takes_value: true
+    destroy:
+      name: destroy
+      description: 销毁资源
+      options:
+        - short: ""
+          long: "-auto-approve"
+          description: 自动确认
+        - short: ""
+          long: "-target"
+          description: 目标资源
+          takes_value: true
+    validate:
+      name: validate
+      description: 验证配置
+      options:
+        - short: ""
+          long: "-json"
+          description: JSON 输出
+    fmt:
+      name: fmt
+      description: 格式化代码
+      options:
+        - short: ""
+          long: "-check"
+          description: 仅检查
+        - short: ""
+          long: "-diff"
+          description: 显示差异
+        - short: ""
+          long: "-recursive"
+          description: 递归格式化
+    output:
+      name: output
+      description: 输出值
+      options:
+        - short: ""
+          long: "-json"
+          description: JSON 格式
+        - short: ""
+          long: "-raw"
+          description: 原始格式
+    state:
+      name: state
+      description: 状态管理
+      options: []
+    import:
+      name: import
+      description: 导入资源
+      options:
+        - short: ""
+          long: "-var"
+          description: 设置变量
+          takes_value: true
+    refresh:
+      name: refresh
+      description: 刷新状态
+      options: []
+    show:
+      name: show
+      description: 显示状态
+      options:
+        - short: ""
+          long: "-json"
+          description: JSON 格式
+    graph:
+      name: graph
+      description: 生成依赖图
+      options: []
+    taint:
+      name: taint
+      description: 标记重建
+      options: []
+    untaint:
+      name: untaint
+      description: 取消标记
+      options: []
+    workspace:
+      name: workspace
+      description: 工作区管理
+      options: []
+    providers:
+      name: providers
+      description: 提供者信息
+      options: []
+    console:
+      name: console
+      description: 交互式控制台
+      options: []
+
+ansible:
+  name: ansible
+  description: 自动化运维工具
+  options:
+    - short: "-i"
+      long: "--inventory"
+      description: 主机清单
+      takes_value: true
+    - short: "-m"
+      long: "--module-name"
+      description: 模块名
+      takes_value: true
+    - short: "-a"
+      long: "--args"
+      description: 模块参数
+      takes_value: true
+    - short: "-u"
+      long: "--user"
+      description: 远程用户
+      takes_value: true
+    - short: "-b"
+      long: "--become"
+      description: 提权
+    - short: "-K"
+      long: "--ask-become-pass"
+      description: 询问提权密码
+    - short: "-k"
+      long: "--ask-pass"
+      description: 询问 SSH 密码
+    - short: ""
+      long: "--private-key"
+      description: 私钥文件
+      takes_value: true
+    - short: "-f"
+      long: "--forks"
+      description: 并发数
+      takes_value: true
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-vv"
+      long: ""
+      description: 更详细
+    - short: "-vvv"
+      long: ""
+      description: 最详细
+    - short: ""
+      long: "--list-hosts"
+      description: 列出主机
+    - short: "-C"
+      long: "--check"
+      description: 检查模式
+    - short: ""
+      long: "--diff"
+      description: 显示差异
+    - short: "-e"
+      long: "--extra-vars"
+      description: 额外变量
+      takes_value: true
+    - short: "-l"
+      long: "--limit"
+      description: 限制主机
+      takes_value: true
+  subcommands: {}
+
+ansible-playbook:
+  name: ansible-playbook
+  description: 运行 Playbook
+  options:
+    - short: "-i"
+      long: "--inventory"
+      description: 主机清单
+      takes_value: true
+    - short: "-e"
+      long: "--extra-vars"
+      description: 额外变量
+      takes_value: true
+    - short: "-u"
+      long: "--user"
+      description: 远程用户
+      takes_value: true
+    - short: "-b"
+      long: "--become"
+      description: 提权
+    - short: "-K"
+      long: "--ask-become-pass"
+      description: 询问提权密码
+    - short: "-k"
+      long: "--ask-pass"
+      description: 询问 SSH 密码
+    - short: ""
+      long: "--private-key"
+      description: 私钥文件
+      takes_value: true
+    - short: "-C"
+      long: "--check"
+      description: 检查模式
+    - short: ""
+      long: "--diff"
+      description: 显示差异
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+    - short: "-vvv"
+      long: ""
+      description: 最详细
+    - short: ""
+      long: "--tags"
+      description: 运行标签
+      takes_value: true
+    - short: ""
+      long: "--skip-tags"
+      description: 跳过标签
+      takes_value: true
+    - short: "-l"
+      long: "--limit"
+      description: 限制主机
+      takes_value: true
+    - short: "-f"
+      long: "--forks"
+      description: 并发数
+      takes_value: true
+    - short: ""
+      long: "--start-at-task"
+      description: 从任务开始
+      takes_value: true
+    - short: ""
+      long: "--step"
+      description: 单步执行
+    - short: ""
+      long: "--syntax-check"
+      description: 语法检查
+    - short: ""
+      long: "--list-tasks"
+      description: 列出任务
+    - short: ""
+      long: "--list-tags"
+      description: 列出标签
+    - short: ""
+      long: "--list-hosts"
+      description: 列出主机
+    - short: ""
+      long: "--vault-password-file"
+      description: Vault 密码文件
+      takes_value: true
+    - short: ""
+      long: "--ask-vault-pass"
+      description: 询问 Vault 密码
+  subcommands: {}
+
+ansible-galaxy:
+  name: ansible-galaxy
+  description: Ansible 角色管理
+  options:
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands:
+    install:
+      name: install
+      description: 安装角色
+      options:
+        - short: "-r"
+          long: "--role-file"
+          description: 需求文件
+          takes_value: true
+        - short: "-p"
+          long: "--roles-path"
+          description: 角色路径
+          takes_value: true
+        - short: "-f"
+          long: "--force"
+          description: 强制安装
+    init:
+      name: init
+      description: 初始化角色
+      options: []
+    list:
+      name: list
+      description: 列出角色
+      options: []
+    remove:
+      name: remove
+      description: 移除角色
+      options: []
+    search:
+      name: search
+      description: 搜索角色
+      options: []
+    collection:
+      name: collection
+      description: 集合管理
+      options: []
+
+ansible-vault:
+  name: ansible-vault
+  description: 加密管理
+  options:
+    - short: "-h"
+      long: "--help"
+      description: 显示帮助
+    - short: "-v"
+      long: "--verbose"
+      description: 详细输出
+  subcommands:
+    create:
+      name: create
+      description: 创建加密文件
+      options:
+        - short: ""
+          long: "--vault-password-file"
+          description: 密码文件
+          takes_value: true
+    edit:
+      name: edit
+      description: 编辑加密文件
+      options: []
+    view:
+      name: view
+      description: 查看加密文件
+      options: []
+    encrypt:
+      name: encrypt
+      description: 加密文件
+      options: []
+    decrypt:
+      name: decrypt
+      description: 解密文件
+      options: []
+    rekey:
+      name: rekey
+      description: 更换密钥
+      options: []
+    encrypt_string:
+      name: encrypt_string
+      description: 加密字符串
+      options:
+        - short: "-n"
+          long: "--name"
+          description: 变量名
+          takes_value: true
+
+

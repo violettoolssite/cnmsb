@@ -1,5 +1,6 @@
 //! 命令名补全
 
+use crate::database::CommandDatabase;
 use crate::engine::{Completion, CompletionKind};
 use std::collections::HashMap;
 
@@ -7,6 +8,8 @@ use std::collections::HashMap;
 pub struct CommandCompleter {
     /// 常用命令及其描述
     commands: HashMap<&'static str, &'static str>,
+    /// 数据库命令
+    database: CommandDatabase,
 }
 
 impl CommandCompleter {
@@ -173,12 +176,15 @@ impl CommandCompleter {
         commands.insert("shutdown", "关机");
         commands.insert("poweroff", "关机");
 
-        CommandCompleter { commands }
+        CommandCompleter { 
+            commands,
+            database: CommandDatabase::new(),
+        }
     }
 
     /// 获取命令补全
     pub fn complete(&self, prefix: &str) -> Vec<Completion> {
-        self.commands
+        let mut completions: Vec<Completion> = self.commands
             .iter()
             .filter(|(cmd, _)| prefix.is_empty() || cmd.starts_with(prefix))
             .map(|(cmd, desc)| Completion {
@@ -187,7 +193,27 @@ impl CommandCompleter {
                 score: if cmd.starts_with(prefix) { 100 } else { 50 },
                 kind: CompletionKind::Command,
             })
-            .collect()
+            .collect();
+        
+        // 同时从数据库加载命令
+        for cmd_name in self.database.all_commands() {
+            // 避免重复
+            if self.commands.contains_key(cmd_name) {
+                continue;
+            }
+            if prefix.is_empty() || cmd_name.starts_with(prefix) {
+                if let Some(cmd_def) = self.database.get_command(cmd_name) {
+                    completions.push(Completion {
+                        text: cmd_name.to_string(),
+                        description: cmd_def.description.clone(),
+                        score: if cmd_name.starts_with(prefix) { 100 } else { 50 },
+                        kind: CompletionKind::Command,
+                    });
+                }
+            }
+        }
+        
+        completions
     }
 
     /// 检查命令是否存在
