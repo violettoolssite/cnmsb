@@ -7,7 +7,7 @@ pub mod engine;
 pub mod parser;
 pub mod shell;
 
-pub use engine::CompletionEngine;
+pub use engine::{CompletionEngine, CompletionKind};
 pub use parser::CommandParser;
 pub use shell::CnmsbShell;
 

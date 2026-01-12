@@ -31,6 +31,13 @@ enum Commands {
         shell: String,
     },
 
+    /// 显示命令帮助（类似交换机的 ? 功能）
+    Help {
+        /// 命令（如 git, tar），留空显示所有命令
+        #[arg(short, long, default_value = "")]
+        command: String,
+    },
+
     /// 初始化 shell 集成
     Init {
         /// Shell 类型 (bash/zsh)
@@ -49,13 +56,44 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        // 无子命令时启动交互式 shell
+        // 无子命令时显示工具信息
         None => {
-            let mut shell = CnmsbShell::new();
-            if let Err(e) = shell.run() {
-                eprintln!("Shell 错误: {}", e);
-                std::process::exit(1);
-            }
+            println!("\x1b[1;33m");
+            println!("  ██████╗███╗   ██╗███╗   ███╗███████╗██████╗ ");
+            println!(" ██╔════╝████╗  ██║████╗ ████║██╔════╝██╔══██╗");
+            println!(" ██║     ██╔██╗ ██║██╔████╔██║███████╗██████╔╝");
+            println!(" ██║     ██║╚██╗██║██║╚██╔╝██║╚════██║██╔══██╗");
+            println!(" ╚██████╗██║ ╚████║██║ ╚═╝ ██║███████║██████╔╝");
+            println!("  ╚═════╝╚═╝  ╚═══╝╚═╝     ╚═╝╚══════╝╚═════╝ ");
+            println!("\x1b[0m");
+            println!("\x1b[1;38;5;208m  操你妈傻逼 (cnmsb)\x1b[0m v0.1.0");
+            println!("  他妈的命令行补全工具，让你敲命令不用再查那些狗屁文档");
+            println!();
+            println!("  你是不是每次用 tar 都记不住参数？git 那一坨命令谁他妈背得下来？");
+            println!("  装上这玩意，敲命令的时候自动给你提示，按 Tab 就补全了。");
+            println!("  就这么简单，傻逼都会用。");
+            println!();
+            println!("\x1b[1;32m怎么用:\x1b[0m");
+            println!("  装好就完事了，不用配置什么狗屁东西。在 zsh 里直接敲命令就行。");
+            println!();
+            println!("\x1b[1;32m快捷键:\x1b[0m");
+            println!("  \x1b[33mTab\x1b[0m        第一下弹选择器，第二下确认");
+            println!("  \x1b[33m↑ ↓\x1b[0m        选哪个你自己挑");
+            println!("  \x1b[33m→\x1b[0m          懒得选？直接按右箭头接受");
+            println!("  \x1b[33m?\x1b[0m          不知道有啥？按问号看所有选项");
+            println!("  \x1b[33mEsc\x1b[0m        不要了，滚");
+            println!();
+            println!("\x1b[1;32m举个鸡巴例子:\x1b[0m");
+            println!("  tar -z?    看看 tar 能加什么参数");
+            println!("  git com    按 Tab 补全成 git commit");
+            println!("  docker r   按 Tab 补全成 docker run");
+            println!();
+            println!("\x1b[1;32m其他命令:\x1b[0m");
+            println!("  cnmsb help -c git    看 git 有什么命令");
+            println!("  cnmsb version        版本号，没啥用");
+            println!();
+            println!("有问题？复刻自行加入功能: \x1b[36mhttps://github.com/violettoolssite/cnmsb\x1b[0m");
+            println!();
         }
 
         Some(Commands::Complete {
@@ -84,6 +122,55 @@ fn main() {
                     );
                 } else {
                     println!("{}\t{}", completion.text, completion.description);
+                }
+            }
+        }
+
+        Some(Commands::Help { command }) => {
+            let engine = CompletionEngine::new();
+            
+            if command.is_empty() {
+                // 显示所有可用命令
+                println!("\x1b[1;33m可用命令:\x1b[0m");
+                println!();
+                let completions = engine.complete("", 0);
+                for c in completions.iter().filter(|c| c.kind == cnmsb::CompletionKind::Command) {
+                    println!("  \x1b[32m{:<20}\x1b[0m {}", c.text, c.description);
+                }
+            } else {
+                // 显示指定命令的帮助
+                println!("\x1b[1;33m{} 可用选项:\x1b[0m", command);
+                println!();
+                
+                // 获取子命令
+                let line = format!("{} ", command);
+                let completions = engine.complete(&line, line.len());
+                
+                let subcommands: Vec<_> = completions.iter()
+                    .filter(|c| c.kind == cnmsb::CompletionKind::Subcommand)
+                    .collect();
+                    
+                let options: Vec<_> = completions.iter()
+                    .filter(|c| c.kind == cnmsb::CompletionKind::Option)
+                    .collect();
+                
+                if !subcommands.is_empty() {
+                    println!("\x1b[36m子命令:\x1b[0m");
+                    for c in &subcommands {
+                        println!("  \x1b[36m{:<20}\x1b[0m {}", c.text, c.description);
+                    }
+                    println!();
+                }
+                
+                if !options.is_empty() {
+                    println!("\x1b[33m选项:\x1b[0m");
+                    for c in &options {
+                        println!("  \x1b[33m{:<20}\x1b[0m {}", c.text, c.description);
+                    }
+                }
+                
+                if subcommands.is_empty() && options.is_empty() {
+                    println!("  (没有找到 {} 的帮助信息)", command);
                 }
             }
         }

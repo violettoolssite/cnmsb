@@ -5,6 +5,48 @@ tar:
   name: tar
   description: 打包/解包工具
   options:
+    # 常用组合（优先显示）
+    - short: "-xvf"
+      long: ""
+      description: 解压并显示详情
+      takes_value: true
+    - short: "-zxvf"
+      long: ""
+      description: 解压 .tar.gz
+      takes_value: true
+    - short: "-jxvf"
+      long: ""
+      description: 解压 .tar.bz2
+      takes_value: true
+    - short: "-Jxvf"
+      long: ""
+      description: 解压 .tar.xz
+      takes_value: true
+    - short: "-cvf"
+      long: ""
+      description: 创建归档并显示详情
+      takes_value: true
+    - short: "-zcvf"
+      long: ""
+      description: 创建 .tar.gz
+      takes_value: true
+    - short: "-jcvf"
+      long: ""
+      description: 创建 .tar.bz2
+      takes_value: true
+    - short: "-Jcvf"
+      long: ""
+      description: 创建 .tar.xz
+      takes_value: true
+    - short: "-tvf"
+      long: ""
+      description: 查看归档内容
+      takes_value: true
+    - short: "-ztvf"
+      long: ""
+      description: 查看 .tar.gz 内容
+      takes_value: true
+    # 单个选项
     - short: "-c"
       long: "--create"
       description: 创建归档

@@ -22,7 +22,6 @@ impl ArgsCompleter {
 
         // 获取命令定义
         let cmd_def = if let Some(ref sub) = parsed.subcommand {
-            // 先尝试获取子命令的定义
             self.database
                 .get_subcommand(&parsed.command, sub)
                 .or_else(|| self.database.get_command(&parsed.command))
@@ -31,7 +30,34 @@ impl ArgsCompleter {
         };
 
         if let Some(cmd) = cmd_def {
-            // 如果正在输入选项（以 - 开头）
+            let current = &parsed.current_word;
+            
+            // 检查是否是组合短选项（如 -zxv）
+            if current.starts_with('-') && !current.starts_with("--") && current.len() > 1 {
+                // 提取已有的选项字符（去掉 -）
+                let existing_chars: Vec<char> = current[1..].chars().collect();
+                
+                // 为每个可追加的单字符选项创建补全
+                for opt in &cmd.options {
+                    if opt.short.len() == 2 && opt.short.starts_with('-') {
+                        let opt_char = opt.short.chars().nth(1).unwrap();
+                        
+                        // 如果这个选项字符还没使用
+                        if !existing_chars.contains(&opt_char) {
+                            // 创建组合后的选项
+                            let combined = format!("{}{}", current, opt_char);
+                            completions.push(Completion {
+                                text: combined,
+                                description: format!("追加 {} ({})", opt.short, opt.description),
+                                score: 90,
+                                kind: CompletionKind::Option,
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // 常规选项补全
             if parsed.is_option || parsed.current_word.is_empty() {
                 for opt in &cmd.options {
                     // 检查是否已经使用过这个选项
@@ -82,7 +108,7 @@ impl ArgsCompleter {
                 }
             }
 
-            // 子命令补全（如果命令有子命令且当前是第一个参数）
+            // 子命令补全
             if parsed.subcommand.is_none() && parsed.current_word_index == 1 {
                 if let Some(subcommands) = self.database.get_subcommands(&parsed.command) {
                     for (sub_name, sub_desc) in subcommands {

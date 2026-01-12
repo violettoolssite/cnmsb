@@ -122,12 +122,18 @@ impl CompletionEngine {
         let mut scored: Vec<Completion> = completions
             .into_iter()
             .filter_map(|mut c| {
-                if let Some(score) = self.matcher.fuzzy_match(&c.text, pattern) {
-                    c.score = score;
+                // 前缀匹配优先（确保组合参数如 -zc 能匹配 -z）
+                if c.text.starts_with(pattern) {
+                    // 精确匹配得最高分
+                    if c.text == pattern {
+                        c.score = 200;
+                    } else {
+                        // 前缀匹配
+                        c.score = 150;
+                    }
                     Some(c)
-                } else if c.text.starts_with(pattern) {
-                    // 前缀匹配也保留
-                    c.score = 100;
+                } else if let Some(score) = self.matcher.fuzzy_match(&c.text, pattern) {
+                    c.score = score;
                     Some(c)
                 } else {
                     None

@@ -6,9 +6,12 @@
 
 autoload -Uz compinit && compinit -u -C
 
+# 禁用 ? 作为通配符（避免 "no matches found" 错误）
+setopt nonomatch
+
 # ================== 配置 ==================
 
-PS1='%F{208}%n@%m%f:%F{blue}%~%f%F{208}%%%f '
+PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
 typeset -g zle_highlight=(default:fg=11,bold)
 
 # ================== 状态 ==================
@@ -199,6 +202,61 @@ zle -N _cnmsb_accept
 zle -N _cnmsb_run
 zle -N _cnmsb_escape
 
+# ================== ? 帮助功能 ==================
+
+_cnmsb_show_help() {
+    _cnmsb_skip=1
+    _cnmsb_clear
+    
+    local prefix="$BUFFER"
+    
+    echo ""
+    
+    if [[ -z "$prefix" ]]; then
+        # 只输入了 ?，显示所有命令（过滤历史）
+        echo "\033[1;33m可用命令:\033[0m"
+        echo ""
+        cnmsb complete --line "" --cursor 0 --shell bash 2>/dev/null | grep -v "历史" | head -20 | while IFS=$'\t' read -r cmd desc; do
+            printf "  \033[32m%-20s\033[0m %s\n" "$cmd" "$desc"
+        done
+    elif [[ "$prefix" == *" -"* || "$prefix" == *" --"* ]]; then
+        # 参数帮助，如 tar -zx?（过滤历史）
+        local cmd="${prefix%% *}"
+        echo "\033[1;33m$cmd 可用选项:\033[0m"
+        echo ""
+        cnmsb complete --line "$prefix" --cursor ${#prefix} --shell bash 2>/dev/null | grep -v "历史" | head -20 | while IFS=$'\t' read -r opt desc; do
+            printf "  \033[33m%-20s\033[0m %s\n" "$opt" "$desc"
+        done
+    elif [[ "$prefix" == *" "* ]]; then
+        # 子命令帮助，如 git ?（过滤历史）
+        local cmd="${prefix%% *}"
+        echo "\033[1;33m$cmd 子命令/选项:\033[0m"
+        echo ""
+        cnmsb complete --line "$prefix" --cursor ${#prefix} --shell bash 2>/dev/null | grep -v "历史" | head -20 | while IFS=$'\t' read -r sub desc; do
+            printf "  \033[36m%-20s\033[0m %s\n" "$sub" "$desc"
+        done
+    else
+        # 命令前缀帮助，如 gi?（过滤历史）
+        echo "\033[1;33m匹配 '$prefix' 的命令:\033[0m"
+        echo ""
+        cnmsb complete --line "$prefix" --cursor ${#prefix} --shell bash 2>/dev/null | grep -v "历史" | head -20 | while IFS=$'\t' read -r cmd desc; do
+            printf "  \033[32m%-20s\033[0m %s\n" "$cmd" "$desc"
+        done
+    fi
+    
+    echo ""
+    zle reset-prompt
+}
+
+_cnmsb_question() {
+    _cnmsb_skip=1
+    _cnmsb_show_help
+    # 不添加 ? 到 BUFFER
+}
+
+zle -N _cnmsb_question
+zle -N _cnmsb_show_help
+
 # ================== 按键绑定 ==================
 
 # 方向键
@@ -217,7 +275,16 @@ bindkey '^[OC' _cnmsb_accept    # Right (SS3)
 bindkey '^M' _cnmsb_run         # Enter
 bindkey '^[' _cnmsb_escape      # Esc
 
+# ? 帮助键
+bindkey '?' _cnmsb_question
+
+# ================== 别名 ==================
+
+alias 操你妈傻逼='cnmsb'
+alias 草泥马傻逼='cnmsb'
+alias caonimashabi='cnmsb'
+
 # ================== 完成 ==================
 
-print -P "%F{208}cnmsb%f 已加载"
-print -P "  %F{226}Tab%f=弹出/确认  %F{46}↑↓ Ctrl+P/N%f=选择  %F{51}→%f=直接接受  %F{196}Esc%f=取消"
+print -P "%F{208}cnmsb%f 已加载 (输入 \x1b[33m操你妈傻逼\x1b[0m 或 \x1b[33mcnmsb\x1b[0m 查看帮助)"
+print -P "  %F{226}Tab%f=选择  %F{46}↑↓%f=切换  %F{51}→%f=接受  %F{201}?%f=帮助  %F{196}Esc%f=取消"
