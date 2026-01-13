@@ -65,6 +65,7 @@ impl Renderer {
         mode: &Mode,
         status_message: &str,
         suggestion: &Option<String>,
+        show_welcome: bool,
     ) -> io::Result<()> {
         // 更新终端大小
         let (width, height) = terminal::size()?;
@@ -74,15 +75,33 @@ impl Renderer {
         // 计算可用于文本的行数（减去状态栏）
         let text_height = (self.height as usize).saturating_sub(2);
         
-        // 更新滚动偏移
-        self.update_scroll(cursor, text_height);
-        
         // 使用 BufWriter 减少系统调用
         let stdout = stdout();
         let mut writer = BufWriter::new(stdout.lock());
         
         // 隐藏光标并移动到开始位置（减少闪烁）
         queue!(writer, Hide, MoveTo(0, 0))?;
+        
+        // 如果显示欢迎屏幕
+        if show_welcome {
+            self.render_welcome_screen(&mut writer, text_height)?;
+            
+            // 渲染状态栏
+            queue!(writer, MoveTo(0, text_height as u16))?;
+            self.render_welcome_status_bar(&mut writer)?;
+            
+            // 渲染消息行
+            queue!(writer, MoveTo(0, (text_height + 1) as u16), Clear(ClearType::CurrentLine))?;
+            queue!(writer, SetForegroundColor(Color::DarkGrey))?;
+            write!(writer, "按 i 开始编辑  |  :q 退出  |  cntmd <文件> 打开文件")?;
+            queue!(writer, ResetColor)?;
+            
+            writer.flush()?;
+            return Ok(());
+        }
+        
+        // 更新滚动偏移
+        self.update_scroll(cursor, text_height);
         
         // 渲染文本行
         for i in 0..text_height {
@@ -228,6 +247,117 @@ impl Renderer {
             write!(writer, "操你他妈的编辑器 | i=插入 :w=保存 :q=退出 Tab=补全")?;
             queue!(writer, ResetColor)?;
         }
+        
+        Ok(())
+    }
+    
+    /// 渲染欢迎屏幕
+    fn render_welcome_screen(&self, writer: &mut impl Write, text_height: usize) -> io::Result<()> {
+        // 欢迎屏幕内容（淡色、居中）
+        let welcome_lines = [
+            "",
+            "",
+            "",
+            "█▀▀ █▄░█ ▀█▀ █▀▄▀█ █▀▄",
+            "█▄▄ █░▀█ ░█░ █░▀░█ █▄▀",
+            "",
+            "操你他妈的编辑器",
+            "v0.1.0",
+            "",
+            "",
+            "快捷键",
+            "────────────────────",
+            "i        进入插入模式",
+            "Esc      返回普通模式", 
+            ":w       保存文件",
+            ":q       退出",
+            ":wq      保存并退出",
+            "",
+            "Tab / →  接受补全建议",
+            "h j k l  光标移动",
+            "",
+            "",
+            "使用: cntmd <文件名>",
+            "",
+        ];
+        
+        // 计算垂直居中的起始行
+        let start_row = if text_height > welcome_lines.len() {
+            (text_height - welcome_lines.len()) / 2
+        } else {
+            0
+        };
+        
+        for i in 0..text_height {
+            queue!(writer, Clear(ClearType::CurrentLine))?;
+            
+            // 行号区域（显示波浪号）
+            queue!(writer, SetForegroundColor(Color::Rgb { r: 60, g: 60, b: 80 }))?;
+            write!(writer, "   ~ ")?;
+            
+            // 欢迎内容
+            let content_idx = i.saturating_sub(start_row);
+            if i >= start_row && content_idx < welcome_lines.len() {
+                let line = welcome_lines[content_idx];
+                
+                // 计算水平居中
+                let padding = if self.width as usize > line.len() + 5 {
+                    ((self.width as usize - 5 - line.len()) / 2).saturating_sub(5)
+                } else {
+                    0
+                };
+                
+                // 根据内容类型选择颜色
+                if line.contains("█") {
+                    // Logo - 淡青色
+                    queue!(writer, SetForegroundColor(Color::Rgb { r: 80, g: 140, b: 160 }))?;
+                } else if line.contains("操你他妈的") || line.starts_with("v0.") {
+                    // 标题 - 淡黄色
+                    queue!(writer, SetForegroundColor(Color::Rgb { r: 160, g: 140, b: 80 }))?;
+                } else if line.contains("快捷键") || line.contains("────") {
+                    // 分隔线 - 淡灰色
+                    queue!(writer, SetForegroundColor(Color::Rgb { r: 100, g: 100, b: 100 }))?;
+                } else if line.contains("使用:") {
+                    // 使用提示 - 淡绿色
+                    queue!(writer, SetForegroundColor(Color::Rgb { r: 80, g: 140, b: 100 }))?;
+                } else {
+                    // 其他内容 - 非常淡的灰色
+                    queue!(writer, SetForegroundColor(Color::Rgb { r: 90, g: 90, b: 100 }))?;
+                }
+                
+                write!(writer, "{:padding$}{}", "", line, padding = padding)?;
+            }
+            
+            queue!(writer, ResetColor)?;
+            
+            // 移动到下一行
+            if i < text_height - 1 {
+                queue!(writer, MoveTo(0, (i + 1) as u16))?;
+            }
+        }
+        
+        Ok(())
+    }
+    
+    /// 渲染欢迎屏幕的状态栏
+    fn render_welcome_status_bar(&self, writer: &mut impl Write) -> io::Result<()> {
+        queue!(writer, Clear(ClearType::CurrentLine))?;
+        queue!(writer, SetBackgroundColor(Color::Rgb { r: 40, g: 40, b: 50 }), 
+               SetForegroundColor(Color::Rgb { r: 140, g: 140, b: 150 }))?;
+        
+        let left = " NORMAL ";
+        let middle = " cntmd - 操你他妈的编辑器 ";
+        let right = " 无文件 ";
+        
+        let padding = (self.width as usize).saturating_sub(left.len() + middle.len() + right.len());
+        let left_pad = padding / 2;
+        let right_pad = padding - left_pad;
+        
+        write!(writer, "{}{:left_pad$}{}{:right_pad$}{}", 
+               left, "", middle, "", right,
+               left_pad = left_pad, right_pad = right_pad)?;
+        
+        queue!(writer, ResetColor)?;
         
         Ok(())
     }

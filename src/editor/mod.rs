@@ -47,6 +47,8 @@ pub struct Editor {
     status_message: String,
     /// 当前补全建议
     current_suggestion: Option<String>,
+    /// 是否显示欢迎屏幕
+    show_welcome_screen: bool,
 }
 
 impl Editor {
@@ -68,6 +70,7 @@ impl Editor {
             should_quit: false,
             status_message: String::new(),
             current_suggestion: None,
+            show_welcome_screen: false,
         })
     }
     
@@ -114,7 +117,8 @@ impl Editor {
         
         // 初始渲染
         self.renderer.render(&self.buffer, &self.cursor, &self.mode, 
-                              &self.status_message, &self.current_suggestion)?;
+                              &self.status_message, &self.current_suggestion,
+                              self.show_welcome_screen)?;
         
         loop {
             if self.should_quit {
@@ -126,7 +130,8 @@ impl Editor {
                 if !matches!(event, input::EditorEvent::None) {
                     self.handle_event(event);
                     self.renderer.render(&self.buffer, &self.cursor, &self.mode, 
-                                          &self.status_message, &self.current_suggestion)?;
+                                          &self.status_message, &self.current_suggestion,
+                                          self.show_welcome_screen)?;
                 }
             }
         }
@@ -179,25 +184,30 @@ impl Editor {
     fn handle_normal_char(&mut self, c: char) {
         match c {
             'i' => {
+                self.close_welcome_screen();
                 self.mode = Mode::Insert;
                 self.status_message = "-- 插入 --".to_string();
             }
             'a' => {
+                self.close_welcome_screen();
                 self.cursor.move_right(&self.buffer);
                 self.mode = Mode::Insert;
                 self.status_message = "-- 插入 --".to_string();
             }
             'A' => {
+                self.close_welcome_screen();
                 self.cursor.move_to_end_of_line(&self.buffer);
                 self.mode = Mode::Insert;
                 self.status_message = "-- 插入 --".to_string();
             }
             'I' => {
+                self.close_welcome_screen();
                 self.cursor.move_to_start_of_line();
                 self.mode = Mode::Insert;
                 self.status_message = "-- 插入 --".to_string();
             }
             'o' => {
+                self.close_welcome_screen();
                 self.cursor.move_to_end_of_line(&self.buffer);
                 self.buffer.insert_newline(self.cursor.row, self.cursor.col);
                 self.cursor.row += 1;
@@ -207,6 +217,7 @@ impl Editor {
                 self.status_message = "-- 插入 --".to_string();
             }
             'O' => {
+                self.close_welcome_screen();
                 self.buffer.insert_line_above(self.cursor.row);
                 self.cursor.col = 0;
                 self.mode = Mode::Insert;
@@ -582,22 +593,19 @@ impl Editor {
     
     /// 显示欢迎信息
     fn show_welcome(&mut self) {
-        self.buffer = Buffer::new();
-        for (i, line) in WELCOME_MESSAGE.lines().enumerate() {
-            if i == 0 {
-                for c in line.chars() {
-                    self.buffer.insert_char(0, self.buffer.line_len(0), c);
-                }
-            } else {
-                self.buffer.insert_newline(i - 1, self.buffer.line_len(i - 1));
-                for c in line.chars() {
-                    self.buffer.insert_char(i, self.buffer.line_len(i), c);
-                }
-            }
-        }
+        self.show_welcome_screen = true;
         self.status_message = "cntmd - 按 i 开始编辑，:q 退出".to_string();
-        // 欢迎屏幕不算修改
         self.modified = false;
+    }
+    
+    /// 关闭欢迎屏幕并准备编辑
+    fn close_welcome_screen(&mut self) {
+        if self.show_welcome_screen {
+            self.show_welcome_screen = false;
+            self.buffer = Buffer::new();
+            self.cursor = Cursor::new();
+            self.status_message.clear();
+        }
     }
 }
 
