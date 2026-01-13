@@ -81,7 +81,8 @@ impl Hinter for SqlHelper {
     type Hint = String;
     
     fn hint(&self, line: &str, pos: usize, _ctx: &Context<'_>) -> Option<String> {
-        if line.is_empty() || pos < line.len() {
+        // 只在光标位于行尾时显示建议
+        if line.is_empty() || pos != line.len() {
             return None;
         }
         

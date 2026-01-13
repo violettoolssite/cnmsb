@@ -173,7 +173,28 @@ impl DbConnection {
             })
         } else {
             // 非查询语句
-            let affected = conn.execute(sql, []).map_err(|e| DbError::Query(e.to_string()))?;
+            let affected = conn.execute(sql, []).map_err(|e| {
+                let err_msg = e.to_string();
+                // 检查是否是 CREATE TABLE 缺少列定义的情况
+                let sql_upper = sql.trim().to_uppercase();
+                if sql_upper.starts_with("CREATE TABLE") && !sql_upper.contains("(") {
+                    DbError::Query("CREATE TABLE 语句需要定义至少一列。示例: CREATE TABLE test (id INTEGER);".to_string())
+                } else {
+                    // 尝试提取 SQLite 错误信息中的关键部分
+                    // SQLite 错误格式通常是: "near \"token\": syntax error"
+                    if let Some(near_pos) = err_msg.find("near \"") {
+                        let after_near = &err_msg[near_pos + 6..];
+                        if let Some(quote_end) = after_near.find("\"") {
+                            let near_token = &after_near[..quote_end];
+                            DbError::Query(format!("语法错误: 在 '{}' 附近", near_token))
+                        } else {
+                            DbError::Query(err_msg)
+                        }
+                    } else {
+                        DbError::Query(err_msg)
+                    }
+                }
+            })?;
             Ok(QueryResult {
                 columns: Vec::new(),
                 rows: Vec::new(),
