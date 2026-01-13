@@ -112,16 +112,22 @@ impl Editor {
         self.renderer.enter_alternate_screen()?;
         self.renderer.enable_raw_mode()?;
         
+        // 初始渲染
+        self.renderer.render(&self.buffer, &self.cursor, &self.mode, 
+                              &self.status_message, &self.current_suggestion)?;
+        
         loop {
-            self.renderer.render(&self.buffer, &self.cursor, &self.mode, 
-                                  &self.status_message, &self.current_suggestion)?;
-            
             if self.should_quit {
                 break;
             }
             
             if let Some(event) = self.input.read_event()? {
-                self.handle_event(event);
+                // 只有在有实际事件时才处理和重新渲染
+                if !matches!(event, input::EditorEvent::None) {
+                    self.handle_event(event);
+                    self.renderer.render(&self.buffer, &self.cursor, &self.mode, 
+                                          &self.status_message, &self.current_suggestion)?;
+                }
             }
         }
         

@@ -1,10 +1,10 @@
 //! 终端渲染
 
-use std::io::{self, Write, stdout};
+use std::io::{self, Write, stdout, BufWriter};
 use crossterm::{
     cursor::{Hide, Show, MoveTo},
     event::{DisableMouseCapture, EnableMouseCapture},
-    execute,
+    execute, queue,
     style::{Color, SetForegroundColor, ResetColor, SetBackgroundColor},
     terminal::{
         self, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen,
@@ -77,14 +77,19 @@ impl Renderer {
         // 更新滚动偏移
         self.update_scroll(cursor, text_height);
         
-        let mut stdout = stdout();
+        // 使用 BufWriter 减少系统调用
+        let stdout = stdout();
+        let mut writer = BufWriter::new(stdout.lock());
         
-        // 清屏并移动到开始位置
-        execute!(stdout, Clear(ClearType::All), MoveTo(0, 0))?;
+        // 隐藏光标并移动到开始位置（减少闪烁）
+        queue!(writer, Hide, MoveTo(0, 0))?;
         
         // 渲染文本行
         for i in 0..text_height {
             let line_num = self.scroll_offset + i;
+            
+            // 清除当前行
+            queue!(writer, Clear(ClearType::CurrentLine))?;
             
             // 行号
             let line_num_str = if line_num < buffer.line_count() {
@@ -93,52 +98,57 @@ impl Renderer {
                 "   ~ ".to_string()
             };
             
-            execute!(stdout, SetForegroundColor(Color::DarkGrey))?;
-            write!(stdout, "{}", line_num_str)?;
-            execute!(stdout, ResetColor)?;
+            queue!(writer, SetForegroundColor(Color::DarkGrey))?;
+            write!(writer, "{}", line_num_str)?;
+            queue!(writer, ResetColor)?;
             
             // 文本内容
             if line_num < buffer.line_count() {
                 let line = buffer.get_line(line_num);
-                let display_line = self.truncate_line(line, 5);
                 
                 // 如果是当前行并且在插入模式，显示补全建议
                 if line_num == cursor.row && mode.is_insert() {
                     // 光标前的文本
                     let cursor_col = cursor.col.min(line.len());
-                    write!(stdout, "{}", &line[..cursor_col])?;
+                    write!(writer, "{}", &line[..cursor_col])?;
                     
                     // 补全建议（灰色）
                     if let Some(ref sug) = suggestion {
-                        execute!(stdout, SetForegroundColor(Color::DarkGrey))?;
-                        write!(stdout, "{}", sug)?;
-                        execute!(stdout, ResetColor)?;
+                        queue!(writer, SetForegroundColor(Color::DarkGrey))?;
+                        write!(writer, "{}", sug)?;
+                        queue!(writer, ResetColor)?;
                     }
                     
                     // 光标后的文本
                     if cursor_col < line.len() {
-                        write!(stdout, "{}", &line[cursor_col..])?;
+                        write!(writer, "{}", &line[cursor_col..])?;
                     }
                 } else {
-                    write!(stdout, "{}", display_line)?;
+                    let display_line = self.truncate_line(line, 5);
+                    write!(writer, "{}", display_line)?;
                 }
             }
             
-            writeln!(stdout)?;
+            // 移动到下一行
+            if i < text_height - 1 {
+                queue!(writer, MoveTo(0, (i + 1) as u16))?;
+            }
         }
         
         // 渲染状态栏
-        self.render_status_bar(&mut stdout, buffer, cursor, mode)?;
+        queue!(writer, MoveTo(0, text_height as u16))?;
+        self.render_status_bar_buffered(&mut writer, buffer, cursor, mode)?;
         
         // 渲染消息行
-        self.render_message_line(&mut stdout, status_message, mode, &buffer.command_buffer)?;
+        queue!(writer, MoveTo(0, (text_height + 1) as u16), Clear(ClearType::CurrentLine))?;
+        self.render_message_line_buffered(&mut writer, status_message, mode, &buffer.command_buffer)?;
         
-        // 设置光标位置
-        let cursor_x = 5 + cursor.col.saturating_sub(0) as u16;
+        // 设置光标位置并显示光标
+        let cursor_x = 5 + cursor.col as u16;
         let cursor_y = cursor.row.saturating_sub(self.scroll_offset) as u16;
-        execute!(stdout, MoveTo(cursor_x, cursor_y), Show)?;
+        queue!(writer, MoveTo(cursor_x, cursor_y), Show)?;
         
-        stdout.flush()?;
+        writer.flush()?;
         Ok(())
     }
     
@@ -161,15 +171,16 @@ impl Renderer {
         }
     }
     
-    /// 渲染状态栏
-    fn render_status_bar(
+    /// 渲染状态栏（使用 queue! 宏的缓冲版本）
+    fn render_status_bar_buffered(
         &self,
-        stdout: &mut impl Write,
+        writer: &mut impl Write,
         buffer: &Buffer,
         cursor: &Cursor,
         mode: &Mode,
     ) -> io::Result<()> {
-        execute!(stdout, SetBackgroundColor(Color::DarkGrey), SetForegroundColor(Color::White))?;
+        queue!(writer, Clear(ClearType::CurrentLine))?;
+        queue!(writer, SetBackgroundColor(Color::DarkGrey), SetForegroundColor(Color::White))?;
         
         // 模式
         let mode_str = match mode {
@@ -190,33 +201,32 @@ impl Renderer {
         // 计算填充
         let left = format!("{}{}", mode_str, file_info);
         let right = format!("{}{}", lines_info, pos_info);
-        let padding = self.width as usize - left.len() - right.len();
+        let padding = (self.width as usize).saturating_sub(left.len() + right.len());
         
-        write!(stdout, "{}{:padding$}{}", left, "", right, padding = padding)?;
+        write!(writer, "{}{:padding$}{}", left, "", right, padding = padding)?;
         
-        execute!(stdout, ResetColor)?;
-        writeln!(stdout)?;
+        queue!(writer, ResetColor)?;
         
         Ok(())
     }
     
-    /// 渲染消息行
-    fn render_message_line(
+    /// 渲染消息行（使用 queue! 宏的缓冲版本）
+    fn render_message_line_buffered(
         &self,
-        stdout: &mut impl Write,
+        writer: &mut impl Write,
         status_message: &str,
         mode: &Mode,
         command_buffer: &str,
     ) -> io::Result<()> {
         if mode.is_command() {
-            write!(stdout, ":{}", command_buffer)?;
+            write!(writer, ":{}", command_buffer)?;
         } else if !status_message.is_empty() {
-            write!(stdout, "{}", status_message)?;
+            write!(writer, "{}", status_message)?;
         } else {
             // 帮助提示
-            execute!(stdout, SetForegroundColor(Color::DarkGrey))?;
-            write!(stdout, "操你他妈的编辑器 | i=插入 :w=保存 :q=退出 Tab=补全")?;
-            execute!(stdout, ResetColor)?;
+            queue!(writer, SetForegroundColor(Color::DarkGrey))?;
+            write!(writer, "操你他妈的编辑器 | i=插入 :w=保存 :q=退出 Tab=补全")?;
+            queue!(writer, ResetColor)?;
         }
         
         Ok(())
