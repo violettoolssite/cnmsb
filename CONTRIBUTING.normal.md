@@ -11,29 +11,45 @@ cnmsb-tool/
 ├── src/
 │   ├── main.rs              # Entry point
 │   ├── lib.rs               # Library entry
-│   ├── engine.rs            # Completion engine
-│   ├── parser.rs            # Command line parser
-│   ├── shell.rs             # Interactive shell
+│   ├── engine.rs            # Completion engine (fuzzy matching, ranking)
+│   ├── parser.rs            # Command line parser (prefix command support)
+│   ├── shell.rs             # Interactive shell (deprecated, interface only)
 │   ├── completions/         # Completion implementations
 │   │   ├── mod.rs
 │   │   ├── commands.rs      # Command completion
-│   │   ├── args.rs          # Argument completion
+│   │   ├── args.rs          # Argument completion (combinable options)
 │   │   ├── files.rs         # File path completion
 │   │   └── history.rs       # History completion
 │   ├── database/            # Command database
 │   │   ├── mod.rs           # Database loading
-│   │   └── commands/        # Command definition files
-│   └── sql/                 # SQL completion module
-│       ├── mod.rs
-│       ├── connection.rs    # Database connection
-│       ├── engine.rs        # SQL completion engine
-│       ├── shell.rs         # SQL interactive shell
-│       └── syntax/          # SQL syntax definitions
+│   │   └── commands/        # Command definition files (YAML format)
+│   ├── sql/                 # SQL completion module
+│   │   ├── mod.rs
+│   │   ├── connection.rs    # Database connection (SQLite/MySQL/PostgreSQL)
+│   │   ├── database.rs      # Database types and configuration
+│   │   ├── engine.rs        # SQL completion engine
+│   │   ├── shell.rs         # SQL interactive shell (using rustyline)
+│   │   └── syntax/          # SQL syntax definitions
+│   │       ├── mod.rs
+│   │       ├── common.rs    # Common SQL syntax
+│   │       ├── mysql.rs     # MySQL syntax
+│   │       ├── postgresql.rs # PostgreSQL syntax
+│   │       └── sqlite.rs    # SQLite syntax
+│   └── editor/              # Text editor module (cntmd)
+│       ├── mod.rs           # Editor main logic
+│       ├── buffer.rs        # Text buffer
+│       ├── cursor.rs        # Cursor control
+│       ├── mode.rs          # Edit modes (Normal/Insert/Command)
+│       ├── render.rs        # Renderer
+│       ├── input.rs         # Input handling
+│       ├── history.rs       # History management
+│       └── completion.rs    # History-based completion (Trie structure)
 ├── shell/
-│   ├── cnmsb.zsh            # Zsh integration
-│   └── cnmsb.bash           # Bash integration
+│   ├── cnmsb.zsh            # Zsh integration (inline completion, selector menu)
+│   └── cnmsb.bash           # Bash integration (deprecated, Zsh only)
 ├── debian/                  # Debian packaging
 ├── build-deb.sh             # Deb build script
+├── install-universal.sh     # Universal installation script
 └── Cargo.toml               # Rust project config
 ```
 
@@ -231,17 +247,31 @@ let files = [
 # Build
 cargo build --release
 
-# Test completion output
+# Test command completion
 ./target/release/cnmsb complete --line "git " --cursor 4 --shell zsh
+
+# Test subcommand completion
+./target/release/cnmsb complete --line "apt ins" --cursor 6 --shell zsh
+
+# Test prefix command completion
+./target/release/cnmsb complete --line "sudo ap" --cursor 7 --shell zsh
+
+# Test fuzzy matching
+./target/release/cnmsb complete --line "ar" --cursor 2 --shell zsh
 
 # Test help mode
 ./target/release/cnmsb complete --line "tar ?" --cursor 5 --shell zsh
 
-# Test interactive mode
-./target/release/cnmsb shell
+# Test combinable options
+./target/release/cnmsb complete --line "tar -z" --cursor 6 --shell zsh
 
-# Test SQL mode
+# Test SQL Shell
 ./target/release/cnmsb sql
+
+# Test editor
+./target/release/cnmsb edit test.txt
+# or
+./target/release/cntmd test.txt
 ```
 
 ### Build Deb Package
@@ -286,12 +316,81 @@ When opening an issue, please include:
 4. Expected behavior
 5. Actual behavior
 
+## Core Features
+
+### Fuzzy Matching
+
+The completion engine supports multiple matching methods (sorted by priority):
+
+1. **Exact match** (case-insensitive) - Score 300
+2. **Prefix match** (case-insensitive) - Score 200+
+3. **Contains match** (case-insensitive) - Score 150+
+4. **Abbreviation match** (e.g., `ar` -> `tar`) - Score 100+
+5. **Fuzzy match** (using `fuzzy-matcher`) - Score 50+
+6. **Subsequence match** (e.g., `ar` -> `tar`) - Score 30+
+
+### Prefix Command Support
+
+The system automatically recognizes the following prefix commands and correctly completes the actual command after them:
+
+- `sudo` - Execute with administrator privileges
+- `time` - Measure execution time
+- `env` - Execute with environment variables
+- `nice` - Adjust process priority
+- `nohup` - Run in background
+- `strace` - System call tracing
+- `gdb` - Debugger
+- `valgrind` - Memory checker
+
+### Combinable Options
+
+Supports short option combination completion, for example:
+
+- `tar -z` -> Suggests `-zx`, `-zv`, `-zf`, etc.
+- `rm -r` -> Suggests `-rf`, `-rv`, `-ri`, etc.
+- `ls -l` -> Suggests `-la`, `-lah`, `-ltr`, etc.
+
+### SQL Completion Features
+
+- **Context-aware**: Provides appropriate completions based on SQL context (SELECT, FROM, WHERE, etc.)
+- **Schema-aware**: Automatically loads database table and column names
+- **Alias resolution**: Supports alias completion in queries like `SELECT u.id FROM users u`
+- **Case preservation**: Adjusts completions based on user's case style
+- **Table.column format**: Supports `table.column` format completion
+
+### Editor Features
+
+- **History completion**: Trie-based completion using edit history and preloaded common words
+- **Mode switching**: Three modes (Normal/Insert/Command)
+- **Auto file headers**: Automatically adds appropriate file headers based on file extension
+- **Welcome screen**: Shows help information for new files
+- **History persistence**: Saves edit history for future completions
+
 ## Code Style
 
 - Format Rust code with `cargo fmt`
 - Check Rust code with `cargo clippy`
 - Use 2-space indentation for shell scripts
 - Use 2-space indentation for YAML files
+- Ensure `cargo build --release` compiles before submitting
+
+## Common Questions
+
+### Q: How to add a new prefix command?
+
+A: Add it to the `prefix_commands` array in `src/parser.rs`, and use `compdef -d` in `shell/cnmsb.zsh` to disable default completion.
+
+### Q: How to add a new SQL database type?
+
+A: Add it to the `DatabaseType` enum in `src/sql/database.rs`, implement the corresponding syntax file in `src/sql/syntax/`, and implement connection logic in `src/sql/connection.rs`.
+
+### Q: Combinable options completion not working?
+
+A: Check if the YAML file defines the `combinable_options` field, and ensure option `short` fields are correctly formatted (e.g., `"-r"` not `"r"`).
+
+### Q: Subcommand completion shows files instead of subcommands?
+
+A: Check the file completion logic in `src/engine.rs` to ensure file completion is skipped when subcommand completions are available.
 
 ## License
 

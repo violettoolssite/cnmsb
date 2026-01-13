@@ -13,29 +13,45 @@ cnmsb-tool/
 ├── src/
 │   ├── main.rs              # 程序入口
 │   ├── lib.rs               # 库入口
-│   ├── engine.rs            # 补全引擎核心
-│   ├── parser.rs            # 命令行解析器
-│   ├── shell.rs             # 交互式 Shell
+│   ├── engine.rs            # 补全引擎核心（模糊匹配、排序）
+│   ├── parser.rs            # 命令行解析器（支持前缀命令）
+│   ├── shell.rs             # 交互式 Shell（已废弃，仅保留接口）
 │   ├── completions/         # 补全实现
 │   │   ├── mod.rs
 │   │   ├── commands.rs      # 命令补全
-│   │   ├── args.rs          # 参数补全
+│   │   ├── args.rs          # 参数补全（支持组合参数）
 │   │   ├── files.rs         # 文件路径补全
 │   │   └── history.rs       # 历史命令补全
 │   ├── database/            # 命令数据库
 │   │   ├── mod.rs           # 数据库加载
-│   │   └── commands/        # 命令定义文件
-│   └── sql/                 # SQL 补全模块
-│       ├── mod.rs
-│       ├── connection.rs    # 数据库连接
-│       ├── engine.rs        # SQL 补全引擎
-│       ├── shell.rs         # SQL 交互 Shell
-│       └── syntax/          # SQL 语法定义
+│   │   └── commands/        # 命令定义文件（YAML 格式）
+│   ├── sql/                 # SQL 补全模块
+│   │   ├── mod.rs
+│   │   ├── connection.rs    # 数据库连接（SQLite/MySQL/PostgreSQL）
+│   │   ├── database.rs      # 数据库类型和配置
+│   │   ├── engine.rs        # SQL 补全引擎
+│   │   ├── shell.rs         # SQL 交互 Shell（使用 rustyline）
+│   │   └── syntax/          # SQL 语法定义
+│   │       ├── mod.rs
+│   │       ├── common.rs    # 通用 SQL 语法
+│   │       ├── mysql.rs     # MySQL 语法
+│   │       ├── postgresql.rs # PostgreSQL 语法
+│   │       └── sqlite.rs    # SQLite 语法
+│   └── editor/              # 文本编辑器模块（cntmd）
+│       ├── mod.rs           # 编辑器主逻辑
+│       ├── buffer.rs        # 文本缓冲区
+│       ├── cursor.rs        # 光标控制
+│       ├── mode.rs          # 编辑模式（Normal/Insert/Command）
+│       ├── render.rs        # 渲染器
+│       ├── input.rs         # 输入处理
+│       ├── history.rs       # 历史管理
+│       └── completion.rs    # 基于历史的补全（Trie 结构）
 ├── shell/
-│   ├── cnmsb.zsh            # Zsh 集成脚本
-│   └── cnmsb.bash           # Bash 集成脚本
+│   ├── cnmsb.zsh            # Zsh 集成脚本（内联补全、选择器菜单）
+│   └── cnmsb.bash           # Bash 集成脚本（已废弃，仅 Zsh 支持）
 ├── debian/                  # Debian 打包配置
 ├── build-deb.sh             # deb 包构建脚本
+├── install-universal.sh     # 通用安装脚本
 └── Cargo.toml               # Rust 项目配置
 ```
 
@@ -245,17 +261,43 @@ let files = [
 
 解析逻辑在 `src/parser.rs`：
 
-- `parse()` - 解析命令行输入
+- `parse()` - 解析命令行输入，支持前缀命令（sudo, time, env 等）
 - `has_subcommands()` - 判断命令是否有子命令（从 YAML 动态加载）
+- 自动识别前缀命令，跳过它们以正确补全实际命令
 
 ### Zsh 集成
 
 Zsh 脚本在 `shell/cnmsb.zsh`，主要功能：
 
-- `_cnmsb_predict` - 内联预测
-- `_cnmsb_complete` - Tab 补全
-- `_cnmsb_show_selector` - 选择器菜单
-- `_cnmsb_history_mode` - 历史命令模式
+- `_cnmsb_fetch` - 获取补全建议
+- `_cnmsb_tab` - Tab 键处理（第一次显示菜单，第二次确认选择）
+- `_cnmsb_show_menu` - 显示选择器菜单
+- `_cnmsb_show_inline` - 显示内联灰色建议
+- `_cnmsb_history_menu` - 历史命令模式（Alt+H）
+- `_cnmsb_question` - 帮助模式（? 键）
+- 禁用 `sudo` 等前缀命令的默认补全，确保使用我们的补全系统
+
+### SQL Shell
+
+SQL 交互式 Shell 在 `src/sql/shell.rs`：
+
+- 使用 `rustyline` 库提供稳定的行编辑体验
+- `SqlHelper` - 实现 `Completer`、`Hinter`、`Highlighter` traits
+- 支持 SQLite、MySQL、PostgreSQL 数据库连接
+- 自动加载 Schema 信息用于表名和列名补全
+- 支持特殊命令（`.help`, `.tables`, `.desc`, `.schema`, `.clear`）
+
+### 文本编辑器
+
+文本编辑器在 `src/editor/` 目录：
+
+- `Editor` - 主编辑器结构
+- `Buffer` - 文本缓冲区管理
+- `Cursor` - 光标位置控制
+- `Mode` - 编辑模式（Normal/Insert/Command）
+- `Renderer` - 终端渲染（使用 crossterm）
+- `Completer` - 基于历史的补全（Trie 数据结构）
+- 支持文件头自动插入、欢迎屏幕、历史持久化
 
 ### 构建和测试
 
@@ -263,17 +305,31 @@ Zsh 脚本在 `shell/cnmsb.zsh`，主要功能：
 # 编译
 cargo build --release
 
-# 测试补全输出
+# 测试命令补全
 ./target/release/cnmsb complete --line "git " --cursor 4 --shell zsh
+
+# 测试子命令补全
+./target/release/cnmsb complete --line "apt ins" --cursor 6 --shell zsh
+
+# 测试前缀命令补全
+./target/release/cnmsb complete --line "sudo ap" --cursor 7 --shell zsh
+
+# 测试模糊匹配
+./target/release/cnmsb complete --line "ar" --cursor 2 --shell zsh
 
 # 测试帮助模式
 ./target/release/cnmsb complete --line "tar ?" --cursor 5 --shell zsh
 
-# 测试交互模式
-./target/release/cnmsb shell
+# 测试组合参数补全
+./target/release/cnmsb complete --line "tar -z" --cursor 6 --shell zsh
 
-# 测试 SQL 模式
+# 测试 SQL Shell
 ./target/release/cnmsb sql
+
+# 测试编辑器
+./target/release/cnmsb edit test.txt
+# 或
+./target/release/cntmd test.txt
 ```
 
 ### 构建 deb 包
@@ -322,6 +378,56 @@ docs: 更新 README
 
 别就扔一句"不好使"就完了，那我也帮不了你。
 
+## 核心功能说明
+
+### 模糊匹配
+
+补全引擎支持多种匹配方式（按优先级排序）：
+
+1. **精确匹配**（大小写不敏感）- 分数 300
+2. **前缀匹配**（大小写不敏感）- 分数 200+
+3. **包含匹配**（大小写不敏感）- 分数 150+
+4. **缩写匹配**（如 `ar` -> `tar`）- 分数 100+
+5. **模糊匹配**（使用 `fuzzy-matcher`）- 分数 50+
+6. **子序列匹配**（如 `ar` -> `tar`）- 分数 30+
+
+### 前缀命令支持
+
+系统自动识别以下前缀命令，并正确补全后面的实际命令：
+
+- `sudo` - 以管理员权限执行
+- `time` - 测量执行时间
+- `env` - 设置环境变量执行
+- `nice` - 调整进程优先级
+- `nohup` - 后台运行
+- `strace` - 系统调用跟踪
+- `gdb` - 调试器
+- `valgrind` - 内存检查
+
+### 组合参数补全
+
+支持短选项组合补全，例如：
+
+- `tar -z` -> 建议 `-zx`, `-zv`, `-zf` 等
+- `rm -r` -> 建议 `-rf`, `-rv`, `-ri` 等
+- `ls -l` -> 建议 `-la`, `-lah`, `-ltr` 等
+
+### SQL 补全特性
+
+- **上下文感知**：根据 SQL 上下文（SELECT、FROM、WHERE 等）提供相应补全
+- **Schema 感知**：自动加载数据库表名和列名
+- **别名解析**：支持 `SELECT u.id FROM users u` 中的别名补全
+- **大小写保持**：根据用户输入的大小写风格调整补全
+- **表.列格式**：支持 `table.column` 格式的补全
+
+### 编辑器特性
+
+- **历史补全**：基于编辑历史和预加载常用词的 Trie 补全
+- **模式切换**：Normal/Insert/Command 三种模式
+- **文件头自动插入**：根据文件扩展名自动添加合适的文件头
+- **欢迎屏幕**：新文件时显示帮助信息
+- **历史持久化**：保存编辑历史用于后续补全
+
 ## 代码规范
 
 - Rust 代码用 `cargo fmt` 格式化
@@ -329,6 +435,25 @@ docs: 更新 README
 - Shell 脚本用 2 空格缩进
 - YAML 文件用 2 空格缩进
 - 描述用中文
+- 提交前确保 `cargo build --release` 编译通过
+
+## 常见问题
+
+### Q: 如何添加新的前缀命令？
+
+A: 在 `src/parser.rs` 的 `prefix_commands` 数组中添加，同时在 `shell/cnmsb.zsh` 中使用 `compdef -d` 禁用默认补全。
+
+### Q: 如何添加新的 SQL 数据库类型？
+
+A: 在 `src/sql/database.rs` 的 `DatabaseType` 枚举中添加，实现对应的语法文件（`src/sql/syntax/`），并在 `src/sql/connection.rs` 中实现连接逻辑。
+
+### Q: 组合参数补全不工作？
+
+A: 检查 YAML 文件中是否定义了 `combinable_options` 字段，并且选项的 `short` 字段格式正确（如 `"-r"` 而不是 `"r"`）。
+
+### Q: 子命令补全显示文件而不是子命令？
+
+A: 检查 `src/engine.rs` 中的文件补全逻辑，确保在有子命令补全时跳过文件补全。
 
 ## 许可证
 
