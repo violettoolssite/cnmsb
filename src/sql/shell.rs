@@ -190,113 +190,172 @@ impl SqlShell {
                 }
             }
             DatabaseType::MySQL | DatabaseType::MariaDB => {
-                println!("{}请输入 MySQL 连接信息:{}", term::YELLOW, term::RESET);
-                println!("{}格式: mysql://user:password@host:port/database{}", term::GRAY, term::RESET);
-                println!("{}或者依次输入各项:{}", term::GRAY, term::RESET);
+                println!("{}请输入 MySQL 连接信息（直接回车使用默认值）:{}", term::YELLOW, term::RESET);
+                println!("{}也可以直接输入完整 URL: mysql://user:password@host:port/database{}", term::GRAY, term::RESET);
                 println!();
                 
-                // 主机
-                print!("  主机 (默认 localhost): ");
+                // 先检查是否输入了完整 URL
+                print!("  连接方式 [{}1{}=逐项输入, {}2{}=URL]: ", term::CYAN, term::RESET, term::CYAN, term::RESET);
                 stdout().flush()?;
-                let mut host = String::new();
-                stdin().read_line(&mut host)?;
-                let host = host.trim();
-                let host = if host.is_empty() { "localhost" } else { host };
+                let mut mode = String::new();
+                stdin().read_line(&mut mode)?;
+                let mode = mode.trim();
                 
-                // 端口
-                print!("  端口 (默认 3306): ");
-                stdout().flush()?;
-                let mut port_str = String::new();
-                stdin().read_line(&mut port_str)?;
-                let port: u16 = port_str.trim().parse().unwrap_or(3306);
-                
-                // 用户名
-                print!("  用户名 (默认 root): ");
-                stdout().flush()?;
-                let mut user = String::new();
-                stdin().read_line(&mut user)?;
-                let user = user.trim();
-                let user = if user.is_empty() { "root" } else { user };
-                
-                // 密码
-                print!("  密码: ");
-                stdout().flush()?;
-                let mut password = String::new();
-                stdin().read_line(&mut password)?;
-                let password = password.trim();
-                
-                // 数据库
-                print!("  数据库: ");
-                stdout().flush()?;
-                let mut database = String::new();
-                stdin().read_line(&mut database)?;
-                let database = database.trim();
-                
-                let conn_str = format!("mysql://{}:{}@{}:{}/{}", user, password, host, port, database);
-                
-                match self.connect(&conn_str) {
-                    Ok(()) => {
-                        println!("{}✓ 已连接到 MySQL {}:{}/{}{}", term::GREEN, host, port, database, term::RESET);
-                        self.print_schema_info();
+                if mode == "2" {
+                    print!("  URL: ");
+                    stdout().flush()?;
+                    let mut url = String::new();
+                    stdin().read_line(&mut url)?;
+                    let url = url.trim();
+                    
+                    match self.connect(url) {
+                        Ok(()) => {
+                            println!("{}✓ 已连接到 MySQL{}", term::GREEN, term::RESET);
+                            self.print_schema_info();
+                        }
+                        Err(e) => {
+                            println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
+                        }
                     }
-                    Err(e) => {
-                        println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
+                } else {
+                    println!();
+                    
+                    // 主机
+                    print!("  主机 [{}localhost{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut host = String::new();
+                    stdin().read_line(&mut host)?;
+                    let host = host.trim();
+                    let host = if host.is_empty() { "localhost" } else { host };
+                    
+                    // 端口
+                    print!("  端口 [{}3306{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut port_str = String::new();
+                    stdin().read_line(&mut port_str)?;
+                    let port: u16 = port_str.trim().parse().unwrap_or(3306);
+                    
+                    // 用户名
+                    print!("  用户名 [{}root{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut user = String::new();
+                    stdin().read_line(&mut user)?;
+                    let user = user.trim();
+                    let user = if user.is_empty() { "root" } else { user };
+                    
+                    // 密码
+                    print!("  密码 [{}空{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut password = String::new();
+                    stdin().read_line(&mut password)?;
+                    let password = password.trim();
+                    
+                    // 数据库
+                    print!("  数据库 [{}mysql{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut database = String::new();
+                    stdin().read_line(&mut database)?;
+                    let database = database.trim();
+                    let database = if database.is_empty() { "mysql" } else { database };
+                    
+                    println!();
+                    println!("{}正在连接 {}@{}:{}{}...", term::GRAY, user, host, port, term::RESET);
+                    
+                    let conn_str = format!("mysql://{}:{}@{}:{}/{}", user, password, host, port, database);
+                    
+                    match self.connect(&conn_str) {
+                        Ok(()) => {
+                            println!("{}✓ 已连接到 MySQL {}:{}/{}{}", term::GREEN, host, port, database, term::RESET);
+                            self.print_schema_info();
+                        }
+                        Err(e) => {
+                            println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
+                        }
                     }
                 }
             }
             DatabaseType::PostgreSQL => {
-                println!("{}请输入 PostgreSQL 连接信息:{}", term::YELLOW, term::RESET);
-                println!("{}格式: postgresql://user:password@host:port/database{}", term::GRAY, term::RESET);
-                println!("{}或者依次输入各项:{}", term::GRAY, term::RESET);
+                println!("{}请输入 PostgreSQL 连接信息（直接回车使用默认值）:{}", term::YELLOW, term::RESET);
+                println!("{}也可以直接输入完整 URL: postgresql://user:password@host:port/database{}", term::GRAY, term::RESET);
                 println!();
                 
-                // 主机
-                print!("  主机 (默认 localhost): ");
+                // 先检查是否输入了完整 URL
+                print!("  连接方式 [{}1{}=逐项输入, {}2{}=URL]: ", term::CYAN, term::RESET, term::CYAN, term::RESET);
                 stdout().flush()?;
-                let mut host = String::new();
-                stdin().read_line(&mut host)?;
-                let host = host.trim();
-                let host = if host.is_empty() { "localhost" } else { host };
+                let mut mode = String::new();
+                stdin().read_line(&mut mode)?;
+                let mode = mode.trim();
                 
-                // 端口
-                print!("  端口 (默认 5432): ");
-                stdout().flush()?;
-                let mut port_str = String::new();
-                stdin().read_line(&mut port_str)?;
-                let port: u16 = port_str.trim().parse().unwrap_or(5432);
-                
-                // 用户名
-                print!("  用户名 (默认 postgres): ");
-                stdout().flush()?;
-                let mut user = String::new();
-                stdin().read_line(&mut user)?;
-                let user = user.trim();
-                let user = if user.is_empty() { "postgres" } else { user };
-                
-                // 密码
-                print!("  密码: ");
-                stdout().flush()?;
-                let mut password = String::new();
-                stdin().read_line(&mut password)?;
-                let password = password.trim();
-                
-                // 数据库
-                print!("  数据库 (默认 postgres): ");
-                stdout().flush()?;
-                let mut database = String::new();
-                stdin().read_line(&mut database)?;
-                let database = database.trim();
-                let database = if database.is_empty() { "postgres" } else { database };
-                
-                let conn_str = format!("postgresql://{}:{}@{}:{}/{}", user, password, host, port, database);
-                
-                match self.connect(&conn_str) {
-                    Ok(()) => {
-                        println!("{}✓ 已连接到 PostgreSQL {}:{}/{}{}", term::GREEN, host, port, database, term::RESET);
-                        self.print_schema_info();
+                if mode == "2" {
+                    print!("  URL: ");
+                    stdout().flush()?;
+                    let mut url = String::new();
+                    stdin().read_line(&mut url)?;
+                    let url = url.trim();
+                    
+                    match self.connect(url) {
+                        Ok(()) => {
+                            println!("{}✓ 已连接到 PostgreSQL{}", term::GREEN, term::RESET);
+                            self.print_schema_info();
+                        }
+                        Err(e) => {
+                            println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
+                        }
                     }
-                    Err(e) => {
-                        println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
+                } else {
+                    println!();
+                    
+                    // 主机
+                    print!("  主机 [{}localhost{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut host = String::new();
+                    stdin().read_line(&mut host)?;
+                    let host = host.trim();
+                    let host = if host.is_empty() { "localhost" } else { host };
+                    
+                    // 端口
+                    print!("  端口 [{}5432{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut port_str = String::new();
+                    stdin().read_line(&mut port_str)?;
+                    let port: u16 = port_str.trim().parse().unwrap_or(5432);
+                    
+                    // 用户名
+                    print!("  用户名 [{}postgres{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut user = String::new();
+                    stdin().read_line(&mut user)?;
+                    let user = user.trim();
+                    let user = if user.is_empty() { "postgres" } else { user };
+                    
+                    // 密码
+                    print!("  密码 [{}空{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut password = String::new();
+                    stdin().read_line(&mut password)?;
+                    let password = password.trim();
+                    
+                    // 数据库
+                    print!("  数据库 [{}postgres{}]: ", term::CYAN, term::RESET);
+                    stdout().flush()?;
+                    let mut database = String::new();
+                    stdin().read_line(&mut database)?;
+                    let database = database.trim();
+                    let database = if database.is_empty() { "postgres" } else { database };
+                    
+                    println!();
+                    println!("{}正在连接 {}@{}:{}{}...", term::GRAY, user, host, port, term::RESET);
+                    
+                    let conn_str = format!("postgresql://{}:{}@{}:{}/{}", user, password, host, port, database);
+                    
+                    match self.connect(&conn_str) {
+                        Ok(()) => {
+                            println!("{}✓ 已连接到 PostgreSQL {}:{}/{}{}", term::GREEN, host, port, database, term::RESET);
+                            self.print_schema_info();
+                        }
+                        Err(e) => {
+                            println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
+                        }
                     }
                 }
             }
