@@ -888,9 +888,9 @@
         <a href="#" class="logo">CNMSB</a>
         <div class="nav-links">
             <a href="#features">功能特性</a>
+            <a href="#editor">编辑器</a>
             <a href="#demo">使用演示</a>
             <a href="#commands">支持命令</a>
-            <a href="#shortcuts">快捷键</a>
             <a href="#install">安装</a>
             <a href="https://github.com/violettoolssite/cnmsb" class="github-btn" target="_blank">
                 <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
@@ -921,7 +921,7 @@
                         <div class="stat-label">支持命令</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value">8</div>
+                        <div class="stat-value">9</div>
                         <div class="stat-label">核心功能</div>
                     </div>
                     <div class="stat">
@@ -979,7 +979,7 @@
         <!-- 功能特性 -->
         <section class="section" id="features">
             <div class="section-header">
-                <h2 class="section-title"><span class="accent">8 大</span>核心功能</h2>
+                <h2 class="section-title"><span class="accent">9 大</span>核心功能</h2>
                 <p class="section-desc">类似 IDE 的补全体验，让命令行操作更高效</p>
             </div>
             <div class="features-grid">
@@ -1022,6 +1022,55 @@
                     <span class="feature-number">08</span>
                     <h3>颜色区分</h3>
                     <p>亮黄色显示选项和命令，亮青色显示目录，绿色显示文件和子命令，灰色显示描述。</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-number">09</span>
+                    <h3>内置编辑器 cntmd</h3>
+                    <p>类 vim 文本编辑器，输入时自动显示补全建议。预装 100+ 常用词汇，实时学习你的输入习惯。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 编辑器介绍 -->
+        <section class="section" id="editor">
+            <div class="section-header">
+                <h2 class="section-title">内置<span class="accent">编辑器</span></h2>
+                <p class="section-desc">cntmd - 操你他妈的编辑器，类 vim 操作 + 智能补全</p>
+            </div>
+            <div class="features-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                        <span class="terminal-title">cntmd - 编辑器</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div style="color: var(--cyan); font-size: 1.2rem; margin-bottom: 0.5rem;">CNTMD</div>
+                        <div style="color: var(--yellow); margin-bottom: 1rem;">操你他妈的编辑器 v0.1.0</div>
+                        <div style="color: var(--text-muted); font-size: 0.8rem;">
+                            <div>i        进入插入模式</div>
+                            <div>Esc      返回普通模式</div>
+                            <div>:w       保存文件</div>
+                            <div>:q       退出</div>
+                            <div>:q!      强制退出</div>
+                            <div>Tab      接受补全建议</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div class="feature-card" style="margin: 0;">
+                        <h3>智能补全</h3>
+                        <p>输入时自动显示灰色补全建议，按 Tab 或右箭头接受。基于历史记录学习，越用越聪明。</p>
+                    </div>
+                    <div class="feature-card" style="margin: 0;">
+                        <h3>预装词库</h3>
+                        <p>内置 100+ 常用编程词汇：变量名、函数名、命令等。无需额外配置，开箱即用。</p>
+                    </div>
+                    <div class="feature-card" style="margin: 0;">
+                        <h3>脚本自动头部</h3>
+                        <p>新建 .sh 文件自动添加 #!/bin/bash，新建 .py 文件自动添加 #!/usr/bin/env python3。</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1256,7 +1305,9 @@
 <span class="comment"># 安装（会自动配置 zsh 环境）</span>
 <span class="cmd">sudo dpkg -i</span> cnmsb_0.1.0_amd64.deb
 
-<span class="comment"># 重新登录后生效</span></code></pre>
+<span class="comment"># 重新登录后生效，包含以下命令：</span>
+<span class="comment"># cnmsb  - 命令补全</span>
+<span class="comment"># cntmd  - 智能编辑器</span></code></pre>
                 </div>
 
                 <div id="tab-source" class="code-block" style="display: none;">

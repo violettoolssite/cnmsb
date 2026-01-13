@@ -31,6 +31,9 @@ echo "3. 复制文件..."
 cp target/release/cnmsb "$BUILD_DIR/$PKG_NAME/usr/bin/"
 chmod 755 "$BUILD_DIR/$PKG_NAME/usr/bin/cnmsb"
 
+# 创建 cntmd 符号链接
+ln -sf cnmsb "$BUILD_DIR/$PKG_NAME/usr/bin/cntmd"
+
 cp shell/cnmsb.bash "$BUILD_DIR/$PKG_NAME/usr/share/cnmsb/"
 cp shell/cnmsb.zsh "$BUILD_DIR/$PKG_NAME/usr/share/cnmsb/"
 chmod 644 "$BUILD_DIR/$PKG_NAME/usr/share/cnmsb/"*
@@ -55,12 +58,16 @@ Description: 操你妈傻逼 - Linux 命令行智能补全工具
  cnmsb 是一个为 Linux 命令行提供类似 IDE 编辑器补全体验的工具。
  .
  主要功能：
-  - 命令名称智能补全
-  - 命令参数和选项补全（支持 80+ 常用命令）
-  - 文件路径补全
-  - 历史命令补全
-  - 模糊匹配搜索
-  - 上下键切换建议
+  - 智能内联建议（灰色预测文字）
+  - 交互式补全选择器（Tab 打开，上下选择）
+  - 命令参数和选项补全（支持 300+ 常用命令）
+  - 组合参数补全（如 tar -zxvf）
+  - 问号帮助模式（输入 ? 查看所有选项）
+  - 历史命令模式（Alt+H）
+ .
+ 包含命令：
+  - cnmsb: 主程序
+  - cntmd: 智能补全编辑器（类 vim）
  .
  安装后自动配置 Zsh 为默认 shell。
 EOF
@@ -82,6 +89,7 @@ REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
 echo ""
 echo "====================================="
 echo "  cnmsb (操你妈傻逼) 安装成功！"
+echo "  包含: cnmsb, cntmd 编辑器"
 echo "====================================="
 echo ""
 
@@ -127,11 +135,18 @@ echo "====================================="
 echo "  配置完成！"
 echo "====================================="
 echo ""
-echo "功能说明："
+echo "命令补全 (cnmsb)："
 echo "  - 输入时自动显示建议 (灰色)"
+echo "  - Tab 打开选择器 / 确认选择"
 echo "  - ↑↓ 键切换不同建议"
-echo "  - Tab/→ 接受建议"
-echo "  - Esc 关闭建议"
+echo "  - → 接受建议"
+echo "  - ? 查看命令帮助"
+echo ""
+echo "智能编辑器 (cntmd)："
+echo "  - cntmd <文件名> 打开编辑器"
+echo "  - i 进入插入模式，Esc 返回普通模式"
+echo "  - :w 保存，:q 退出，:q! 强制退出"
+echo "  - Tab 接受补全建议"
 echo ""
 echo "请重新登录或运行 'zsh' 开始使用！"
 echo ""

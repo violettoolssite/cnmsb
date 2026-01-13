@@ -1,2 +1,4 @@
+export journalctl
+size
 
 ex:
