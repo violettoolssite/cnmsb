@@ -253,37 +253,45 @@ impl Renderer {
     
     /// 渲染欢迎屏幕
     fn render_welcome_screen(&self, writer: &mut impl Write, text_height: usize) -> io::Result<()> {
-        // 欢迎屏幕内容（淡色、居中）
-        let welcome_lines = [
-            "",
-            "",
-            "",
-            "█▀▀ █▄░█ ▀█▀ █▀▄▀█ █▀▄",
-            "█▄▄ █░▀█ ░█░ █░▀░█ █▄▀",
-            "",
-            "操你他妈的编辑器",
-            "v0.1.0",
-            "",
-            "",
-            "快捷键",
-            "────────────────────",
-            "i        进入插入模式",
-            "Esc      返回普通模式", 
-            ":w       保存文件",
-            ":q       退出",
-            ":wq      保存并退出",
-            "",
-            "Tab / →  接受补全建议",
-            "h j k l  光标移动",
-            "",
-            "",
-            "使用: cntmd <文件名>",
-            "",
+        // 欢迎屏幕内容定义
+        struct WelcomeLine {
+            text: &'static str,
+            color: (u8, u8, u8),
+        }
+        
+        let cyan = (100, 180, 200);
+        let yellow = (200, 180, 100);
+        let gray = (120, 120, 130);
+        let dim = (80, 80, 90);
+        let green = (100, 180, 120);
+        
+        let welcome_content: Vec<WelcomeLine> = vec![
+            WelcomeLine { text: "", color: dim },
+            WelcomeLine { text: "█▀▀ █▄░█ ▀█▀ █▀▄▀█ █▀▄", color: cyan },
+            WelcomeLine { text: "█▄▄ █░▀█ ░█░ █░▀░█ █▄▀", color: cyan },
+            WelcomeLine { text: "", color: dim },
+            WelcomeLine { text: "操你他妈的编辑器  v0.1.0", color: yellow },
+            WelcomeLine { text: "", color: dim },
+            WelcomeLine { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", color: gray },
+            WelcomeLine { text: "", color: dim },
+            WelcomeLine { text: "i         进入插入模式", color: dim },
+            WelcomeLine { text: "Esc       返回普通模式", color: dim },
+            WelcomeLine { text: ":w        保存文件", color: dim },
+            WelcomeLine { text: ":q        退出", color: dim },
+            WelcomeLine { text: ":wq       保存并退出", color: dim },
+            WelcomeLine { text: "", color: dim },
+            WelcomeLine { text: "Tab / →   接受补全", color: dim },
+            WelcomeLine { text: "h j k l   移动光标", color: dim },
+            WelcomeLine { text: "", color: dim },
+            WelcomeLine { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", color: gray },
+            WelcomeLine { text: "", color: dim },
+            WelcomeLine { text: "使用: cntmd <文件>", color: green },
+            WelcomeLine { text: "", color: dim },
         ];
         
         // 计算垂直居中的起始行
-        let start_row = if text_height > welcome_lines.len() {
-            (text_height - welcome_lines.len()) / 2
+        let start_row = if text_height > welcome_content.len() {
+            (text_height - welcome_content.len()) / 2
         } else {
             0
         };
@@ -297,35 +305,30 @@ impl Renderer {
             
             // 欢迎内容
             let content_idx = i.saturating_sub(start_row);
-            if i >= start_row && content_idx < welcome_lines.len() {
-                let line = welcome_lines[content_idx];
+            if i >= start_row && content_idx < welcome_content.len() {
+                let line = &welcome_content[content_idx];
                 
-                // 计算水平居中
-                let padding = if self.width as usize > line.len() + 5 {
-                    ((self.width as usize - 5 - line.len()) / 2).saturating_sub(5)
+                // 计算显示宽度（处理中文字符）
+                let display_width = line.text.chars().map(|c| {
+                    if c.is_ascii() { 1 } else { 2 }
+                }).sum::<usize>();
+                
+                // 计算水平居中填充
+                let available_width = (self.width as usize).saturating_sub(5);
+                let padding = if available_width > display_width {
+                    (available_width - display_width) / 2
                 } else {
                     0
                 };
                 
-                // 根据内容类型选择颜色
-                if line.contains("█") {
-                    // Logo - 淡青色
-                    queue!(writer, SetForegroundColor(Color::Rgb { r: 80, g: 140, b: 160 }))?;
-                } else if line.contains("操你他妈的") || line.starts_with("v0.") {
-                    // 标题 - 淡黄色
-                    queue!(writer, SetForegroundColor(Color::Rgb { r: 160, g: 140, b: 80 }))?;
-                } else if line.contains("快捷键") || line.contains("────") {
-                    // 分隔线 - 淡灰色
-                    queue!(writer, SetForegroundColor(Color::Rgb { r: 100, g: 100, b: 100 }))?;
-                } else if line.contains("使用:") {
-                    // 使用提示 - 淡绿色
-                    queue!(writer, SetForegroundColor(Color::Rgb { r: 80, g: 140, b: 100 }))?;
-                } else {
-                    // 其他内容 - 非常淡的灰色
-                    queue!(writer, SetForegroundColor(Color::Rgb { r: 90, g: 90, b: 100 }))?;
-                }
+                // 设置颜色
+                queue!(writer, SetForegroundColor(Color::Rgb { 
+                    r: line.color.0, 
+                    g: line.color.1, 
+                    b: line.color.2 
+                }))?;
                 
-                write!(writer, "{:padding$}{}", "", line, padding = padding)?;
+                write!(writer, "{:padding$}{}", "", line.text, padding = padding)?;
             }
             
             queue!(writer, ResetColor)?;
