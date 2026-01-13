@@ -7,915 +7,44 @@
     <meta name="description" content="cnmsb 是一款 Linux 命令行智能补全工具，支持 300+ 常用命令，提供类似 IDE 的补全体验">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --bg-elevated: #111111;
-            --bg-card: #161616;
-            --bg-card-hover: #1a1a1a;
-            --accent: #d4ff00;
-            --accent-dim: #a8cc00;
-            --accent-glow: rgba(212, 255, 0, 0.1);
-            --text: #ffffff;
-            --text-secondary: #a0a0a0;
-            --text-muted: #666666;
-            --border: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(212, 255, 0, 0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
-        }
-
-        body {
-            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* 背景效果 */
-        .bg-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 20%, rgba(212, 255, 0, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(212, 255, 0, 0.02) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .grain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* 导航 */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1.5rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            mix-blend-mode: difference;
-        }
-
-        .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text);
-            text-decoration: none;
-            letter-spacing: 2px;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .nav-link {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
-
-        .nav-link:hover {
-            opacity: 1;
-        }
-
-        .menu-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 100px;
-            padding: 0.6rem 1.2rem;
-            color: var(--text);
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-            letter-spacing: 0.5px;
-        }
-
-        .menu-btn:hover {
-            background: var(--text);
-            color: var(--bg);
-        }
-
-        /* Hero */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 8%;
-            position: relative;
-        }
-
-        .hero-content {
-            max-width: 900px;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--bg);
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 300;
-            line-height: 1.1;
-            margin-bottom: 2rem;
-            letter-spacing: -2px;
-        }
-
-        .hero h1 strong {
-            font-weight: 600;
-        }
-
-        .hero h1 .accent {
-            color: var(--accent);
-        }
-
-        .hero-desc {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 3rem;
-            line-height: 1.8;
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
-            font-family: inherit;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: var(--bg);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-dim);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .hero-scroll {
-            position: absolute;
-            bottom: 3rem;
-            left: 8%;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
-
-        .scroll-line {
-            width: 40px;
-            height: 1px;
-            background: var(--text-muted);
-        }
-
-        /* Section 通用 */
-        .section {
-            padding: 10rem 8%;
-            position: relative;
-        }
-
-        .section-header {
-            margin-bottom: 5rem;
-        }
-
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 300;
-            line-height: 1.2;
-            max-width: 800px;
-            letter-spacing: -1px;
-        }
-
-        .section-title strong {
-            font-weight: 600;
-        }
-
-        /* 终端展示 */
-        .terminal-showcase {
-            background: var(--bg-card);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
-        }
-
-        .terminal-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .terminal-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .terminal-dot.red { background: #ff5f56; }
-        .terminal-dot.yellow { background: #ffbd2e; }
-        .terminal-dot.green { background: #27c93f; }
-
-        .terminal-title {
-            flex: 1;
-            text-align: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .terminal-body {
-            padding: 2rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            line-height: 2.2;
-        }
-
-        .terminal-line {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .terminal-prompt { color: var(--accent); margin-right: 0.75rem; }
-        .terminal-cmd { color: #fff; font-weight: 500; }
-        .terminal-suggestion { color: var(--text-muted); }
-        .terminal-comment { color: var(--text-muted); margin-left: 1rem; font-size: 0.8rem; font-style: italic; }
-
-        .terminal-menu {
-            margin: 1rem 0 1rem 2rem;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            border-left: 2px solid var(--accent);
-        }
-
-        .terminal-menu-item {
-            display: flex;
-            align-items: center;
-            padding: 0.3rem 0;
-        }
-
-        .terminal-menu-item.selected { color: var(--accent); }
-        .terminal-menu-item .arrow { width: 1.5rem; color: var(--accent); }
-        .terminal-menu-item .name { color: #ffeb3b; width: 100px; }
-        .terminal-menu-item .desc { color: var(--text-muted); font-size: 0.75rem; }
-
-        /* 功能网格 */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background: var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .feature-item {
-            background: var(--bg-card);
-            padding: 3rem;
-            transition: all 0.4s;
-            position: relative;
-        }
-
-        .feature-item:hover {
-            background: var(--bg-card-hover);
-        }
-
-        .feature-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--accent);
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .feature-item:hover::before {
-            transform: scaleX(1);
-        }
-
-        .feature-number {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--accent);
-            margin-bottom: 2rem;
-        }
-
-        .feature-item h3 {
-            font-size: 1.3rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-
-        .feature-item p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.8;
-        }
-
-        /* 详细功能 */
-        .feature-detail {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            padding: 6rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .feature-detail:last-child {
-            border-bottom: none;
-        }
-
-        .feature-detail.reverse {
-            direction: rtl;
-        }
-
-        .feature-detail.reverse > * {
-            direction: ltr;
-        }
-
-        .feature-detail-content {
-            max-width: 500px;
-        }
-
-        .feature-detail-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 1rem;
-        }
-
-        .feature-detail-title {
-            font-size: 2rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            line-height: 1.3;
-        }
-
-        .feature-detail-desc {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.9;
-            margin-bottom: 2rem;
-        }
-
-        .feature-list {
-            list-style: none;
-        }
-
-        .feature-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 0.75rem 0;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .feature-list li::before {
-            content: '→';
-            color: var(--accent);
-            flex-shrink: 0;
-        }
-
-        .feature-visual {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid var(--border);
-        }
-
-        /* 编辑器展示 */
-        .editor-showcase {
-            background: var(--bg-elevated);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .editor-header {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid var(--border);
-            gap: 1rem;
-        }
-
-        .editor-tabs {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .editor-tab {
-            padding: 0.4rem 1rem;
-            background: var(--bg-card);
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .editor-tab.active {
-            background: var(--accent);
-            color: var(--bg);
-        }
-
-        .editor-body {
-            display: grid;
-            grid-template-columns: 40px 1fr;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            line-height: 2;
-        }
-
-        .editor-lines {
-            padding: 1.5rem 0;
-            text-align: right;
-            padding-right: 1rem;
-            color: var(--text-muted);
-            background: rgba(0, 0, 0, 0.2);
-            user-select: none;
-        }
-
-        .editor-content {
-            padding: 1.5rem;
-        }
-
-        .editor-line {
-            display: flex;
-        }
-
-        .editor-line .keyword { color: #c792ea; }
-        .editor-line .function { color: #82aaff; }
-        .editor-line .string { color: #c3e88d; }
-        .editor-line .comment { color: var(--text-muted); font-style: italic; }
-        .editor-line .variable { color: #f78c6c; }
-        .editor-line .suggestion { color: var(--text-muted); background: rgba(212, 255, 0, 0.1); }
-
-        /* 命令分类 */
-        .commands-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-        }
-
-        .command-category {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-
-        .command-category:hover {
-            border-color: var(--accent);
-            transform: translateY(-4px);
-        }
-
-        .command-category h4 {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1.5rem;
-        }
-
-        .command-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .command-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            padding: 0.3rem 0.6rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 4px;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .command-tag:hover {
-            background: var(--accent-glow);
-            color: var(--accent);
-        }
-
-        /* 安装区域 */
-        .install-section {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 4rem;
-            border: 1px solid var(--border);
-        }
-
-        .install-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-
-        .install-method {
-            background: var(--bg);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid var(--border);
-        }
-
-        .install-method h4 {
-            font-size: 1rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .install-method h4::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-        }
-
-        .code-block {
-            background: var(--bg-elevated);
-            border-radius: 12px;
-            padding: 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            line-height: 2;
-            overflow-x: auto;
-            position: relative;
-        }
-
-        .code-block .comment { color: var(--text-muted); }
-        .code-block .cmd { color: var(--accent); }
-
-        .copy-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 0.4rem 0.8rem;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-        }
-
-        .copy-btn:hover {
-            background: var(--accent);
-            color: var(--bg);
-            border-color: var(--accent);
-        }
-
-        /* 快捷键 */
-        .shortcuts-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background: var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .shortcut-item {
-            background: var(--bg-card);
-            padding: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .shortcut-keys {
-            display: flex;
-            gap: 0.3rem;
-        }
-
-        .key {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 2.5rem;
-            padding: 0.5rem 0.75rem;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--accent);
-        }
-
-        .shortcut-desc {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Demo GIF */
-        .demo-section {
-            background: var(--bg-elevated);
-            border-radius: 24px;
-            padding: 3rem;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .demo-section img {
-            max-width: 100%;
-            border-radius: 16px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-        }
-
-        /* CTA */
-        .cta-section {
-            text-align: center;
-            padding: 12rem 8%;
-            position: relative;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        .cta-title {
-            font-size: clamp(2rem, 5vw, 4rem);
-            font-weight: 300;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
-        .cta-title strong {
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        .cta-desc {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 4rem 8%;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-
-        .footer-left {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .footer-logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-        }
-
-        .footer-copy {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2.5rem;
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-
-        /* 响应式 */
-        @media (max-width: 1024px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .commands-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .install-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .shortcuts-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .feature-detail {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .feature-detail.reverse {
-                direction: ltr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            nav {
-                padding: 1rem 1.5rem;
-            }
-
-            .nav-link {
-                display: none;
-            }
-
-            .section {
-                padding: 6rem 5%;
-            }
-
-            .hero {
-                padding: 0 5%;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .commands-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .shortcuts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .install-section {
-                padding: 2rem;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .footer-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-
-        /* 动画 */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate {
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="loading">
     <div class="bg-pattern"></div>
     <div class="grain"></div>
 
+    <!-- ======================================== -->
+    <!-- Loading Screen with Version Selection   -->
+    <!-- ======================================== -->
+    <div class="loading-screen">
+        <div class="loading-logo">CNMSB</div>
+        <div class="loading-subtitle">Linux 命令行智能补全工具</div>
+        
+        <div class="version-selector">
+            <a href="#" class="version-btn" data-version="normal">
+                <span class="icon">✨</span>
+                <span class="title">正常版本</span>
+                <span class="desc">专业、简洁的使用体验</span>
+            </a>
+            <a href="#" class="version-btn rude" data-version="rude">
+                <span class="icon">🔥</span>
+                <span class="title">脏话版本</span>
+                <span class="desc">更接地气的表达方式</span>
+            </a>
+        </div>
+
+        <div class="loading-progress">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">加载中 0%</div>
+        </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- Navigation                              -->
+    <!-- ======================================== -->
     <nav>
         <a href="#" class="logo">CNMSB</a>
         <div class="nav-right">
@@ -923,455 +52,508 @@
             <a href="#editor" class="nav-link">编辑器</a>
             <a href="#commands" class="nav-link">命令</a>
             <a href="#install" class="nav-link">安装</a>
+            <span class="version-switch" data-current-version="rude">切换正常版</span>
             <a href="https://github.com/violettoolssite/cnmsb" class="menu-btn" target="_blank">GitHub</a>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">v0.1.0 · Rust · 开源</div>
-            <h1>
-                敲命令，<br>
-                <strong>不用再查</strong><br>
-                <span class="accent">参数了</span>
-            </h1>
-            <p class="hero-desc">
-                cnmsb 让命令行像 IDE 一样智能。输入时自动显示补全建议，支持 300+ 常用命令的参数和选项，按 Tab 就能补全。
-            </p>
-            <div class="hero-cta">
-                <a href="#install" class="btn btn-primary">立即安装</a>
-                <a href="#demo" class="btn btn-secondary">查看演示</a>
-            </div>
-        </div>
-        <div class="hero-scroll">
-            <span class="scroll-line"></span>
-            <span>SCROLL</span>
-        </div>
-    </section>
+    <!-- ======================================== -->
+    <!-- Main Content                            -->
+    <!-- ======================================== -->
+    <div class="main-content">
 
-    <!-- 终端演示 -->
-    <section class="section" id="demo">
-        <div class="section-header">
-            <div class="section-label">实时演示</div>
-            <h2 class="section-title">看看<strong>实际效果</strong></h2>
-        </div>
-
-        <div class="demo-section">
-            <img src="demo.gif" alt="cnmsb 使用演示">
-        </div>
-
-        <div style="margin-top: 4rem;">
-            <div class="terminal-showcase">
-                <div class="terminal-bar">
-                    <div class="terminal-dot red"></div>
-                    <div class="terminal-dot yellow"></div>
-                    <div class="terminal-dot green"></div>
-                    <span class="terminal-title">zsh — cnmsb</span>
-                </div>
-                <div class="terminal-body">
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">$</span>
-                        <span class="terminal-cmd">git c</span><span class="terminal-suggestion">ommit</span>
-                        <span class="terminal-comment">输入时自动显示灰色建议</span>
-                    </div>
-                    <div class="terminal-menu">
-                        <div class="terminal-menu-item selected">
-                            <span class="arrow">›</span>
-                            <span class="name">commit</span>
-                            <span class="desc">提交更改到仓库</span>
-                        </div>
-                        <div class="terminal-menu-item">
-                            <span class="arrow"> </span>
-                            <span class="name">checkout</span>
-                            <span class="desc">切换分支或恢复文件</span>
-                        </div>
-                        <div class="terminal-menu-item">
-                            <span class="arrow"> </span>
-                            <span class="name">clone</span>
-                            <span class="desc">克隆远程仓库</span>
-                        </div>
-                    </div>
-                    <div class="terminal-line" style="margin-top: 1.5rem;">
-                        <span class="terminal-prompt">$</span>
-                        <span class="terminal-cmd">tar -z</span><span class="terminal-suggestion">xvf</span>
-                        <span class="terminal-comment">组合参数智能补全</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 核心功能 -->
-    <section class="section" id="features">
-        <div class="section-header">
-            <div class="section-label">核心功能</div>
-            <h2 class="section-title">让命令行<strong>更高效</strong></h2>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-item">
-                <div class="feature-number">01</div>
-                <h3>智能内联建议</h3>
-                <p>输入命令时，光标后自动显示灰色预测文字。不用按任何键触发，边输入边看建议。按 Tab 或右箭头接受。</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-number">02</div>
-                <h3>交互式选择器</h3>
-                <p>按 Tab 打开补全选择菜单，显示所有可选项及说明。上下方向键切换选项，再按 Tab 确认。Esc 取消。</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-number">03</div>
-                <h3>问号帮助模式</h3>
-                <p>在命令后输入 ? 查看所有可用选项。按类别分组显示：常用选项、文件选项、输出选项等，快速了解命令用法。</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-number">04</div>
-                <h3>组合参数补全</h3>
-                <p>支持类似 tar -zxvf 的组合参数。输入 tar -z 后会建议继续添加 x、v、f 等常用组合参数，无需逐个输入。</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-number">05</div>
-                <h3>智能路径补全</h3>
-                <p>自动补全文件和目录路径。目录用亮青色显示，普通文件用绿色，隐藏文件用灰色，一眼区分类型。</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-number">06</div>
-                <h3>历史命令模式</h3>
-                <p>按 Alt+H 打开专门的历史命令选择器。只显示匹配当前输入前缀的历史命令，实时筛选，快速重用。</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-number">07</div>
-                <h3>实时更新</h3>
-                <p>输入或删除字符时，补全列表实时更新，无需重新按 Tab。响应迅速，体验流畅，像 IDE 一样丝滑。</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-number">08</div>
-                <h3>模糊匹配</h3>
-                <p>不需要精确输入，支持模糊匹配。输入 gti 也能匹配 git，输入 dkr 也能匹配 docker，容错性强。</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-number">09</div>
-                <h3>内置编辑器</h3>
-                <p>自带 cntmd 文本编辑器，类 vim 操作。输入时自动显示补全建议，预装 100+ 常用词汇，实时学习。</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 编辑器详情 -->
-    <section class="section" id="editor">
-        <div class="section-header">
-            <div class="section-label">内置编辑器</div>
-            <h2 class="section-title"><strong>cntmd</strong> — 操你他妈的编辑器</h2>
-        </div>
-
-        <div class="feature-detail">
-            <div class="feature-detail-content">
-                <div class="feature-detail-label">智能补全</div>
-                <h3 class="feature-detail-title">输入时自动提示</h3>
-                <p class="feature-detail-desc">
-                    不同于传统编辑器需要手动触发补全，cntmd 在你输入时自动在光标后显示灰色补全建议。
-                    基于 Trie 树实现的高效匹配，响应迅速。
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">v0.1.0 · Rust · 开源</div>
+                
+                <!-- 脏话版本标题 -->
+                <h1 data-rude>
+                    敲命令，<br>
+                    <strong>不用再他妈</strong><br>
+                    <span class="accent">查参数了</span>
+                    <span class="project-name">CNMSB</span>
+                </h1>
+                
+                <!-- 正常版本标题 -->
+                <h1 data-normal style="display: none;">
+                    敲命令，<br>
+                    <strong>不用再查</strong><br>
+                    <span class="accent">参数了</span>
+                    <span class="project-name">CNMSB</span>
+                </h1>
+                
+                <!-- 脏话版本描述 -->
+                <p class="hero-desc" data-rude>
+                    妈的终于不用每次都去搜参数了。cnmsb 让命令行像 IDE 一样智能，输入时自动显示补全建议，支持 300+ 常用命令，按 Tab 就能补全。
                 </p>
-                <ul class="feature-list">
-                    <li>输入 1 个字符即开始提示</li>
-                    <li>按 Tab 或右箭头接受建议</li>
-                    <li>预装 100+ 常用编程词汇</li>
-                    <li>实时学习你的输入习惯</li>
-                </ul>
-            </div>
-            <div class="feature-visual">
-                <div class="editor-showcase">
-                    <div class="editor-header">
-                        <div class="terminal-dot red"></div>
-                        <div class="terminal-dot yellow"></div>
-                        <div class="terminal-dot green"></div>
-                        <div class="editor-tabs">
-                            <div class="editor-tab active">script.sh</div>
-                        </div>
-                    </div>
-                    <div class="editor-body">
-                        <div class="editor-lines">
-                            <div>1</div>
-                            <div>2</div>
-                            <div>3</div>
-                            <div>4</div>
-                            <div>5</div>
-                        </div>
-                        <div class="editor-content">
-                            <div class="editor-line"><span class="comment">#!/bin/bash</span></div>
-                            <div class="editor-line"></div>
-                            <div class="editor-line"><span class="keyword">export</span> PATH=<span class="string">"/usr/local/bin:$PATH"</span></div>
-                            <div class="editor-line"></div>
-                            <div class="editor-line"><span class="keyword">func</span><span class="suggestion">tion</span></div>
-                        </div>
-                    </div>
+                
+                <!-- 正常版本描述 -->
+                <p class="hero-desc" data-normal style="display: none;">
+                    cnmsb 让命令行像 IDE 一样智能。输入时自动显示补全建议，支持 300+ 常用命令的参数和选项，按 Tab 就能补全。
+                </p>
+                
+                <div class="hero-cta">
+                    <a href="#install" class="btn btn-primary">立即安装</a>
+                    <a href="#demo" class="btn btn-secondary">查看演示</a>
                 </div>
             </div>
-        </div>
-
-        <div class="feature-detail reverse">
-            <div class="feature-detail-content">
-                <div class="feature-detail-label">Vim 风格</div>
-                <h3 class="feature-detail-title">熟悉的操作方式</h3>
-                <p class="feature-detail-desc">
-                    如果你用过 vim，上手 cntmd 毫无障碍。支持 Normal、Insert、Command 三种模式，
-                    h/j/k/l 移动光标，:w 保存，:q 退出。
-                </p>
-                <ul class="feature-list">
-                    <li>i/a/o 进入插入模式</li>
-                    <li>Esc 返回普通模式</li>
-                    <li>:w 保存  :q 退出  :wq 保存退出</li>
-                    <li>:q! 强制退出不保存</li>
-                </ul>
+            <div class="hero-scroll">
+                <span class="scroll-line"></span>
+                <span>SCROLL</span>
             </div>
-            <div class="feature-visual">
-                <div class="terminal-showcase" style="border-radius: 16px;">
+        </section>
+
+        <!-- Demo Section -->
+        <section class="section" id="demo">
+            <div class="section-header animate-in">
+                <div class="section-label">实时演示</div>
+                <h2 class="section-title">看看<strong>实际效果</strong></h2>
+            </div>
+
+            <div class="demo-section animate-in">
+                <img src="demo.gif" alt="cnmsb 使用演示">
+            </div>
+
+            <div style="margin-top: 4rem;" class="animate-in">
+                <div class="terminal-showcase">
                     <div class="terminal-bar">
                         <div class="terminal-dot red"></div>
                         <div class="terminal-dot yellow"></div>
                         <div class="terminal-dot green"></div>
-                        <span class="terminal-title">cntmd</span>
+                        <span class="terminal-title">zsh — cnmsb</span>
                     </div>
-                    <div class="terminal-body" style="text-align: center; padding: 3rem;">
-                        <div style="color: var(--accent); font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace;">CNTMD</div>
-                        <div style="color: var(--text-secondary); margin-bottom: 2rem;">操你他妈的编辑器 v0.1.0</div>
-                        <div style="color: var(--text-muted); font-size: 0.8rem; line-height: 2;">
-                            <div>i — 进入插入模式</div>
-                            <div>:w — 保存文件</div>
-                            <div>:q — 退出</div>
-                            <div>Tab — 接受补全</div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cmd">git c</span><span class="terminal-suggestion">ommit</span>
+                            <span class="terminal-comment">输入时自动显示灰色建议</span>
+                        </div>
+                        <div class="terminal-menu">
+                            <div class="terminal-menu-item selected">
+                                <span class="arrow">›</span>
+                                <span class="name">commit</span>
+                                <span class="desc">提交更改到仓库</span>
+                            </div>
+                            <div class="terminal-menu-item">
+                                <span class="arrow"> </span>
+                                <span class="name">checkout</span>
+                                <span class="desc">切换分支或恢复文件</span>
+                            </div>
+                            <div class="terminal-menu-item">
+                                <span class="arrow"> </span>
+                                <span class="name">clone</span>
+                                <span class="desc">克隆远程仓库</span>
+                            </div>
+                        </div>
+                        <div class="terminal-line" style="margin-top: 1.5rem;">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-cmd">tar -z</span><span class="terminal-suggestion">xvf</span>
+                            <span class="terminal-comment">组合参数智能补全</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="feature-detail">
-            <div class="feature-detail-content">
-                <div class="feature-detail-label">自动头部</div>
-                <h3 class="feature-detail-title">新建文件自动添加</h3>
-                <p class="feature-detail-desc">
-                    新建脚本文件时，cntmd 会根据文件扩展名自动添加适当的文件头部。
-                    不用每次手动输入 shebang 行。
-                </p>
-                <ul class="feature-list">
-                    <li>.sh 文件 → #!/bin/bash</li>
-                    <li>.py 文件 → #!/usr/bin/env python3</li>
-                    <li>.js 文件 → // JavaScript</li>
-                    <li>.rs 文件 → // Rust</li>
-                </ul>
-            </div>
-            <div class="feature-visual" style="display: flex; gap: 1rem;">
-                <div class="code-block" style="flex: 1;">
-                    <div style="color: var(--accent); font-size: 0.75rem; margin-bottom: 1rem;">script.sh</div>
-                    <div><span class="comment">#!/bin/bash</span></div>
-                    <div></div>
-                    <div style="color: var(--text-muted);">│ 光标位置</div>
-                </div>
-                <div class="code-block" style="flex: 1;">
-                    <div style="color: var(--accent); font-size: 0.75rem; margin-bottom: 1rem;">main.py</div>
-                    <div><span class="comment">#!/usr/bin/env python3</span></div>
-                    <div></div>
-                    <div style="color: var(--text-muted);">│ 光标位置</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 支持的命令 -->
-    <section class="section" id="commands">
-        <div class="section-header">
-            <div class="section-label">命令支持</div>
-            <h2 class="section-title">涵盖 <strong>300+</strong> 常用命令</h2>
-        </div>
-
-        <div class="commands-grid">
-            <div class="command-category">
-                <h4>版本控制</h4>
-                <div class="command-tags">
-                    <span class="command-tag">git</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>容器与编排</h4>
-                <div class="command-tags">
-                    <span class="command-tag">docker</span>
-                    <span class="command-tag">docker-compose</span>
-                    <span class="command-tag">kubectl</span>
-                    <span class="command-tag">podman</span>
-                    <span class="command-tag">helm</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>包管理</h4>
-                <div class="command-tags">
-                    <span class="command-tag">apt</span>
-                    <span class="command-tag">dpkg</span>
-                    <span class="command-tag">snap</span>
-                    <span class="command-tag">pip</span>
-                    <span class="command-tag">npm</span>
-                    <span class="command-tag">yarn</span>
-                    <span class="command-tag">cargo</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>文件操作</h4>
-                <div class="command-tags">
-                    <span class="command-tag">ls</span>
-                    <span class="command-tag">cp</span>
-                    <span class="command-tag">mv</span>
-                    <span class="command-tag">rm</span>
-                    <span class="command-tag">mkdir</span>
-                    <span class="command-tag">chmod</span>
-                    <span class="command-tag">chown</span>
-                    <span class="command-tag">find</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>文本处理</h4>
-                <div class="command-tags">
-                    <span class="command-tag">grep</span>
-                    <span class="command-tag">sed</span>
-                    <span class="command-tag">awk</span>
-                    <span class="command-tag">cat</span>
-                    <span class="command-tag">head</span>
-                    <span class="command-tag">tail</span>
-                    <span class="command-tag">sort</span>
-                    <span class="command-tag">uniq</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>网络工具</h4>
-                <div class="command-tags">
-                    <span class="command-tag">curl</span>
-                    <span class="command-tag">wget</span>
-                    <span class="command-tag">ssh</span>
-                    <span class="command-tag">scp</span>
-                    <span class="command-tag">rsync</span>
-                    <span class="command-tag">netstat</span>
-                    <span class="command-tag">nmap</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>系统管理</h4>
-                <div class="command-tags">
-                    <span class="command-tag">systemctl</span>
-                    <span class="command-tag">journalctl</span>
-                    <span class="command-tag">ps</span>
-                    <span class="command-tag">top</span>
-                    <span class="command-tag">htop</span>
-                    <span class="command-tag">kill</span>
-                    <span class="command-tag">df</span>
-                    <span class="command-tag">du</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>压缩归档</h4>
-                <div class="command-tags">
-                    <span class="command-tag">tar</span>
-                    <span class="command-tag">zip</span>
-                    <span class="command-tag">unzip</span>
-                    <span class="command-tag">gzip</span>
-                    <span class="command-tag">bzip2</span>
-                    <span class="command-tag">xz</span>
-                    <span class="command-tag">7z</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>开发工具</h4>
-                <div class="command-tags">
-                    <span class="command-tag">make</span>
-                    <span class="command-tag">cmake</span>
-                    <span class="command-tag">gcc</span>
-                    <span class="command-tag">python</span>
-                    <span class="command-tag">node</span>
-                    <span class="command-tag">go</span>
-                    <span class="command-tag">rustc</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>数据库</h4>
-                <div class="command-tags">
-                    <span class="command-tag">mysql</span>
-                    <span class="command-tag">psql</span>
-                    <span class="command-tag">sqlite3</span>
-                    <span class="command-tag">redis-cli</span>
-                    <span class="command-tag">mongo</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>云服务</h4>
-                <div class="command-tags">
-                    <span class="command-tag">aws</span>
-                    <span class="command-tag">gcloud</span>
-                    <span class="command-tag">az</span>
-                    <span class="command-tag">terraform</span>
-                    <span class="command-tag">ansible</span>
-                </div>
-            </div>
-            <div class="command-category">
-                <h4>更多</h4>
-                <div class="command-tags">
-                    <span class="command-tag">ffmpeg</span>
-                    <span class="command-tag">qemu</span>
-                    <span class="command-tag">virsh</span>
-                    <span class="command-tag">borg</span>
-                    <span class="command-tag">restic</span>
-                    <span class="command-tag">...</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 快捷键 -->
-    <section class="section" id="shortcuts">
-        <div class="section-header">
-            <div class="section-label">快捷键</div>
-            <h2 class="section-title">简单易记，<strong>快速上手</strong></h2>
-        </div>
-
-        <div class="shortcuts-grid">
-            <div class="shortcut-item">
-                <div class="shortcut-keys"><span class="key">Tab</span></div>
-                <div class="shortcut-desc">接受建议 / 打开选择器 / 确认</div>
-            </div>
-            <div class="shortcut-item">
-                <div class="shortcut-keys"><span class="key">→</span></div>
-                <div class="shortcut-desc">接受内联建议</div>
-            </div>
-            <div class="shortcut-item">
-                <div class="shortcut-keys"><span class="key">↑</span><span class="key">↓</span></div>
-                <div class="shortcut-desc">切换选项</div>
-            </div>
-            <div class="shortcut-item">
-                <div class="shortcut-keys"><span class="key">Alt</span><span class="key">H</span></div>
-                <div class="shortcut-desc">历史命令选择器</div>
-            </div>
-            <div class="shortcut-item">
-                <div class="shortcut-keys"><span class="key">?</span></div>
-                <div class="shortcut-desc">查看命令帮助</div>
-            </div>
-            <div class="shortcut-item">
-                <div class="shortcut-keys"><span class="key">Esc</span></div>
-                <div class="shortcut-desc">关闭选择器 / 取消</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 安装 -->
-    <section class="section" id="install">
-        <div class="install-section">
-            <div class="section-header" style="margin-bottom: 0;">
-                <div class="section-label">安装</div>
-                <h2 class="section-title">几行命令，<strong>开始使用</strong></h2>
+        <!-- Features Section -->
+        <section class="section" id="features">
+            <div class="section-header animate-in">
+                <div class="section-label">核心功能</div>
+                <h2 class="section-title" data-rude>让命令行<strong>不再那么操蛋</strong></h2>
+                <h2 class="section-title" data-normal style="display: none;">让命令行<strong>更高效</strong></h2>
+                <p class="section-desc">9 大核心功能，全面提升命令行使用体验</p>
             </div>
 
-            <div class="install-grid">
-                <div class="install-method">
-                    <h4>Debian / Ubuntu</h4>
-                    <div class="code-block">
-                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-number">01</div>
+                    <h3>智能内联建议</h3>
+                    <p>输入命令时，光标后自动显示灰色预测文字。不用按任何键触发，边输入边看建议。按 Tab 或右箭头接受建议，效率直接拉满。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">02</div>
+                    <h3>交互式选择器</h3>
+                    <p>按 Tab 打开补全选择菜单，显示所有可选项及说明。上下方向键切换选项，再按 Tab 确认选择。按 Esc 取消，操作简单直观。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">03</div>
+                    <h3>问号帮助模式</h3>
+                    <p>在命令后输入 ? 查看所有可用选项。按类别分组显示：常用选项、文件选项、输出选项等。不用再去翻 man 手册，一目了然。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">04</div>
+                    <h3>组合参数补全</h3>
+                    <p>支持类似 tar -zxvf 的组合参数智能补全。输入 tar -z 后会建议继续添加 x、v、f 等常用组合，无需逐个输入，省时省力。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">05</div>
+                    <h3>智能路径补全</h3>
+                    <p>自动补全文件和目录路径。目录用亮青色显示，普通文件用绿色，隐藏文件用灰色。视觉区分明显，一眼就能找到目标。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">06</div>
+                    <h3>历史命令模式</h3>
+                    <p>按 Alt+H 打开专门的历史命令选择器。只显示匹配当前输入前缀的历史命令，实时筛选更新。快速重用历史命令，不用反复敲。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">07</div>
+                    <h3>实时更新</h3>
+                    <p>输入或删除字符时，补全列表实时更新，无需重新按 Tab 触发。响应迅速，体验流畅，像 IDE 一样丝滑。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">08</div>
+                    <h3>模糊匹配</h3>
+                    <p>不需要精确输入，支持智能模糊匹配。输入 gti 也能匹配 git，输入 dkr 也能匹配 docker。打字快了出错也不怕。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">09</div>
+                    <h3>内置编辑器</h3>
+                    <p data-rude>自带 cntmd（操你他妈的）文本编辑器，类 vim 操作。输入时自动显示补全建议，预装 100+ 常用词汇，边打边学。</p>
+                    <p data-normal style="display: none;">自带 cntmd 文本编辑器，类 vim 操作。输入时自动显示补全建议，预装 100+ 常用词汇，实时学习你的输入习惯。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Editor Section -->
+        <section class="section" id="editor">
+            <div class="section-header animate-in">
+                <div class="section-label">内置编辑器</div>
+                <h2 class="section-title" data-rude><strong>cntmd</strong> — 操你他妈的编辑器</h2>
+                <h2 class="section-title" data-normal style="display: none;"><strong>cntmd</strong> — 内置智能编辑器</h2>
+                <p class="section-desc">一个带智能补全的类 vim 文本编辑器，让写代码更轻松</p>
+            </div>
+
+            <!-- 智能补全 -->
+            <div class="feature-detail animate-in">
+                <div class="feature-detail-content">
+                    <div class="feature-detail-label">智能补全</div>
+                    <h3 class="feature-detail-title">输入时自动提示</h3>
+                    <p class="feature-detail-desc">
+                        不同于传统编辑器需要手动触发补全，cntmd 在你输入时自动在光标后显示灰色补全建议。
+                        基于 Trie 树实现的高效前缀匹配，响应迅速，毫无卡顿。
+                    </p>
+                    <ul class="feature-list">
+                        <li>输入 1 个字符即开始提示</li>
+                        <li>按 Tab 或右箭头接受建议</li>
+                        <li>预装 100+ 常用编程词汇</li>
+                        <li>实时学习你的输入习惯</li>
+                        <li>支持变量名、函数名、关键字补全</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="editor-showcase">
+                        <div class="editor-header">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                            <div class="editor-tabs">
+                                <div class="editor-tab active">script.sh</div>
+                            </div>
+                        </div>
+                        <div class="editor-body">
+                            <div class="editor-lines">
+                                <div>1</div>
+                                <div>2</div>
+                                <div>3</div>
+                                <div>4</div>
+                                <div>5</div>
+                            </div>
+                            <div class="editor-content">
+                                <div class="editor-line"><span class="comment">#!/bin/bash</span></div>
+                                <div class="editor-line"></div>
+                                <div class="editor-line"><span class="keyword">export</span> PATH=<span class="string">"/usr/local/bin:$PATH"</span></div>
+                                <div class="editor-line"></div>
+                                <div class="editor-line"><span class="keyword">func</span><span class="suggestion">tion</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vim 风格 -->
+            <div class="feature-detail reverse animate-in">
+                <div class="feature-detail-content">
+                    <div class="feature-detail-label">Vim 风格</div>
+                    <h3 class="feature-detail-title">熟悉的操作方式</h3>
+                    <p class="feature-detail-desc">
+                        如果你用过 vim，上手 cntmd 毫无障碍。支持 Normal、Insert、Command 三种模式，
+                        h/j/k/l 移动光标，:w 保存，:q 退出。肌肉记忆直接复用。
+                    </p>
+                    <ul class="feature-list">
+                        <li>i / a / o 进入插入模式</li>
+                        <li>Esc 返回普通模式</li>
+                        <li>:w 保存  :q 退出  :wq 保存退出</li>
+                        <li>:q! 强制退出不保存</li>
+                        <li>h/j/k/l 方向键移动光标</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="terminal-showcase" style="border-radius: 16px;">
+                        <div class="terminal-bar">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                            <span class="terminal-title">cntmd</span>
+                        </div>
+                        <div class="terminal-body" style="text-align: center; padding: 3rem;">
+                            <div style="color: var(--accent); font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace;">CNTMD</div>
+                            <div style="color: var(--text-secondary); margin-bottom: 2rem;" data-rude>操你他妈的编辑器 v0.1.0</div>
+                            <div style="color: var(--text-secondary); margin-bottom: 2rem;" data-normal>智能文本编辑器 v0.1.0</div>
+                            <div style="color: var(--text-muted); font-size: 0.8rem; line-height: 2;">
+                                <div>i — 进入插入模式</div>
+                                <div>:w — 保存文件</div>
+                                <div>:q — 退出</div>
+                                <div>Tab — 接受补全</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 自动头部 -->
+            <div class="feature-detail animate-in">
+                <div class="feature-detail-content">
+                    <div class="feature-detail-label">自动头部</div>
+                    <h3 class="feature-detail-title">新建文件自动添加</h3>
+                    <p class="feature-detail-desc">
+                        新建脚本文件时，cntmd 会根据文件扩展名自动添加适当的文件头部。
+                        不用每次手动输入 shebang 行，直接开始写代码。
+                    </p>
+                    <ul class="feature-list">
+                        <li>.sh 文件 → #!/bin/bash</li>
+                        <li>.py 文件 → #!/usr/bin/env python3</li>
+                        <li>.js 文件 → // JavaScript</li>
+                        <li>.rs 文件 → // Rust</li>
+                        <li>更多文件类型持续添加中</li>
+                    </ul>
+                </div>
+                <div class="feature-visual" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div class="code-block" style="flex: 1; min-width: 200px;">
+                        <div style="color: var(--accent); font-size: 0.75rem; margin-bottom: 1rem;">script.sh</div>
+                        <div><span class="comment">#!/bin/bash</span></div>
+                        <div></div>
+                        <div style="color: var(--text-muted);">│ 光标位置</div>
+                    </div>
+                    <div class="code-block" style="flex: 1; min-width: 200px;">
+                        <div style="color: var(--accent); font-size: 0.75rem; margin-bottom: 1rem;">main.py</div>
+                        <div><span class="comment">#!/usr/bin/env python3</span></div>
+                        <div></div>
+                        <div style="color: var(--text-muted);">│ 光标位置</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Commands Section -->
+        <section class="section" id="commands">
+            <div class="section-header animate-in">
+                <div class="section-label">命令支持</div>
+                <h2 class="section-title">涵盖 <strong>300+</strong> 常用命令</h2>
+                <p class="section-desc">持续更新中，覆盖日常开发所需的各类命令</p>
+            </div>
+
+            <div class="commands-grid">
+                <div class="command-category">
+                    <h4>版本控制</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">git</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>容器与编排</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">docker</span>
+                        <span class="command-tag">docker-compose</span>
+                        <span class="command-tag">kubectl</span>
+                        <span class="command-tag">podman</span>
+                        <span class="command-tag">helm</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>包管理</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">apt</span>
+                        <span class="command-tag">dpkg</span>
+                        <span class="command-tag">snap</span>
+                        <span class="command-tag">pip</span>
+                        <span class="command-tag">npm</span>
+                        <span class="command-tag">yarn</span>
+                        <span class="command-tag">cargo</span>
+                        <span class="command-tag">pacman</span>
+                        <span class="command-tag">yum</span>
+                        <span class="command-tag">dnf</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>文件操作</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">ls</span>
+                        <span class="command-tag">cp</span>
+                        <span class="command-tag">mv</span>
+                        <span class="command-tag">rm</span>
+                        <span class="command-tag">mkdir</span>
+                        <span class="command-tag">chmod</span>
+                        <span class="command-tag">chown</span>
+                        <span class="command-tag">find</span>
+                        <span class="command-tag">ln</span>
+                        <span class="command-tag">touch</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>文本处理</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">grep</span>
+                        <span class="command-tag">sed</span>
+                        <span class="command-tag">awk</span>
+                        <span class="command-tag">cat</span>
+                        <span class="command-tag">head</span>
+                        <span class="command-tag">tail</span>
+                        <span class="command-tag">sort</span>
+                        <span class="command-tag">uniq</span>
+                        <span class="command-tag">cut</span>
+                        <span class="command-tag">tr</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>网络工具</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">curl</span>
+                        <span class="command-tag">wget</span>
+                        <span class="command-tag">ssh</span>
+                        <span class="command-tag">scp</span>
+                        <span class="command-tag">rsync</span>
+                        <span class="command-tag">netstat</span>
+                        <span class="command-tag">nmap</span>
+                        <span class="command-tag">ping</span>
+                        <span class="command-tag">traceroute</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>系统管理</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">systemctl</span>
+                        <span class="command-tag">journalctl</span>
+                        <span class="command-tag">ps</span>
+                        <span class="command-tag">top</span>
+                        <span class="command-tag">htop</span>
+                        <span class="command-tag">kill</span>
+                        <span class="command-tag">df</span>
+                        <span class="command-tag">du</span>
+                        <span class="command-tag">free</span>
+                        <span class="command-tag">uname</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>压缩归档</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">tar</span>
+                        <span class="command-tag">zip</span>
+                        <span class="command-tag">unzip</span>
+                        <span class="command-tag">gzip</span>
+                        <span class="command-tag">bzip2</span>
+                        <span class="command-tag">xz</span>
+                        <span class="command-tag">7z</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>开发工具</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">make</span>
+                        <span class="command-tag">cmake</span>
+                        <span class="command-tag">gcc</span>
+                        <span class="command-tag">python</span>
+                        <span class="command-tag">node</span>
+                        <span class="command-tag">go</span>
+                        <span class="command-tag">rustc</span>
+                        <span class="command-tag">java</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>数据库</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">mysql</span>
+                        <span class="command-tag">psql</span>
+                        <span class="command-tag">sqlite3</span>
+                        <span class="command-tag">redis-cli</span>
+                        <span class="command-tag">mongo</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>云服务</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">aws</span>
+                        <span class="command-tag">gcloud</span>
+                        <span class="command-tag">az</span>
+                        <span class="command-tag">terraform</span>
+                        <span class="command-tag">ansible</span>
+                    </div>
+                </div>
+                <div class="command-category">
+                    <h4>更多工具</h4>
+                    <div class="command-tags">
+                        <span class="command-tag">ffmpeg</span>
+                        <span class="command-tag">qemu</span>
+                        <span class="command-tag">virsh</span>
+                        <span class="command-tag">borg</span>
+                        <span class="command-tag">restic</span>
+                        <span class="command-tag">tmux</span>
+                        <span class="command-tag">screen</span>
+                        <span class="command-tag">...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shortcuts Section -->
+        <section class="section" id="shortcuts">
+            <div class="section-header animate-in">
+                <div class="section-label">快捷键</div>
+                <h2 class="section-title">简单易记，<strong>快速上手</strong></h2>
+                <p class="section-desc">核心快捷键设计简洁，符合直觉</p>
+            </div>
+
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><span class="key">Tab</span></div>
+                    <div class="shortcut-desc">接受建议 / 打开选择器 / 确认选择</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><span class="key">→</span></div>
+                    <div class="shortcut-desc">接受内联建议</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><span class="key">↑</span><span class="key">↓</span></div>
+                    <div class="shortcut-desc">在选择器中切换选项</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><span class="key">Alt</span><span class="key">H</span></div>
+                    <div class="shortcut-desc">打开历史命令选择器</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><span class="key">?</span></div>
+                    <div class="shortcut-desc">查看命令的所有选项帮助</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><span class="key">Esc</span></div>
+                    <div class="shortcut-desc">关闭选择器 / 取消操作</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Install Section -->
+        <section class="section" id="install">
+            <div class="install-section animate-in">
+                <div class="section-header" style="margin-bottom: 0;">
+                    <div class="section-label">安装</div>
+                    <h2 class="section-title">几行命令，<strong>开始使用</strong></h2>
+                </div>
+
+                <div class="install-grid">
+                    <div class="install-method">
+                        <h4>Debian / Ubuntu</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
 <pre><span class="comment"># 下载 deb 包</span>
 <span class="cmd">wget</span> https://github.com/violettoolssite/cnmsb/releases/download/v0.1.0/cnmsb_0.1.0_amd64.deb
 
@@ -1380,13 +562,13 @@
 
 <span class="comment"># 重新登录后生效</span>
 <span class="comment"># 包含: cnmsb, cntmd 编辑器</span></pre>
+                        </div>
                     </div>
-                </div>
 
-                <div class="install-method">
-                    <h4>源码编译</h4>
-                    <div class="code-block">
-                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <div class="install-method">
+                        <h4>源码编译（所有 Linux）</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
 <pre><span class="comment"># 克隆仓库</span>
 <span class="cmd">git clone</span> https://github.com/violettoolssite/cnmsb.git
 <span class="cmd">cd</span> cnmsb/cnmsb-tool
@@ -1396,78 +578,51 @@
 
 <span class="comment"># 安装</span>
 <span class="cmd">sudo</span> ./install.sh</pre>
+                        </div>
                     </div>
                 </div>
+
+                <div style="margin-top: 2rem; text-align: center;">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        安装后会自动配置 Zsh 环境，将用户默认 shell 改为 zsh
+                    </p>
+                </div>
             </div>
+        </section>
 
-            <div style="margin-top: 2rem; text-align: center;">
-                <p style="color: var(--text-muted); font-size: 0.9rem;">
-                    安装后会自动配置 Zsh 环境，将用户默认 shell 改为 zsh
-                </p>
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2 class="cta-title">开始使用 <strong>CNMSB</strong></h2>
+            <p class="cta-desc" data-rude>提升命令行效率，告别记不住参数的痛苦</p>
+            <p class="cta-desc" data-normal style="display: none;">提升命令行效率，告别记不住参数的烦恼</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/violettoolssite/cnmsb" class="btn btn-primary" target="_blank">
+                    GitHub
+                </a>
+                <a href="https://github.com/violettoolssite/cnmsb/blob/main/cnmsb-tool/CONTRIBUTING.md" class="btn btn-secondary" target="_blank">
+                    贡献代码
+                </a>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- CTA -->
-    <section class="cta-section">
-        <h2 class="cta-title">开始使用 <strong>CNMSB</strong></h2>
-        <p class="cta-desc">提升命令行效率，告别记不住参数的烦恼</p>
-        <div style="display: flex; gap: 1rem; justify-content: center;">
-            <a href="https://github.com/violettoolssite/cnmsb" class="btn btn-primary" target="_blank">
-                GitHub
-            </a>
-            <a href="https://github.com/violettoolssite/cnmsb/blob/main/cnmsb-tool/CONTRIBUTING.md" class="btn btn-secondary" target="_blank">
-                贡献代码
-            </a>
-        </div>
-    </section>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-left">
-                <span class="footer-logo">CNMSB</span>
-                <span class="footer-copy">MIT License · Rust · 2026</span>
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-left">
+                    <span class="footer-logo">CNMSB</span>
+                    <span class="footer-copy">MIT License · Rust · 2026</span>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/violettoolssite/cnmsb" target="_blank">GitHub</a>
+                    <a href="https://github.com/violettoolssite/cnmsb/issues" target="_blank">问题反馈</a>
+                    <a href="https://github.com/violettoolssite/cnmsb/blob/main/cnmsb-tool/CONTRIBUTING.md" target="_blank">贡献指南</a>
+                    <a href="https://github.com/violettoolssite/cnmsb/blob/main/LICENSE" target="_blank">许可证</a>
+                </div>
             </div>
-            <div class="footer-links">
-                <a href="https://github.com/violettoolssite/cnmsb" target="_blank">GitHub</a>
-                <a href="https://github.com/violettoolssite/cnmsb/issues" target="_blank">问题反馈</a>
-                <a href="https://github.com/violettoolssite/cnmsb/blob/main/cnmsb-tool/CONTRIBUTING.md" target="_blank">贡献指南</a>
-                <a href="https://github.com/violettoolssite/cnmsb/blob/main/LICENSE" target="_blank">许可证</a>
-            </div>
-        </div>
-    </footer>
+        </footer>
 
-    <script>
-        function copyCode(btn) {
-            const codeBlock = btn.parentElement;
-            const code = codeBlock.querySelector('pre').innerText;
-            navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = '已复制';
-                setTimeout(() => btn.textContent = '复制', 2000);
-            });
-        }
+    </div>
 
-        // 滚动动画
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.feature-item, .command-category, .shortcut-item').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        });
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>
