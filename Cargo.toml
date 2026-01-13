@@ -30,6 +30,9 @@ rusqlite = { version = "0.29", features = ["bundled"] }
 mysql = "25.0"
 postgres = "0.19"
 
+# Readline 库（SQL shell）
+rustyline = "14.0"
+
 # Unix 终端控制
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"

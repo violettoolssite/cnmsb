@@ -1,10 +1,19 @@
-//! SQL 交互式 Shell
+//! SQL 交互式 Shell（使用 rustyline）
 
 use super::connection::{DbConnection, QueryResult};
 use super::database::{DatabaseType, DatabaseConfig};
 use super::engine::SqlEngine;
 use super::syntax::SqlCompletionKind;
-use std::io::{self, Read, Write, stdout, stdin};
+use std::io::{self, stdout, stdin, Write};
+use std::borrow::Cow;
+
+use rustyline::completion::{Completer, Pair};
+use rustyline::error::ReadlineError;
+use rustyline::highlight::Highlighter;
+use rustyline::hint::Hinter;
+use rustyline::history::DefaultHistory;
+use rustyline::validate::Validator;
+use rustyline::{Context, Editor, Helper};
 
 /// 终端控制序列
 mod term {
@@ -15,21 +24,102 @@ mod term {
     pub const GREEN: &str = "\x1b[38;5;40m";
     pub const BLUE: &str = "\x1b[38;5;33m";
     pub const CYAN: &str = "\x1b[38;5;117m";
-    pub const ORANGE: &str = "\x1b[38;5;208m";
     pub const RED: &str = "\x1b[38;5;196m";
+}
+
+/// SQL 补全辅助器
+struct SqlHelper {
+    engine: SqlEngine,
+}
+
+impl SqlHelper {
+    fn new(db_type: DatabaseType) -> Self {
+        SqlHelper {
+            engine: SqlEngine::new(db_type),
+        }
+    }
     
-    pub const CLEAR_LINE: &str = "\x1b[2K";
-    pub const CURSOR_START: &str = "\x1b[G";
-    pub const CLEAR_BELOW: &str = "\x1b[J";
-    pub const MOVE_UP: &str = "\x1b[A";
+    fn set_tables(&mut self, tables: Vec<String>) {
+        self.engine.set_tables(tables);
+    }
+    
+    fn set_columns(&mut self, table: &str, columns: Vec<String>) {
+        self.engine.set_columns(table, columns);
+    }
+}
+
+impl Completer for SqlHelper {
+    type Candidate = Pair;
+    
+    fn complete(
+        &self,
+        line: &str,
+        pos: usize,
+        _ctx: &Context<'_>,
+    ) -> Result<(usize, Vec<Pair>), ReadlineError> {
+        let completions = self.engine.complete(line, pos);
+        
+        // 找到当前词的开始位置
+        let start = find_word_start(line, pos);
+        
+        let pairs: Vec<Pair> = completions.iter()
+            .map(|c| {
+                let display = format!("{} {}{}{}", 
+                    c.text, term::GRAY, c.description, term::RESET);
+                Pair {
+                    display,
+                    replacement: c.text.clone(),
+                }
+            })
+            .collect();
+        
+        Ok((start, pairs))
+    }
+}
+
+impl Hinter for SqlHelper {
+    type Hint = String;
+    
+    fn hint(&self, line: &str, pos: usize, _ctx: &Context<'_>) -> Option<String> {
+        if line.is_empty() || pos < line.len() {
+            return None;
+        }
+        
+        self.engine.get_current_word_completion(line, pos)
+    }
+}
+
+impl Highlighter for SqlHelper {
+    fn highlight_hint<'h>(&self, hint: &'h str) -> Cow<'h, str> {
+        Cow::Owned(format!("{}{}{}", term::GRAY, hint, term::RESET))
+    }
+}
+
+impl Validator for SqlHelper {}
+
+impl Helper for SqlHelper {}
+
+/// 找到当前词的开始位置
+fn find_word_start(line: &str, pos: usize) -> usize {
+    let bytes = line.as_bytes();
+    let mut start = pos;
+    
+    while start > 0 {
+        let c = bytes[start - 1];
+        if c.is_ascii_alphanumeric() || c == b'_' || c == b'.' {
+            start -= 1;
+        } else {
+            break;
+        }
+    }
+    
+    start
 }
 
 /// SQL Shell
 pub struct SqlShell {
-    engine: SqlEngine,
+    db_type: DatabaseType,
     connection: DbConnection,
-    history: Vec<String>,
-    history_index: usize,
     connected: bool,
 }
 
@@ -37,43 +127,34 @@ impl SqlShell {
     /// 创建新的 SQL Shell
     pub fn new(db_type: DatabaseType) -> Self {
         SqlShell {
-            engine: SqlEngine::new(db_type),
+            db_type,
             connection: DbConnection::None,
-            history: Vec::new(),
-            history_index: 0,
             connected: false,
         }
     }
     
     /// 连接数据库
     pub fn connect(&mut self, conn_str: &str) -> Result<(), String> {
-        let db_type = self.engine.db_type();
-        
-        let result = match db_type {
+        let result = match self.db_type {
             DatabaseType::SQLite => {
-                // SQLite: 路径或 :memory:
                 DbConnection::connect_sqlite(conn_str)
             }
             DatabaseType::MySQL | DatabaseType::MariaDB => {
-                // 尝试解析连接字符串
                 if let Some(config) = DatabaseConfig::parse(conn_str) {
                     DbConnection::connect_mysql(&config.host, config.port, &config.username, &config.password, &config.database)
                 } else {
-                    // 作为 URL 直接使用
                     DbConnection::connect_mysql_url(conn_str)
                 }
             }
             DatabaseType::PostgreSQL => {
-                // 尝试解析连接字符串
                 if let Some(config) = DatabaseConfig::parse(conn_str) {
                     DbConnection::connect_postgres(&config.host, config.port, &config.username, &config.password, &config.database)
                 } else {
-                    // 作为 URL 直接使用
                     DbConnection::connect_postgres_url(conn_str)
                 }
             }
             _ => {
-                return Err(format!("{} 数据库暂不支持", db_type.name()));
+                return Err(format!("{} 数据库暂不支持", self.db_type.name()));
             }
         };
         
@@ -81,32 +162,11 @@ impl SqlShell {
             Ok(conn) => {
                 self.connection = conn;
                 self.connected = true;
-                
-                // 加载 Schema 信息用于补全
-                self.load_schema();
-                
                 Ok(())
             }
             Err(e) => Err(e.to_string()),
         }
     }
-    
-    /// 加载数据库 Schema 信息
-    fn load_schema(&mut self) {
-        // 获取表列表
-        if let Ok(tables) = self.connection.get_tables() {
-            self.engine.set_tables(tables.clone());
-            
-            // 获取每个表的列信息
-            for table in &tables {
-                if let Ok(columns) = self.connection.get_columns(table) {
-                    let col_names: Vec<String> = columns.iter().map(|c| c.name.clone()).collect();
-                    self.engine.set_columns(table, col_names);
-                }
-            }
-        }
-    }
-    
     
     /// 运行 SQL Shell
     pub fn run(&mut self) -> io::Result<()> {
@@ -117,20 +177,43 @@ impl SqlShell {
             self.prompt_connect()?;
         }
         
-        // 设置终端为原始模式
-        #[cfg(unix)]
-        let _raw_mode = RawMode::enable()?;
+        // 创建 rustyline Editor
+        let mut helper = SqlHelper::new(self.db_type);
+        
+        // 加载 Schema 信息
+        if self.connected {
+            if let Ok(tables) = self.connection.get_tables() {
+                helper.set_tables(tables.clone());
+                for table in &tables {
+                    if let Ok(columns) = self.connection.get_columns(table) {
+                        let col_names: Vec<String> = columns.iter().map(|c| c.name.clone()).collect();
+                        helper.set_columns(table, col_names);
+                    }
+                }
+            }
+        }
+        
+        let mut rl = Editor::new().map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
+        rl.set_helper(Some(helper));
+        
+        // 构造提示符
+        let prompt = format!("{}{}{}{} > ", 
+            term::BOLD, self.db_type.color(), self.db_type.prompt(), term::RESET);
         
         loop {
-            match self.read_line()? {
-                Some(line) => {
+            match rl.readline(&prompt) {
+                Ok(line) => {
                     let line = line.trim();
+                    
                     if line.is_empty() {
                         continue;
                     }
                     
+                    // 添加到历史
+                    let _ = rl.add_history_entry(line);
+                    
                     // 处理特殊命令
-                    if self.handle_command(line) {
+                    if self.handle_command(line, &mut rl) {
                         continue;
                     }
                     
@@ -138,19 +221,23 @@ impl SqlShell {
                     if line.eq_ignore_ascii_case("exit") || 
                        line.eq_ignore_ascii_case("quit") ||
                        line.eq_ignore_ascii_case("\\q") {
-                        println!("\n再见！");
+                        println!("再见！");
                         break;
                     }
                     
                     // 执行 SQL
-                    self.execute_sql(&line);
-                    
-                    // 保存到历史
-                    self.history.push(line.to_string());
-                    self.history_index = self.history.len();
+                    self.execute_sql(line);
                 }
-                None => {
-                    println!("\n再见！");
+                Err(ReadlineError::Interrupted) => {
+                    println!("^C");
+                    continue;
+                }
+                Err(ReadlineError::Eof) => {
+                    println!("再见！");
+                    break;
+                }
+                Err(err) => {
+                    println!("{}错误: {:?}{}", term::RED, err, term::RESET);
                     break;
                 }
             }
@@ -161,10 +248,8 @@ impl SqlShell {
     
     /// 提示连接数据库
     fn prompt_connect(&mut self) -> io::Result<()> {
-        let db_type = self.engine.db_type();
-        
         println!();
-        match db_type {
+        match self.db_type {
             DatabaseType::SQLite => {
                 println!("{}请输入 SQLite 数据库路径（直接回车使用内存数据库）:{}", term::YELLOW, term::RESET);
                 print!("> ");
@@ -185,7 +270,6 @@ impl SqlShell {
                     }
                     Err(e) => {
                         println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
-                        return Ok(());
                     }
                 }
             }
@@ -194,7 +278,6 @@ impl SqlShell {
                 println!("{}也可以直接输入完整 URL: mysql://user:password@host:port/database{}", term::GRAY, term::RESET);
                 println!();
                 
-                // 先检查是否输入了完整 URL
                 print!("  连接方式 [{}1{}=逐项输入, {}2{}=URL]: ", term::CYAN, term::RESET, term::CYAN, term::RESET);
                 stdout().flush()?;
                 let mut mode = String::new();
@@ -220,7 +303,6 @@ impl SqlShell {
                 } else {
                     println!();
                     
-                    // 主机
                     print!("  主机 [{}localhost{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut host = String::new();
@@ -228,14 +310,12 @@ impl SqlShell {
                     let host = host.trim();
                     let host = if host.is_empty() { "localhost" } else { host };
                     
-                    // 端口
                     print!("  端口 [{}3306{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut port_str = String::new();
                     stdin().read_line(&mut port_str)?;
                     let port: u16 = port_str.trim().parse().unwrap_or(3306);
                     
-                    // 用户名
                     print!("  用户名 [{}root{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut user = String::new();
@@ -243,14 +323,12 @@ impl SqlShell {
                     let user = user.trim();
                     let user = if user.is_empty() { "root" } else { user };
                     
-                    // 密码
                     print!("  密码 [{}空{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut password = String::new();
                     stdin().read_line(&mut password)?;
                     let password = password.trim();
                     
-                    // 数据库
                     print!("  数据库 [{}mysql{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut database = String::new();
@@ -259,7 +337,7 @@ impl SqlShell {
                     let database = if database.is_empty() { "mysql" } else { database };
                     
                     println!();
-                    println!("{}正在连接 {}@{}:{}{}...", term::GRAY, user, host, port, term::RESET);
+                    println!("{}正在连接 {}@{}:{}...{}", term::GRAY, user, host, port, term::RESET);
                     
                     let conn_str = format!("mysql://{}:{}@{}:{}/{}", user, password, host, port, database);
                     
@@ -279,7 +357,6 @@ impl SqlShell {
                 println!("{}也可以直接输入完整 URL: postgresql://user:password@host:port/database{}", term::GRAY, term::RESET);
                 println!();
                 
-                // 先检查是否输入了完整 URL
                 print!("  连接方式 [{}1{}=逐项输入, {}2{}=URL]: ", term::CYAN, term::RESET, term::CYAN, term::RESET);
                 stdout().flush()?;
                 let mut mode = String::new();
@@ -305,7 +382,6 @@ impl SqlShell {
                 } else {
                     println!();
                     
-                    // 主机
                     print!("  主机 [{}localhost{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut host = String::new();
@@ -313,14 +389,12 @@ impl SqlShell {
                     let host = host.trim();
                     let host = if host.is_empty() { "localhost" } else { host };
                     
-                    // 端口
                     print!("  端口 [{}5432{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut port_str = String::new();
                     stdin().read_line(&mut port_str)?;
                     let port: u16 = port_str.trim().parse().unwrap_or(5432);
                     
-                    // 用户名
                     print!("  用户名 [{}postgres{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut user = String::new();
@@ -328,14 +402,12 @@ impl SqlShell {
                     let user = user.trim();
                     let user = if user.is_empty() { "postgres" } else { user };
                     
-                    // 密码
                     print!("  密码 [{}空{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut password = String::new();
                     stdin().read_line(&mut password)?;
                     let password = password.trim();
                     
-                    // 数据库
                     print!("  数据库 [{}postgres{}]: ", term::CYAN, term::RESET);
                     stdout().flush()?;
                     let mut database = String::new();
@@ -344,7 +416,7 @@ impl SqlShell {
                     let database = if database.is_empty() { "postgres" } else { database };
                     
                     println!();
-                    println!("{}正在连接 {}@{}:{}{}...", term::GRAY, user, host, port, term::RESET);
+                    println!("{}正在连接 {}@{}:{}...{}", term::GRAY, user, host, port, term::RESET);
                     
                     let conn_str = format!("postgresql://{}:{}@{}:{}/{}", user, password, host, port, database);
                     
@@ -360,7 +432,7 @@ impl SqlShell {
                 }
             }
             _ => {
-                println!("{}{} 数据库暂不支持真实连接{}", term::YELLOW, db_type.name(), term::RESET);
+                println!("{}{} 数据库暂不支持真实连接{}", term::YELLOW, self.db_type.name(), term::RESET);
                 println!("{}将以离线模式运行（仅提供语法补全）{}", term::GRAY, term::RESET);
             }
         }
@@ -449,19 +521,17 @@ impl SqlShell {
     
     /// 打印欢迎信息
     fn print_welcome(&self) {
-        let db_type = self.engine.db_type();
-        
         println!();
-        println!("{}{}╔══════════════════════════════════════════════════════════════╗{}", term::BOLD, db_type.color(), term::RESET);
-        println!("{}{}║              cnmsb-sql - SQL 智能补全终端                    ║{}", term::BOLD, db_type.color(), term::RESET);
-        println!("{}{}╚══════════════════════════════════════════════════════════════╝{}", term::BOLD, db_type.color(), term::RESET);
+        println!("{}{}╔══════════════════════════════════════════════════════════════╗{}", term::BOLD, self.db_type.color(), term::RESET);
+        println!("{}{}║              cnmsb-sql - SQL 智能补全终端                    ║{}", term::BOLD, self.db_type.color(), term::RESET);
+        println!("{}{}╚══════════════════════════════════════════════════════════════╝{}", term::BOLD, self.db_type.color(), term::RESET);
         println!();
-        println!("  数据库类型: {}{}{}{}", term::BOLD, db_type.color(), db_type.name(), term::RESET);
-        println!("  {}{}", term::GRAY, db_type.description());
+        println!("  数据库类型: {}{}{}{}", term::BOLD, self.db_type.color(), self.db_type.name(), term::RESET);
+        println!("  {}{}", term::GRAY, self.db_type.description());
         println!("{}", term::RESET);
         println!("{}快捷键:{}", term::YELLOW, term::RESET);
         println!("  {}Tab{}        补全 SQL 关键字/表名/列名", term::CYAN, term::RESET);
-        println!("  {}↑ ↓{}        浏览历史/选择补全", term::CYAN, term::RESET);
+        println!("  {}↑ ↓{}        浏览历史记录", term::CYAN, term::RESET);
         println!("  {}→{}          接受内联建议", term::CYAN, term::RESET);
         println!("  {}Ctrl+C{}     取消当前输入", term::CYAN, term::RESET);
         println!("  {}Ctrl+D{}     退出", term::CYAN, term::RESET);
@@ -477,7 +547,7 @@ impl SqlShell {
     }
     
     /// 处理特殊命令
-    fn handle_command(&mut self, line: &str) -> bool {
+    fn handle_command(&mut self, line: &str, rl: &mut Editor<SqlHelper, DefaultHistory>) -> bool {
         let lower = line.to_lowercase();
         
         if lower == ".help" || lower == "\\?" || lower == "help" {
@@ -517,13 +587,13 @@ impl SqlShell {
             } else {
                 &line[8..]
             };
-            self.reconnect(conn_str.trim());
+            self.reconnect(conn_str.trim(), rl);
             return true;
         }
         
         if lower == "\\c" || lower == ".connect" || lower == "connect" {
-            // 重新连接提示
             let _ = self.prompt_connect();
+            self.update_helper_schema(rl);
             return true;
         }
         
@@ -538,6 +608,23 @@ impl SqlShell {
         }
         
         false
+    }
+    
+    /// 更新 Helper 的 Schema 信息
+    fn update_helper_schema(&mut self, rl: &mut Editor<SqlHelper, DefaultHistory>) {
+        if self.connected {
+            if let Some(helper) = rl.helper_mut() {
+                if let Ok(tables) = self.connection.get_tables() {
+                    helper.set_tables(tables.clone());
+                    for table in &tables {
+                        if let Ok(columns) = self.connection.get_columns(table) {
+                            let col_names: Vec<String> = columns.iter().map(|c| c.name.clone()).collect();
+                            helper.set_columns(table, col_names);
+                        }
+                    }
+                }
+            }
+        }
     }
     
     /// 显示表结构
@@ -613,10 +700,11 @@ impl SqlShell {
     }
     
     /// 重新连接数据库
-    fn reconnect(&mut self, conn_str: &str) {
+    fn reconnect(&mut self, conn_str: &str, rl: &mut Editor<SqlHelper, DefaultHistory>) {
         match self.connect(conn_str) {
             Ok(()) => {
                 println!("\n{}✓ 已成功连接数据库{}\n", term::GREEN, term::RESET);
+                self.update_helper_schema(rl);
             }
             Err(e) => {
                 println!("\n{}✗ 连接失败: {}{}\n", term::RED, e, term::RESET);
@@ -628,7 +716,7 @@ impl SqlShell {
     fn show_status(&self) {
         println!();
         println!("{}连接状态:{}", term::YELLOW, term::RESET);
-        println!("  数据库类型: {}{}{}", term::CYAN, self.engine.db_type().name(), term::RESET);
+        println!("  数据库类型: {}{}{}", term::CYAN, self.db_type.name(), term::RESET);
         if self.connected {
             println!("  状态: {}已连接{}", term::GREEN, term::RESET);
         } else {
@@ -639,9 +727,8 @@ impl SqlShell {
     
     /// 打印帮助
     fn print_help(&self) {
-        let db_type = self.engine.db_type();
         println!();
-        println!("{}{} SQL 帮助{}", term::BOLD, db_type.name(), term::RESET);
+        println!("{}{} SQL 帮助{}", term::BOLD, self.db_type.name(), term::RESET);
         println!();
         println!("{}Shell 命令:{}", term::YELLOW, term::RESET);
         println!("  {}\\c, .connect{}      连接/重连数据库", term::CYAN, term::RESET);
@@ -660,9 +747,9 @@ impl SqlShell {
         println!("  {}CREATE TABLE{} table_name (col1 TYPE, col2 TYPE)", term::BLUE, term::RESET);
         println!();
         println!("{}补全功能:{}", term::YELLOW, term::RESET);
-        println!("  - 按 {}Tab{} 显示补全菜单", term::CYAN, term::RESET);
-        println!("{}  - 输入表名后自动补全列名{}", term::GRAY, term::RESET);
-        println!("{}  - 支持 表名.列名 格式{}", term::GRAY, term::RESET);
+        println!("  - 按 {}Tab{} 显示补全列表", term::CYAN, term::RESET);
+        println!("{}  - 输入时自动显示灰色建议{}", term::GRAY, term::RESET);
+        println!("{}  - 按右箭头接受建议{}", term::GRAY, term::RESET);
         println!();
     }
     
@@ -693,489 +780,6 @@ impl SqlShell {
             }
         }
         println!();
-        println!("{}提示:{} 实际连接数据库后，这里会显示真实的表列表", term::GRAY, term::RESET);
-        println!();
-        
-        // 添加示例表到引擎
-        // 这里只是演示，实际应该从数据库获取
-    }
-    
-    /// 显示 SQL（用于演示）
-    
-    /// 读取一行输入
-    fn read_line(&mut self) -> io::Result<Option<String>> {
-        let mut buffer = String::new();
-        let mut cursor = 0usize;
-        let mut suggestion = String::new();
-        let mut show_menu = false;
-        let mut menu_index = 0usize;
-        let mut menu_items: Vec<(String, String, SqlCompletionKind)> = Vec::new();
-        
-        self.print_prompt();
-        
-        loop {
-            stdout().flush()?;
-            
-            let key = self.read_key()?;
-            
-            match key {
-                Key::Char(c) => {
-                    // 如果有菜单，先关闭
-                    if show_menu {
-                        show_menu = false;
-                        menu_items.clear();
-                    }
-                    buffer.insert(cursor, c);
-                    cursor += 1;
-                    suggestion = self.get_suggestion(&buffer);
-                    self.redraw_input_line(&buffer, cursor, &suggestion);
-                }
-                Key::Backspace => {
-                    if cursor > 0 {
-                        if show_menu {
-                            show_menu = false;
-                            menu_items.clear();
-                        }
-                        cursor -= 1;
-                        buffer.remove(cursor);
-                        suggestion = self.get_suggestion(&buffer);
-                        self.hide_menu(&buffer, cursor, &suggestion);
-                    }
-                }
-                Key::Delete => {
-                    if cursor < buffer.len() {
-                        if show_menu {
-                            show_menu = false;
-                            menu_items.clear();
-                        }
-                        buffer.remove(cursor);
-                        suggestion = self.get_suggestion(&buffer);
-                        self.hide_menu(&buffer, cursor, &suggestion);
-                    }
-                }
-                Key::Left => {
-                    if cursor > 0 {
-                        cursor -= 1;
-                        if show_menu {
-                            self.show_menu(&buffer, cursor, &menu_items, menu_index);
-                        } else {
-                            self.redraw_input_line(&buffer, cursor, &suggestion);
-                        }
-                    }
-                }
-                Key::Right => {
-                    if !suggestion.is_empty() && !show_menu {
-                        // 接受建议
-                        buffer.push_str(&suggestion);
-                        cursor = buffer.len();
-                        suggestion.clear();
-                        self.redraw_input_line(&buffer, cursor, &suggestion);
-                    } else if cursor < buffer.len() {
-                        cursor += 1;
-                        if show_menu {
-                            self.show_menu(&buffer, cursor, &menu_items, menu_index);
-                        } else {
-                            self.redraw_input_line(&buffer, cursor, &suggestion);
-                        }
-                    }
-                }
-                Key::Tab => {
-                    if show_menu && !menu_items.is_empty() {
-                        // 第二次 Tab：接受选中的菜单项
-                        let (text, _, _) = &menu_items[menu_index];
-                        
-                        // 计算要替换的词
-                        let current_word = buffer.split_whitespace().last().unwrap_or("").to_string();
-                        let current_word_upper = current_word.to_uppercase();
-                        
-                        if text.to_uppercase().starts_with(&current_word_upper) {
-                            // 删除当前词
-                            for _ in 0..current_word.len() {
-                                if cursor > 0 {
-                                    cursor -= 1;
-                                    buffer.remove(cursor);
-                                }
-                            }
-                            
-                            // 根据用户的大小写风格调整补全文本
-                            let styled_text = if current_word.chars().all(|c| c.is_lowercase() || !c.is_alphabetic()) {
-                                text.to_lowercase()
-                            } else if current_word.chars().all(|c| c.is_uppercase() || !c.is_alphabetic()) {
-                                text.to_uppercase()
-                            } else {
-                                text.to_uppercase()
-                            };
-                            
-                            buffer.push_str(&styled_text);
-                            cursor = buffer.len();
-                        } else {
-                            buffer.push_str(text);
-                            cursor = buffer.len();
-                        }
-                        
-                        show_menu = false;
-                        menu_items.clear();
-                        suggestion = self.get_suggestion(&buffer);
-                        self.hide_menu(&buffer, cursor, &suggestion);
-                    } else {
-                        // 第一次 Tab：显示补全菜单
-                        let completions = self.engine.complete(&buffer, cursor);
-                        if !completions.is_empty() {
-                            menu_items = completions.iter()
-                                .take(10)
-                                .map(|c| (c.text.clone(), c.description.clone(), c.kind))
-                                .collect();
-                            menu_index = 0;
-                            show_menu = true;
-                            self.show_menu(&buffer, cursor, &menu_items, menu_index);
-                        }
-                    }
-                }
-                Key::Up => {
-                    if show_menu && !menu_items.is_empty() {
-                        // 菜单导航
-                        if menu_index > 0 {
-                            menu_index -= 1;
-                        } else {
-                            menu_index = menu_items.len() - 1;
-                        }
-                        self.show_menu(&buffer, cursor, &menu_items, menu_index);
-                    } else if self.history_index > 0 {
-                        // 历史导航
-                        self.history_index -= 1;
-                        buffer = self.history[self.history_index].clone();
-                        cursor = buffer.len();
-                        suggestion = self.get_suggestion(&buffer);
-                        self.redraw_input_line(&buffer, cursor, &suggestion);
-                    }
-                }
-                Key::Down => {
-                    if show_menu && !menu_items.is_empty() {
-                        // 菜单导航
-                        if menu_index < menu_items.len() - 1 {
-                            menu_index += 1;
-                        } else {
-                            menu_index = 0;
-                        }
-                        self.show_menu(&buffer, cursor, &menu_items, menu_index);
-                    } else if self.history_index < self.history.len() {
-                        // 历史导航
-                        self.history_index += 1;
-                        if self.history_index < self.history.len() {
-                            buffer = self.history[self.history_index].clone();
-                        } else {
-                            buffer.clear();
-                        }
-                        cursor = buffer.len();
-                        suggestion = self.get_suggestion(&buffer);
-                        self.redraw_input_line(&buffer, cursor, &suggestion);
-                    }
-                }
-                Key::Home => {
-                    cursor = 0;
-                    if show_menu {
-                        self.show_menu(&buffer, cursor, &menu_items, menu_index);
-                    } else {
-                        self.redraw_input_line(&buffer, cursor, &suggestion);
-                    }
-                }
-                Key::End => {
-                    cursor = buffer.len();
-                    if show_menu {
-                        self.show_menu(&buffer, cursor, &menu_items, menu_index);
-                    } else {
-                        self.redraw_input_line(&buffer, cursor, &suggestion);
-                    }
-                }
-                Key::Enter => {
-                    // 清除显示并执行
-                    print!("\r{}{}", term::CLEAR_LINE, term::CLEAR_BELOW);
-                    let _ = stdout().flush();
-                    println!();
-                    return Ok(Some(buffer));
-                }
-                Key::CtrlC => {
-                    show_menu = false;
-                    menu_items.clear();
-                    print!("\r{}{}", term::CLEAR_LINE, term::CLEAR_BELOW);
-                    println!("^C");
-                    buffer.clear();
-                    cursor = 0;
-                    suggestion.clear();
-                    self.print_prompt();
-                }
-                Key::CtrlD => {
-                    if buffer.is_empty() {
-                        return Ok(None);
-                    }
-                }
-                Key::Escape => {
-                    // 取消菜单
-                    if show_menu {
-                        show_menu = false;
-                        menu_items.clear();
-                        suggestion = self.get_suggestion(&buffer);
-                        self.hide_menu(&buffer, cursor, &suggestion);
-                    }
-                }
-                Key::CtrlU => {
-                    // 清除整行
-                    show_menu = false;
-                    menu_items.clear();
-                    buffer.clear();
-                    cursor = 0;
-                    suggestion.clear();
-                    self.hide_menu(&buffer, cursor, &suggestion);
-                }
-                Key::CtrlW => {
-                    // 删除前一个词
-                    show_menu = false;
-                    menu_items.clear();
-                    while cursor > 0 && buffer.chars().nth(cursor - 1) == Some(' ') {
-                        cursor -= 1;
-                        buffer.remove(cursor);
-                    }
-                    while cursor > 0 && buffer.chars().nth(cursor - 1) != Some(' ') {
-                        cursor -= 1;
-                        buffer.remove(cursor);
-                    }
-                    suggestion = self.get_suggestion(&buffer);
-                    self.hide_menu(&buffer, cursor, &suggestion);
-                }
-                _ => {}
-            }
-        }
-    }
-    
-    /// 打印提示符
-    fn print_prompt(&self) {
-        let db_type = self.engine.db_type();
-        print!("{}{}{}{} > {}", 
-            term::BOLD, db_type.color(), db_type.prompt(), term::RESET, term::RESET);
-        let _ = stdout().flush();
-    }
-    
-    /// 获取建议后缀
-    fn get_suggestion(&self, buffer: &str) -> String {
-        if buffer.is_empty() {
-            return String::new();
-        }
-        
-        if let Some(suffix) = self.engine.get_current_word_completion(buffer, buffer.len()) {
-            return suffix;
-        }
-        
-        String::new()
-    }
-    
-    /// 重绘当前行（无菜单版本）
-    fn redraw_input_line(&self, buffer: &str, cursor: usize, suggestion: &str) {
-        // 回到行首，清除当前行
-        print!("\r{}", term::CLEAR_LINE);
-        
-        // 打印提示符和输入
-        self.print_prompt();
-        print!("{}", buffer);
-        
-        // 显示内联建议
-        if !suggestion.is_empty() {
-            print!("{}{}{}", term::GRAY, suggestion, term::RESET);
-        }
-        
-        // 移动光标到正确位置
-        let prompt_len = self.get_prompt_len();
-        let cursor_pos = prompt_len + cursor + 1;
-        print!("\x1b[{}G", cursor_pos);
-        
-        let _ = stdout().flush();
-    }
-    
-    /// 显示菜单（在输入行下方）
-    fn show_menu(&self, buffer: &str, cursor: usize, items: &[(String, String, SqlCompletionKind)], selected: usize) {
-        // 先清除当前行及以下
-        print!("\r{}", term::CLEAR_LINE);
-        
-        // 打印提示符和输入
-        self.print_prompt();
-        print!("{}", buffer);
-        
-        // 清除下方并显示菜单
-        print!("{}", term::CLEAR_BELOW);
-        println!();
-        
-        for (i, (text, desc, kind)) in items.iter().enumerate() {
-            if i == selected {
-                println!("  {}> {}{:<20}{} {}{}{}", 
-                    term::BOLD, kind.color(), text, term::RESET, 
-                    term::GRAY, desc, term::RESET);
-            } else {
-                println!("    {}{:<20}{} {}{}{}", 
-                    kind.color(), text, term::RESET, 
-                    term::GRAY, desc, term::RESET);
-            }
-        }
-        print!("  {}[Tab=确认  ↑↓=选择  Esc=取消]{}", term::YELLOW, term::RESET);
-        
-        // 移动光标回到输入行
-        let menu_lines = items.len() + 1;
-        print!("\x1b[{}A", menu_lines);  // 向上移动 N 行
-        
-        // 移动光标到正确位置
-        let prompt_len = self.get_prompt_len();
-        let cursor_pos = prompt_len + cursor + 1;
-        print!("\x1b[{}G", cursor_pos);
-        
-        let _ = stdout().flush();
-    }
-    
-    /// 清除菜单区域
-    fn hide_menu(&self, buffer: &str, cursor: usize, suggestion: &str) {
-        // 回到行首
-        print!("\r{}", term::CLEAR_LINE);
-        
-        // 清除下方所有内容
-        print!("{}", term::CLEAR_BELOW);
-        
-        // 重绘输入行
-        self.print_prompt();
-        print!("{}", buffer);
-        
-        if !suggestion.is_empty() {
-            print!("{}{}{}", term::GRAY, suggestion, term::RESET);
-        }
-        
-        // 移动光标
-        let prompt_len = self.get_prompt_len();
-        let cursor_pos = prompt_len + cursor + 1;
-        print!("\x1b[{}G", cursor_pos);
-        
-        let _ = stdout().flush();
-    }
-    
-    fn get_prompt_len(&self) -> usize {
-        // "sqlite > " 等
-        self.engine.db_type().prompt().len() + 3
-    }
-    
-    /// 读取按键
-    #[cfg(unix)]
-    fn read_key(&self) -> io::Result<Key> {
-        let mut buf = [0u8; 8];
-        let n = stdin().read(&mut buf)?;
-        
-        if n == 0 {
-            return Ok(Key::CtrlD);
-        }
-        
-        match buf[0] {
-            3 => Ok(Key::CtrlC),
-            4 => Ok(Key::CtrlD),
-            9 => Ok(Key::Tab),
-            13 => Ok(Key::Enter),
-            21 => Ok(Key::CtrlU),
-            23 => Ok(Key::CtrlW),
-            27 => {
-                if n >= 3 && buf[1] == b'[' {
-                    match buf[2] {
-                        b'A' => Ok(Key::Up),
-                        b'B' => Ok(Key::Down),
-                        b'C' => Ok(Key::Right),
-                        b'D' => Ok(Key::Left),
-                        b'H' => Ok(Key::Home),
-                        b'F' => Ok(Key::End),
-                        b'3' if n >= 4 && buf[3] == b'~' => Ok(Key::Delete),
-                        _ => Ok(Key::Unknown),
-                    }
-                } else {
-                    Ok(Key::Escape)
-                }
-            }
-            127 => Ok(Key::Backspace),
-            c if c >= 32 && c < 127 => Ok(Key::Char(c as char)),
-            _ => Ok(Key::Unknown),
-        }
-    }
-    
-    #[cfg(windows)]
-    fn read_key(&self) -> io::Result<Key> {
-        let mut buf = [0u8; 1];
-        stdin().read_exact(&mut buf)?;
-        
-        match buf[0] {
-            3 => Ok(Key::CtrlC),
-            4 => Ok(Key::CtrlD),
-            9 => Ok(Key::Tab),
-            13 => Ok(Key::Enter),
-            8 | 127 => Ok(Key::Backspace),
-            27 => Ok(Key::Escape),
-            c if c >= 32 && c < 127 => Ok(Key::Char(c as char)),
-            _ => Ok(Key::Unknown),
-        }
-    }
-}
-
-/// 按键类型
-#[derive(Debug)]
-enum Key {
-    Char(char),
-    Tab,
-    Enter,
-    Backspace,
-    Delete,
-    Up,
-    Down,
-    Left,
-    Right,
-    Home,
-    End,
-    Escape,
-    CtrlC,
-    CtrlD,
-    CtrlU,
-    CtrlW,
-    Unknown,
-}
-
-/// Unix 终端原始模式
-#[cfg(unix)]
-struct RawMode {
-    original: libc::termios,
-}
-
-#[cfg(unix)]
-impl RawMode {
-    fn enable() -> io::Result<Self> {
-        use std::mem::MaybeUninit;
-        use std::os::unix::io::AsRawFd;
-        
-        let fd = stdin().as_raw_fd();
-        let mut termios = MaybeUninit::uninit();
-        
-        if unsafe { libc::tcgetattr(fd, termios.as_mut_ptr()) } != 0 {
-            return Err(io::Error::last_os_error());
-        }
-        
-        let original = unsafe { termios.assume_init() };
-        let mut raw = original;
-        
-        raw.c_lflag &= !(libc::ICANON | libc::ECHO);
-        raw.c_cc[libc::VMIN] = 1;
-        raw.c_cc[libc::VTIME] = 0;
-        
-        if unsafe { libc::tcsetattr(fd, libc::TCSANOW, &raw) } != 0 {
-            return Err(io::Error::last_os_error());
-        }
-        
-        Ok(RawMode { original })
-    }
-}
-
-#[cfg(unix)]
-impl Drop for RawMode {
-    fn drop(&mut self) {
-        use std::os::unix::io::AsRawFd;
-        let fd = stdin().as_raw_fd();
-        unsafe { libc::tcsetattr(fd, libc::TCSANOW, &self.original) };
     }
 }
 
@@ -1209,7 +813,5 @@ pub fn select_database() -> Option<DatabaseType> {
     
     let input = input.trim();
     
-    // 尝试解析
     DatabaseType::from_str(input)
 }
-
