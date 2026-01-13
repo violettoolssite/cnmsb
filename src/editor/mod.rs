@@ -246,10 +246,38 @@ impl Editor {
     
     /// Insert 模式字符处理
     fn handle_insert_char(&mut self, c: char) {
+        // 如果输入的是空格或标点，学习刚才输入的词
+        if c.is_whitespace() || c == '(' || c == ')' || c == '{' || c == '}' || 
+           c == '[' || c == ']' || c == ';' || c == ':' || c == ',' || c == '.' {
+            self.learn_current_word();
+        }
+        
         self.buffer.insert_char(self.cursor.row, self.cursor.col, c);
         self.cursor.col += 1;
         self.modified = true;
         self.current_suggestion = None;
+    }
+    
+    /// 学习当前光标前的词
+    fn learn_current_word(&mut self) {
+        let line = self.buffer.get_line(self.cursor.row);
+        if self.cursor.col == 0 || line.is_empty() {
+            return;
+        }
+        
+        let prefix = &line[..self.cursor.col.min(line.len())];
+        
+        // 找到当前词的开始位置
+        let word_start = prefix.rfind(|c: char| c.is_whitespace() || c == '(' || c == '{' || c == '[')
+            .map(|i| i + 1)
+            .unwrap_or(0);
+        
+        if word_start < prefix.len() {
+            let word = &prefix[word_start..];
+            if word.len() >= 2 {
+                self.completer.learn_word(word);
+            }
+        }
     }
     
     /// Command 模式字符处理
@@ -262,6 +290,9 @@ impl Editor {
     fn handle_enter(&mut self) {
         match self.mode {
             Mode::Insert => {
+                // 学习当前词
+                self.learn_current_word();
+                
                 self.buffer.insert_newline(self.cursor.row, self.cursor.col);
                 self.cursor.row += 1;
                 self.cursor.col = 0;
@@ -457,7 +488,10 @@ impl Editor {
             return;
         }
         
-        let prefix = &line[..self.cursor.col.min(line.len())];
+        let col = self.cursor.col.min(line.len());
+        
+        // 处理 UTF-8：确保在字符边界上切片
+        let prefix: String = line.chars().take(col).collect();
         
         // 找到当前正在输入的词
         let word_start = prefix.rfind(|c: char| c.is_whitespace() || c == '(' || c == '{' || c == '[' || c == '"' || c == '\'')
@@ -470,7 +504,9 @@ impl Editor {
         }
         
         let current_word = &prefix[word_start..];
-        if current_word.len() < 2 {
+        
+        // 只需要 1 个字符就开始建议
+        if current_word.is_empty() {
             self.current_suggestion = None;
             return;
         }

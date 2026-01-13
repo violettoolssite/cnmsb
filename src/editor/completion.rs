@@ -87,21 +87,53 @@ pub struct Completer {
     file_trie: Trie,
     /// 全局 Trie
     global_trie: Trie,
+    /// 实时学习的词
+    learned_words: HashMap<String, usize>,
 }
 
+/// 常用编程关键词和 shell 命令
+const COMMON_WORDS: &[&str] = &[
+    // Shell 命令
+    "export", "echo", "sudo", "chmod", "chown", "mkdir", "touch", "cat", "grep", "find",
+    "ls", "cd", "pwd", "rm", "cp", "mv", "head", "tail", "less", "more", "vim", "nano",
+    "apt", "yum", "dnf", "pacman", "brew", "pip", "npm", "cargo", "git", "docker",
+    "curl", "wget", "ssh", "scp", "rsync", "tar", "zip", "unzip", "gzip", "gunzip",
+    "ps", "top", "htop", "kill", "killall", "systemctl", "service", "journalctl",
+    // 编程关键词
+    "function", "return", "if", "else", "elif", "then", "fi", "for", "while", "do", "done",
+    "case", "esac", "in", "break", "continue", "exit", "source", "alias", "unalias",
+    "let", "const", "var", "class", "struct", "enum", "impl", "trait", "pub", "mod",
+    "use", "import", "from", "as", "async", "await", "try", "catch", "finally", "throw",
+    "true", "false", "null", "nil", "None", "self", "this", "super", "new", "delete",
+    // 常用变量名
+    "PATH", "HOME", "USER", "SHELL", "PWD", "TERM", "LANG", "LC_ALL", "EDITOR",
+    "config", "settings", "options", "params", "args", "data", "result", "output", "input",
+    "name", "value", "key", "index", "count", "size", "length", "width", "height",
+    "start", "end", "begin", "finish", "init", "setup", "cleanup", "handle", "process",
+    "read", "write", "open", "close", "create", "delete", "update", "insert", "select",
+    "error", "warning", "info", "debug", "log", "print", "println", "printf", "sprintf",
+];
+
 impl Completer {
-    /// 创建补全器
+    /// 创建补全器（预装常用词）
     pub fn new() -> Self {
-        Self {
+        let mut completer = Self {
             file_trie: Trie::new(),
             global_trie: Trie::new(),
+            learned_words: HashMap::new(),
+        };
+        
+        // 预装常用词到全局 Trie
+        for word in COMMON_WORDS {
+            completer.global_trie.insert(word, 5);
         }
+        
+        completer
     }
     
     /// 从缓冲区和历史构建补全数据
     pub fn build_from_buffer(&mut self, buffer: &Buffer, history: &HistoryManager) {
         self.file_trie = Trie::new();
-        self.global_trie = Trie::new();
         
         // 从当前缓冲区构建
         for word in buffer.all_words() {
@@ -117,24 +149,44 @@ impl Completer {
         for (word, freq) in history.get_global_words() {
             self.global_trie.insert(&word, freq);
         }
+        
+        // 加入已学习的词
+        for (word, freq) in &self.learned_words {
+            self.file_trie.insert(word, *freq + 15);
+        }
+    }
+    
+    /// 实时学习新词
+    pub fn learn_word(&mut self, word: &str) {
+        if word.len() >= 2 {
+            let word_lower = word.to_lowercase();
+            let freq = self.learned_words.entry(word_lower.clone()).or_insert(0);
+            *freq += 1;
+            // 同时添加到 Trie
+            self.file_trie.insert(&word_lower, *freq + 15);
+        }
     }
     
     /// 获取补全建议
     pub fn get_suggestion(&self, prefix: &str) -> Option<String> {
-        if prefix.len() < 2 {
+        if prefix.len() < 1 {
             return None;
         }
         
         let prefix_lower = prefix.to_lowercase();
         
-        // 优先从文件 Trie 查找
+        // 优先从文件 Trie 查找（已学习的词优先级最高）
         let file_matches = self.file_trie.find_with_prefix(&prefix_lower);
         
-        // 查找完全匹配前缀的建议（大小写不敏感）
         for (word, _) in &file_matches {
-            if word.to_lowercase().starts_with(&prefix_lower) && word.len() > prefix.len() {
-                // 返回需要补全的部分
-                return Some(word[prefix.len()..].to_string());
+            // 跳过完全相同的词
+            if word == &prefix_lower {
+                continue;
+            }
+            if word.starts_with(&prefix_lower) {
+                // 返回需要补全的部分，保持原始大小写风格
+                let suffix = &word[prefix.len()..];
+                return Some(suffix.to_string());
             }
         }
         
@@ -142,8 +194,13 @@ impl Completer {
         let global_matches = self.global_trie.find_with_prefix(&prefix_lower);
         
         for (word, _) in &global_matches {
-            if word.to_lowercase().starts_with(&prefix_lower) && word.len() > prefix.len() {
-                return Some(word[prefix.len()..].to_string());
+            // 跳过完全相同的词
+            if word == &prefix_lower {
+                continue;
+            }
+            if word.starts_with(&prefix_lower) {
+                let suffix = &word[prefix.len()..];
+                return Some(suffix.to_string());
             }
         }
         
