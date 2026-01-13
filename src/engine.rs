@@ -98,12 +98,29 @@ impl CompletionEngine {
             // 1. 参数/选项补全（优先）
             completions.extend(self.args_completer.complete(&parsed));
 
-            // 2. 如果当前词看起来像路径，补全文件
-            if parsed.current_word.is_empty() 
-                || parsed.current_word.starts_with('/')
-                || parsed.current_word.starts_with('.')
-                || parsed.current_word.starts_with('~')
-                || !parsed.current_word.starts_with('-') {
+            // 2. 检查是否有子命令补全
+            let has_subcommand_completion = completions.iter().any(|c| matches!(c.kind, CompletionKind::Subcommand));
+            
+            // 3. 文件补全：只在以下情况显示
+            //    - 没有子命令补全，或者
+            //    - 用户明确输入了路径（以 /、.、~ 开头或包含 /），或者
+            //    - 已经在子命令之后（current_word_index > 1 或已有 subcommand）
+            let should_complete_files = if has_subcommand_completion {
+                // 如果有子命令补全，只在用户明确输入路径时才补全文件
+                parsed.current_word.starts_with('/')
+                    || parsed.current_word.starts_with('.')
+                    || parsed.current_word.starts_with('~')
+                    || parsed.current_word.contains('/')
+            } else {
+                // 没有子命令补全，正常补全文件
+                parsed.current_word.is_empty() 
+                    || parsed.current_word.starts_with('/')
+                    || parsed.current_word.starts_with('.')
+                    || parsed.current_word.starts_with('~')
+                    || (!parsed.current_word.starts_with('-') && (parsed.current_word_index > 1 || parsed.subcommand.is_some()))
+            };
+            
+            if should_complete_files {
                 completions.extend(self.file_completer.complete(&parsed.current_word));
             }
             

@@ -315,14 +315,19 @@ impl ArgsCompleter {
         if parsed.subcommand.is_none() && 
            (parsed.current_word_index == 1 || parsed.current_word.is_empty()) {
             if let Some(subcommands) = self.database.get_subcommands(&parsed.command) {
+                let current_lower = parsed.current_word.to_lowercase();
                 for (sub_name, sub_desc) in subcommands {
-                    completions.push(Completion {
-                        text: sub_name,
-                        description: sub_desc,
-                        score: 95,
-                        kind: CompletionKind::Subcommand,
-                        match_indices: Vec::new(),
-                    });
+                    // 只添加匹配的子命令（前缀匹配或空输入）
+                    if parsed.current_word.is_empty() || 
+                       sub_name.to_lowercase().starts_with(&current_lower) {
+                        completions.push(Completion {
+                            text: sub_name,
+                            description: sub_desc,
+                            score: 200, // 提高子命令的优先级
+                            kind: CompletionKind::Subcommand,
+                            match_indices: Vec::new(),
+                        });
+                    }
                 }
             }
         } 
@@ -331,14 +336,19 @@ impl ArgsCompleter {
             if parsed.current_word_index == 2 || 
                (parsed.current_word_index > 1 && !parsed.current_word.starts_with('-')) {
                 if let Some(sub_def) = self.database.get_subcommand(&parsed.command, sub) {
+                    let current_lower = parsed.current_word.to_lowercase();
                     for (sub_name, nested_def) in &sub_def.subcommands {
-                        completions.push(Completion {
-                            text: sub_name.clone(),
-                            description: nested_def.description.clone(),
-                            score: 95,
-                            kind: CompletionKind::Subcommand,
-                            match_indices: Vec::new(),
-                        });
+                        // 只添加匹配的子命令
+                        if parsed.current_word.is_empty() || 
+                           sub_name.to_lowercase().starts_with(&current_lower) {
+                            completions.push(Completion {
+                                text: sub_name.clone(),
+                                description: nested_def.description.clone(),
+                                score: 200, // 提高子命令的优先级
+                                kind: CompletionKind::Subcommand,
+                                match_indices: Vec::new(),
+                            });
+                        }
                     }
                 }
             }

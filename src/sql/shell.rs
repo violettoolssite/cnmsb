@@ -218,10 +218,11 @@ impl SqlShell {
                         continue;
                     }
                     
-                    // 检查退出命令
-                    if line.eq_ignore_ascii_case("exit") || 
-                       line.eq_ignore_ascii_case("quit") ||
-                       line.eq_ignore_ascii_case("\\q") {
+                    // 检查退出命令（去掉分号）
+                    let line_no_semicolon = line.trim_end_matches(';').trim();
+                    if line_no_semicolon.eq_ignore_ascii_case("exit") || 
+                       line_no_semicolon.eq_ignore_ascii_case("quit") ||
+                       line_no_semicolon.eq_ignore_ascii_case("\\q") {
                         println!("再见！");
                         break;
                     }

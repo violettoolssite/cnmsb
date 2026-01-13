@@ -94,14 +94,38 @@ impl DbConnection {
         
         mysql::Pool::new(url.as_str())
             .map(DbConnection::MySQL)
-            .map_err(|e| DbError::Connection(e.to_string()))
+            .map_err(|e| {
+                let err_msg = e.to_string();
+                // 改进常见错误的提示信息
+                if err_msg.contains("ERROR 1698") || err_msg.contains("Access denied") {
+                    if user == "root" && password.is_empty() {
+                        DbError::Connection(format!("{} (提示: MySQL 8.0+ 的 root 用户可能使用 auth_socket 认证。请尝试: 1) 使用其他用户连接 2) 设置 root 密码: ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_password'; 3) 或使用 sudo mysql 登录)", err_msg))
+                    } else {
+                        DbError::Connection(format!("{} (提示: 请检查用户名、密码是否正确，或用户是否有远程连接权限)", err_msg))
+                    }
+                } else if err_msg.contains("Can't connect") {
+                    DbError::Connection(format!("{} (提示: 请检查 MySQL 服务是否运行，主机和端口是否正确)", err_msg))
+                } else {
+                    DbError::Connection(err_msg)
+                }
+            })
     }
     
     /// 从连接字符串连接 MySQL
     pub fn connect_mysql_url(url: &str) -> Result<Self, DbError> {
         mysql::Pool::new(url)
             .map(DbConnection::MySQL)
-            .map_err(|e| DbError::Connection(e.to_string()))
+            .map_err(|e| {
+                let err_msg = e.to_string();
+                // 改进常见错误的提示信息
+                if err_msg.contains("ERROR 1698") || err_msg.contains("Access denied") {
+                    DbError::Connection(format!("{} (提示: MySQL 8.0+ 的 root 用户可能使用 auth_socket 认证。请尝试: 1) 使用其他用户连接 2) 设置 root 密码 3) 或使用 sudo mysql 登录)", err_msg))
+                } else if err_msg.contains("Can't connect") {
+                    DbError::Connection(format!("{} (提示: 请检查 MySQL 服务是否运行，主机和端口是否正确)", err_msg))
+                } else {
+                    DbError::Connection(err_msg)
+                }
+            })
     }
     
     /// 连接 PostgreSQL 数据库

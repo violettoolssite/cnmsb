@@ -64,23 +64,49 @@ impl CommandParser {
             (String::new(), vec![])
         };
 
-        let command = words_before.first().map(|s| s.to_string()).unwrap_or_default();
+        // 识别前缀命令（如 sudo, time, env, nice 等）
+        // 这些命令后面跟的是实际要执行的命令
+        let prefix_commands = ["sudo", "time", "env", "nice", "nohup", "strace", "gdb", "valgrind"];
+        
+        // 找到实际命令（跳过前缀命令）
+        let (command, command_index) = if let Some(first) = words_before.first() {
+            if prefix_commands.contains(first) && words_before.len() > 1 {
+                // 如果第一个词是前缀命令，使用第二个词作为实际命令
+                (words_before[1].to_string(), 1)
+            } else {
+                (first.to_string(), 0)
+            }
+        } else {
+            (String::new(), 0)
+        };
         
         // 检测子命令（对于 git, docker 等多级命令）
-        let subcommand = if self.has_subcommands(&command) && words_before.len() > 1 {
-            let potential_sub = words_before.get(1).map(|s| s.to_string());
-            // 只有不以 - 开头的才算子命令
-            potential_sub.filter(|s| !s.starts_with('-'))
+        // 子命令位置 = command_index + 1（在 words_before 中）
+        let subcommand = if self.has_subcommands(&command) {
+            // 检查 words_before 中是否有子命令（在命令之后）
+            if words_before.len() > command_index + 1 {
+                let potential_sub = words_before.get(command_index + 1).map(|s| s.to_string());
+                // 只有不以 - 开头的才算子命令
+                potential_sub.filter(|s| !s.starts_with('-'))
+            } else if !ends_with_space && !current_word.is_empty() && !current_word.starts_with('-') {
+                // 如果当前词可能是子命令（不在 words_before 中，但在 current_word 中）
+                // 这种情况不需要设置 subcommand，因为还在输入中
+                None
+            } else {
+                None
+            }
         } else {
             None
         };
 
-        let args: Vec<String> = words_before.iter().skip(1).map(|s| s.to_string()).collect();
+        // 参数从实际命令之后开始
+        let args: Vec<String> = words_before.iter().skip(command_index + 1).map(|s| s.to_string()).collect();
         
+        // 计算当前词相对于实际命令的索引
         let current_word_index = if ends_with_space {
-            words.len()
+            words.len().saturating_sub(command_index)
         } else {
-            words.len().saturating_sub(1)
+            words.len().saturating_sub(1).saturating_sub(command_index)
         };
 
         let is_option = current_word.starts_with('-');
