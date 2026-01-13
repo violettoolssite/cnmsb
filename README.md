@@ -164,6 +164,21 @@ curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/install-u
 
 装完重新登录就能用了。
 
+### Debian/Ubuntu 用 deb 包安装
+
+如果你是 Debian、Ubuntu、Mint 这些系统，可以直接用 deb 包，更快：
+
+```bash
+# 下载 deb 包
+wget https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
+
+# 安装
+sudo dpkg -i cnmsb_0.1.0_amd64.deb
+
+# 如果有依赖问题
+sudo apt-get install -f
+```
+
 ### 手动安装
 
 如果你他妈不信任一键脚本（我理解），可以手动装：

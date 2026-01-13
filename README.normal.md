@@ -151,6 +151,21 @@ curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/install-u
 
 安装完成后重新登录即可使用。
 
+### Debian/Ubuntu 使用 deb 包安装
+
+适用于 Debian、Ubuntu、Linux Mint 等 Debian 系发行版：
+
+```bash
+# 下载 deb 包
+wget https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
+
+# 安装
+sudo dpkg -i cnmsb_0.1.0_amd64.deb
+
+# 解决依赖（如有）
+sudo apt-get install -f
+```
+
 ### 手动安装
 
 ```bash
