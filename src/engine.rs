@@ -87,8 +87,28 @@ impl CompletionEngine {
         let parsed = self.parser.parse(line, cursor);
         let mut completions = Vec::new();
 
-        // 如果还没输入命令，补全命令名和历史命令
-        if parsed.current_word_index == 0 {
+        // 检查是否是命令补全位置
+        // 1. 第一个词位置 (current_word_index == 0)
+        // 2. 前缀命令后的第一个词位置 (如 "sudo ap" 中的 "ap")
+        let words: Vec<&str> = line[..cursor.min(line.len())].split_whitespace().collect();
+        let prefix_commands = ["sudo", "time", "env", "nice", "nohup", "strace", "gdb", "valgrind"];
+        
+        let is_command_position = if words.is_empty() {
+            true  // 空输入，补全命令
+        } else if words.len() == 1 {
+            // 只有一个词，检查是否是前缀命令
+            let first = words[0];
+            prefix_commands.contains(&first) || parsed.current_word_index == 0
+        } else if words.len() == 2 {
+            // 两个词，检查第一个是否是前缀命令，第二个是否是命令位置
+            let first = words[0];
+            prefix_commands.contains(&first) && parsed.current_word_index == 1
+        } else {
+            parsed.current_word_index == 0
+        };
+
+        // 如果还没输入命令，或在前缀命令后补全命令，补全命令名和历史命令
+        if is_command_position {
             completions.extend(self.command_completer.complete(&parsed.current_word));
             // 只在命令位置显示历史命令
             completions.extend(self.history_completer.complete(&parsed.current_word));
