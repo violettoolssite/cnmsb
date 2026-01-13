@@ -62,14 +62,16 @@ impl InputHandler {
     
     /// 映射按键事件
     fn map_key_event(&self, key: KeyEvent) -> EditorEvent {
-        // 处理 Ctrl 组合键
-        if key.modifiers.contains(KeyModifiers::CONTROL) {
+        // 处理 Ctrl 组合键（但不包括 Ctrl+Shift 等组合）
+        if key.modifiers.contains(KeyModifiers::CONTROL) && 
+           !key.modifiers.contains(KeyModifiers::SHIFT) {
             if let KeyCode::Char(c) = key.code {
                 return EditorEvent::Ctrl(c);
             }
         }
         
         match key.code {
+            // 正常处理字符（包括 Shift 修饰的字符如 ! @ # 等）
             KeyCode::Char(c) => EditorEvent::Char(c),
             KeyCode::Enter => EditorEvent::Enter,
             KeyCode::Backspace => EditorEvent::Backspace,

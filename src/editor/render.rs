@@ -253,45 +253,61 @@ impl Renderer {
     
     /// 渲染欢迎屏幕
     fn render_welcome_screen(&self, writer: &mut impl Write, text_height: usize) -> io::Result<()> {
-        // 欢迎屏幕内容定义
-        struct WelcomeLine {
-            text: &'static str,
-            color: (u8, u8, u8),
+        // 颜色定义
+        let cyan = Color::Rgb { r: 100, g: 180, b: 200 };
+        let yellow = Color::Rgb { r: 200, g: 180, b: 100 };
+        let gray = Color::Rgb { r: 100, g: 100, b: 110 };
+        let dim = Color::Rgb { r: 90, g: 90, b: 100 };
+        let key_color = Color::Rgb { r: 140, g: 140, b: 160 };
+        let green = Color::Rgb { r: 100, g: 180, b: 120 };
+        
+        // 计算内容区域宽度（用于居中）
+        let content_width = 32;
+        let available_width = (self.width as usize).saturating_sub(5);
+        let left_padding = if available_width > content_width {
+            (available_width - content_width) / 2
+        } else {
+            0
+        };
+        
+        // 定义欢迎内容（行号，内容类型）
+        enum LineType {
+            Empty,
+            Logo(&'static str),
+            Title(&'static str),
+            Separator,
+            Shortcut(&'static str, &'static str), // key, description
+            Usage(&'static str),
         }
         
-        let cyan = (100, 180, 200);
-        let yellow = (200, 180, 100);
-        let gray = (120, 120, 130);
-        let dim = (80, 80, 90);
-        let green = (100, 180, 120);
-        
-        let welcome_content: Vec<WelcomeLine> = vec![
-            WelcomeLine { text: "", color: dim },
-            WelcomeLine { text: "█▀▀ █▄░█ ▀█▀ █▀▄▀█ █▀▄", color: cyan },
-            WelcomeLine { text: "█▄▄ █░▀█ ░█░ █░▀░█ █▄▀", color: cyan },
-            WelcomeLine { text: "", color: dim },
-            WelcomeLine { text: "操你他妈的编辑器  v0.1.0", color: yellow },
-            WelcomeLine { text: "", color: dim },
-            WelcomeLine { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", color: gray },
-            WelcomeLine { text: "", color: dim },
-            WelcomeLine { text: "i         进入插入模式", color: dim },
-            WelcomeLine { text: "Esc       返回普通模式", color: dim },
-            WelcomeLine { text: ":w        保存文件", color: dim },
-            WelcomeLine { text: ":q        退出", color: dim },
-            WelcomeLine { text: ":wq       保存并退出", color: dim },
-            WelcomeLine { text: "", color: dim },
-            WelcomeLine { text: "Tab / →   接受补全", color: dim },
-            WelcomeLine { text: "h j k l   移动光标", color: dim },
-            WelcomeLine { text: "", color: dim },
-            WelcomeLine { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", color: gray },
-            WelcomeLine { text: "", color: dim },
-            WelcomeLine { text: "使用: cntmd <文件>", color: green },
-            WelcomeLine { text: "", color: dim },
+        let content = vec![
+            LineType::Empty,
+            LineType::Logo("█▀▀ █▄░█ ▀█▀ █▀▄▀█ █▀▄"),
+            LineType::Logo("█▄▄ █░▀█ ░█░ █░▀░█ █▄▀"),
+            LineType::Empty,
+            LineType::Title("操你他妈的编辑器 v0.1.0"),
+            LineType::Empty,
+            LineType::Separator,
+            LineType::Empty,
+            LineType::Shortcut("i", "进入插入模式"),
+            LineType::Shortcut("Esc", "返回普通模式"),
+            LineType::Shortcut(":w", "保存文件"),
+            LineType::Shortcut(":q", "退出"),
+            LineType::Shortcut(":q!", "强制退出"),
+            LineType::Shortcut(":wq", "保存并退出"),
+            LineType::Empty,
+            LineType::Shortcut("Tab/→", "接受补全"),
+            LineType::Shortcut("hjkl", "移动光标"),
+            LineType::Empty,
+            LineType::Separator,
+            LineType::Empty,
+            LineType::Usage("cntmd <文件>"),
+            LineType::Empty,
         ];
         
         // 计算垂直居中的起始行
-        let start_row = if text_height > welcome_content.len() {
-            (text_height - welcome_content.len()) / 2
+        let start_row = if text_height > content.len() {
+            (text_height - content.len()) / 2
         } else {
             0
         };
@@ -305,30 +321,33 @@ impl Renderer {
             
             // 欢迎内容
             let content_idx = i.saturating_sub(start_row);
-            if i >= start_row && content_idx < welcome_content.len() {
-                let line = &welcome_content[content_idx];
-                
-                // 计算显示宽度（处理中文字符）
-                let display_width = line.text.chars().map(|c| {
-                    if c.is_ascii() { 1 } else { 2 }
-                }).sum::<usize>();
-                
-                // 计算水平居中填充
-                let available_width = (self.width as usize).saturating_sub(5);
-                let padding = if available_width > display_width {
-                    (available_width - display_width) / 2
-                } else {
-                    0
-                };
-                
-                // 设置颜色
-                queue!(writer, SetForegroundColor(Color::Rgb { 
-                    r: line.color.0, 
-                    g: line.color.1, 
-                    b: line.color.2 
-                }))?;
-                
-                write!(writer, "{:padding$}{}", "", line.text, padding = padding)?;
+            if i >= start_row && content_idx < content.len() {
+                match &content[content_idx] {
+                    LineType::Empty => {}
+                    LineType::Logo(text) => {
+                        queue!(writer, SetForegroundColor(cyan))?;
+                        write!(writer, "{:padding$}{}", "", text, padding = left_padding)?;
+                    }
+                    LineType::Title(text) => {
+                        queue!(writer, SetForegroundColor(yellow))?;
+                        write!(writer, "{:padding$}{}", "", text, padding = left_padding)?;
+                    }
+                    LineType::Separator => {
+                        queue!(writer, SetForegroundColor(gray))?;
+                        write!(writer, "{:padding$}{}", "", "━".repeat(content_width), padding = left_padding)?;
+                    }
+                    LineType::Shortcut(key, desc) => {
+                        // 快捷键左对齐，固定宽度
+                        queue!(writer, SetForegroundColor(key_color))?;
+                        write!(writer, "{:padding$}{:<8}", "", key, padding = left_padding)?;
+                        queue!(writer, SetForegroundColor(dim))?;
+                        write!(writer, "{}", desc)?;
+                    }
+                    LineType::Usage(text) => {
+                        queue!(writer, SetForegroundColor(green))?;
+                        write!(writer, "{:padding$}使用: {}", "", text, padding = left_padding)?;
+                    }
+                }
             }
             
             queue!(writer, ResetColor)?;
