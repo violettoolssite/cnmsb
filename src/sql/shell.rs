@@ -720,53 +720,69 @@ impl SqlShell {
             
             match key {
                 Key::Char(c) => {
+                    // 如果有菜单，先关闭
+                    if show_menu {
+                        show_menu = false;
+                        menu_items.clear();
+                    }
                     buffer.insert(cursor, c);
                     cursor += 1;
                     suggestion = self.get_suggestion(&buffer);
-                    show_menu = false;
-                    self.redraw_line(&buffer, cursor, &suggestion, None);
+                    self.redraw_input_line(&buffer, cursor, &suggestion);
                 }
                 Key::Backspace => {
                     if cursor > 0 {
+                        if show_menu {
+                            show_menu = false;
+                            menu_items.clear();
+                        }
                         cursor -= 1;
                         buffer.remove(cursor);
                         suggestion = self.get_suggestion(&buffer);
-                        show_menu = false;
-                        self.redraw_line(&buffer, cursor, &suggestion, None);
+                        self.hide_menu(&buffer, cursor, &suggestion);
                     }
                 }
                 Key::Delete => {
                     if cursor < buffer.len() {
+                        if show_menu {
+                            show_menu = false;
+                            menu_items.clear();
+                        }
                         buffer.remove(cursor);
                         suggestion = self.get_suggestion(&buffer);
-                        show_menu = false;
-                        self.redraw_line(&buffer, cursor, &suggestion, None);
+                        self.hide_menu(&buffer, cursor, &suggestion);
                     }
                 }
                 Key::Left => {
                     if cursor > 0 {
                         cursor -= 1;
-                        self.redraw_line(&buffer, cursor, &suggestion, if show_menu { Some((&menu_items, menu_index)) } else { None });
+                        if show_menu {
+                            self.show_menu(&buffer, cursor, &menu_items, menu_index);
+                        } else {
+                            self.redraw_input_line(&buffer, cursor, &suggestion);
+                        }
                     }
                 }
                 Key::Right => {
-                    if !suggestion.is_empty() {
+                    if !suggestion.is_empty() && !show_menu {
                         // 接受建议
                         buffer.push_str(&suggestion);
                         cursor = buffer.len();
                         suggestion.clear();
-                        show_menu = false;
-                        self.redraw_line(&buffer, cursor, &suggestion, None);
+                        self.redraw_input_line(&buffer, cursor, &suggestion);
                     } else if cursor < buffer.len() {
                         cursor += 1;
-                        self.redraw_line(&buffer, cursor, &suggestion, if show_menu { Some((&menu_items, menu_index)) } else { None });
+                        if show_menu {
+                            self.show_menu(&buffer, cursor, &menu_items, menu_index);
+                        } else {
+                            self.redraw_input_line(&buffer, cursor, &suggestion);
+                        }
                     }
                 }
                 Key::Tab => {
                     if show_menu && !menu_items.is_empty() {
                         // 第二次 Tab：接受选中的菜单项
                         let (text, _, _) = &menu_items[menu_index];
-                        let old_menu_len = menu_items.len();
                         
                         // 计算要替换的词
                         let current_word = buffer.split_whitespace().last().unwrap_or("").to_string();
@@ -787,7 +803,6 @@ impl SqlShell {
                             } else if current_word.chars().all(|c| c.is_uppercase() || !c.is_alphabetic()) {
                                 text.to_uppercase()
                             } else {
-                                // 混合大小写，默认大写
                                 text.to_uppercase()
                             };
                             
@@ -798,16 +813,10 @@ impl SqlShell {
                             cursor = buffer.len();
                         }
                         
-                        // 先清除菜单区域
-                        self.clear_menu(old_menu_len);
-                        
-                        suggestion.clear();
                         show_menu = false;
                         menu_items.clear();
-                        
-                        // 补全后获取新的建议
                         suggestion = self.get_suggestion(&buffer);
-                        self.redraw_line(&buffer, cursor, &suggestion, None);
+                        self.hide_menu(&buffer, cursor, &suggestion);
                     } else {
                         // 第一次 Tab：显示补全菜单
                         let completions = self.engine.complete(&buffer, cursor);
@@ -818,7 +827,7 @@ impl SqlShell {
                                 .collect();
                             menu_index = 0;
                             show_menu = true;
-                            self.redraw_line(&buffer, cursor, "", Some((&menu_items, menu_index)));
+                            self.show_menu(&buffer, cursor, &menu_items, menu_index);
                         }
                     }
                 }
@@ -830,14 +839,14 @@ impl SqlShell {
                         } else {
                             menu_index = menu_items.len() - 1;
                         }
-                        self.redraw_line(&buffer, cursor, &suggestion, Some((&menu_items, menu_index)));
+                        self.show_menu(&buffer, cursor, &menu_items, menu_index);
                     } else if self.history_index > 0 {
                         // 历史导航
                         self.history_index -= 1;
                         buffer = self.history[self.history_index].clone();
                         cursor = buffer.len();
                         suggestion = self.get_suggestion(&buffer);
-                        self.redraw_line(&buffer, cursor, &suggestion, None);
+                        self.redraw_input_line(&buffer, cursor, &suggestion);
                     }
                 }
                 Key::Down => {
@@ -848,7 +857,7 @@ impl SqlShell {
                         } else {
                             menu_index = 0;
                         }
-                        self.redraw_line(&buffer, cursor, &suggestion, Some((&menu_items, menu_index)));
+                        self.show_menu(&buffer, cursor, &menu_items, menu_index);
                     } else if self.history_index < self.history.len() {
                         // 历史导航
                         self.history_index += 1;
@@ -859,39 +868,40 @@ impl SqlShell {
                         }
                         cursor = buffer.len();
                         suggestion = self.get_suggestion(&buffer);
-                        self.redraw_line(&buffer, cursor, &suggestion, None);
+                        self.redraw_input_line(&buffer, cursor, &suggestion);
                     }
                 }
                 Key::Home => {
                     cursor = 0;
-                    self.redraw_line(&buffer, cursor, &suggestion, if show_menu { Some((&menu_items, menu_index)) } else { None });
+                    if show_menu {
+                        self.show_menu(&buffer, cursor, &menu_items, menu_index);
+                    } else {
+                        self.redraw_input_line(&buffer, cursor, &suggestion);
+                    }
                 }
                 Key::End => {
                     cursor = buffer.len();
-                    self.redraw_line(&buffer, cursor, &suggestion, if show_menu { Some((&menu_items, menu_index)) } else { None });
+                    if show_menu {
+                        self.show_menu(&buffer, cursor, &menu_items, menu_index);
+                    } else {
+                        self.redraw_input_line(&buffer, cursor, &suggestion);
+                    }
                 }
                 Key::Enter => {
-                    // 先清除菜单区域
-                    if show_menu && !menu_items.is_empty() {
-                        self.clear_menu(menu_items.len());
-                    }
-                    // 清除菜单和建议显示
-                    print!("{}", term::CLEAR_BELOW);
+                    // 清除显示并执行
+                    print!("\r{}{}", term::CLEAR_LINE, term::CLEAR_BELOW);
                     let _ = stdout().flush();
                     println!();
                     return Ok(Some(buffer));
                 }
                 Key::CtrlC => {
-                    if show_menu {
-                        self.clear_menu(menu_items.len());
-                        menu_items.clear();
-                    }
-                    print!("{}", term::CLEAR_BELOW);
+                    show_menu = false;
+                    menu_items.clear();
+                    print!("\r{}{}", term::CLEAR_LINE, term::CLEAR_BELOW);
                     println!("^C");
                     buffer.clear();
                     cursor = 0;
                     suggestion.clear();
-                    show_menu = false;
                     self.print_prompt();
                 }
                 Key::CtrlD => {
@@ -902,30 +912,25 @@ impl SqlShell {
                 Key::Escape => {
                     // 取消菜单
                     if show_menu {
-                        let old_menu_len = menu_items.len();
-                        self.clear_menu(old_menu_len);
                         show_menu = false;
                         menu_items.clear();
                         suggestion = self.get_suggestion(&buffer);
-                        self.redraw_line(&buffer, cursor, &suggestion, None);
+                        self.hide_menu(&buffer, cursor, &suggestion);
                     }
                 }
                 Key::CtrlU => {
-                    if show_menu {
-                        self.clear_menu(menu_items.len());
-                    }
+                    // 清除整行
+                    show_menu = false;
+                    menu_items.clear();
                     buffer.clear();
                     cursor = 0;
                     suggestion.clear();
-                    show_menu = false;
-                    self.redraw_line(&buffer, cursor, &suggestion, None);
+                    self.hide_menu(&buffer, cursor, &suggestion);
                 }
                 Key::CtrlW => {
                     // 删除前一个词
-                    if show_menu {
-                        self.clear_menu(menu_items.len());
-                        show_menu = false;
-                    }
+                    show_menu = false;
+                    menu_items.clear();
                     while cursor > 0 && buffer.chars().nth(cursor - 1) == Some(' ') {
                         cursor -= 1;
                         buffer.remove(cursor);
@@ -935,7 +940,7 @@ impl SqlShell {
                         buffer.remove(cursor);
                     }
                     suggestion = self.get_suggestion(&buffer);
-                    self.redraw_line(&buffer, cursor, &suggestion, None);
+                    self.hide_menu(&buffer, cursor, &suggestion);
                 }
                 _ => {}
             }
@@ -963,54 +968,18 @@ impl SqlShell {
         String::new()
     }
     
-    /// 重绘当前行
-    fn redraw_line(
-        &self, 
-        buffer: &str, 
-        cursor: usize, 
-        suggestion: &str,
-        menu: Option<(&Vec<(String, String, SqlCompletionKind)>, usize)>,
-    ) {
-        // 先清除当前行下方的所有内容
-        print!("{}", term::CLEAR_BELOW);
+    /// 重绘当前行（无菜单版本）
+    fn redraw_input_line(&self, buffer: &str, cursor: usize, suggestion: &str) {
+        // 回到行首，清除当前行
+        print!("\r{}", term::CLEAR_LINE);
         
-        // 清除并重绘当前行
-        print!("{}{}", term::CLEAR_LINE, term::CURSOR_START);
+        // 打印提示符和输入
         self.print_prompt();
         print!("{}", buffer);
         
-        // 只有在没有菜单时才显示内联建议
-        if menu.is_none() && !suggestion.is_empty() {
+        // 显示内联建议
+        if !suggestion.is_empty() {
             print!("{}{}{}", term::GRAY, suggestion, term::RESET);
-        }
-        
-        // 显示菜单
-        if let Some((items, selected)) = menu {
-            // 清除行尾
-            print!("{}", term::CLEAR_BELOW);
-            println!();
-            
-            for (i, (text, desc, kind)) in items.iter().enumerate() {
-                print!("{}", term::CLEAR_LINE);
-                if i == selected {
-                    print!("  {}> {}{:<20}{} {}{}{}", 
-                        term::BOLD, kind.color(), text, term::RESET, 
-                        term::GRAY, desc, term::RESET);
-                } else {
-                    print!("    {}{:<20}{} {}{}{}", 
-                        kind.color(), text, term::RESET, 
-                        term::GRAY, desc, term::RESET);
-                }
-                println!();
-            }
-            print!("{}  {}[Tab=确认  ↑↓=选择  →=接受  Esc=取消]{}", 
-                term::CLEAR_LINE, term::YELLOW, term::RESET);
-            
-            // 移动光标回到输入行
-            let menu_lines = items.len() + 1;
-            for _ in 0..menu_lines {
-                print!("{}", term::MOVE_UP);
-            }
         }
         
         // 移动光标到正确位置
@@ -1021,28 +990,71 @@ impl SqlShell {
         let _ = stdout().flush();
     }
     
-    fn get_prompt_len(&self) -> usize {
-        // "mysql > " 等
-        self.engine.db_type().prompt().len() + 3
-    }
-    
-    /// 清除菜单
-    fn clear_menu(&self, menu_lines: usize) {
-        // 保存光标位置
-        print!("\x1b[s");
+    /// 显示菜单（在输入行下方）
+    fn show_menu(&self, buffer: &str, cursor: usize, items: &[(String, String, SqlCompletionKind)], selected: usize) {
+        // 先清除当前行及以下
+        print!("\r{}", term::CLEAR_LINE);
         
-        // 清除菜单区域 (菜单下方的行)
-        for _ in 0..=menu_lines + 1 {
-            print!("\n{}", term::CLEAR_LINE);
-        }
+        // 打印提示符和输入
+        self.print_prompt();
+        print!("{}", buffer);
         
-        // 恢复光标位置
-        print!("\x1b[u");
-        
-        // 清除光标下方所有内容
+        // 清除下方并显示菜单
         print!("{}", term::CLEAR_BELOW);
+        println!();
+        
+        for (i, (text, desc, kind)) in items.iter().enumerate() {
+            if i == selected {
+                println!("  {}> {}{:<20}{} {}{}{}", 
+                    term::BOLD, kind.color(), text, term::RESET, 
+                    term::GRAY, desc, term::RESET);
+            } else {
+                println!("    {}{:<20}{} {}{}{}", 
+                    kind.color(), text, term::RESET, 
+                    term::GRAY, desc, term::RESET);
+            }
+        }
+        print!("  {}[Tab=确认  ↑↓=选择  Esc=取消]{}", term::YELLOW, term::RESET);
+        
+        // 移动光标回到输入行
+        let menu_lines = items.len() + 1;
+        print!("\x1b[{}A", menu_lines);  // 向上移动 N 行
+        
+        // 移动光标到正确位置
+        let prompt_len = self.get_prompt_len();
+        let cursor_pos = prompt_len + cursor + 1;
+        print!("\x1b[{}G", cursor_pos);
         
         let _ = stdout().flush();
+    }
+    
+    /// 清除菜单区域
+    fn hide_menu(&self, buffer: &str, cursor: usize, suggestion: &str) {
+        // 回到行首
+        print!("\r{}", term::CLEAR_LINE);
+        
+        // 清除下方所有内容
+        print!("{}", term::CLEAR_BELOW);
+        
+        // 重绘输入行
+        self.print_prompt();
+        print!("{}", buffer);
+        
+        if !suggestion.is_empty() {
+            print!("{}{}{}", term::GRAY, suggestion, term::RESET);
+        }
+        
+        // 移动光标
+        let prompt_len = self.get_prompt_len();
+        let cursor_pos = prompt_len + cursor + 1;
+        print!("\x1b[{}G", cursor_pos);
+        
+        let _ = stdout().flush();
+    }
+    
+    fn get_prompt_len(&self) -> usize {
+        // "sqlite > " 等
+        self.engine.db_type().prompt().len() + 3
     }
     
     /// 读取按键
