@@ -101,11 +101,23 @@ class LoadingScreen {
         const normalElements = document.querySelectorAll('[data-normal]');
         
         rudeElements.forEach(el => {
-            el.style.display = version === 'rude' ? '' : 'none';
+            if (version === 'rude') {
+                el.style.display = '';
+                el.style.visibility = 'visible';
+            } else {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            }
         });
         
         normalElements.forEach(el => {
-            el.style.display = version === 'normal' ? '' : 'none';
+            if (version === 'normal') {
+                el.style.display = '';
+                el.style.visibility = 'visible';
+            } else {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            }
         });
 
         // 更新版本切换链接
@@ -185,11 +197,23 @@ class VersionSwitcher {
         const normalElements = document.querySelectorAll('[data-normal]');
         
         rudeElements.forEach(el => {
-            el.style.display = version === 'rude' ? '' : 'none';
+            if (version === 'rude') {
+                el.style.display = '';
+                el.style.visibility = 'visible';
+            } else {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            }
         });
         
         normalElements.forEach(el => {
-            el.style.display = version === 'normal' ? '' : 'none';
+            if (version === 'normal') {
+                el.style.display = '';
+                el.style.visibility = 'visible';
+            } else {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            }
         });
 
         if (this.switchBtn) {

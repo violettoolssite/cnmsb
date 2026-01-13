@@ -440,15 +440,16 @@ nav.visible {
 
 .hero-scroll {
     position: absolute;
-    bottom: 3rem;
+    bottom: 2rem;
     left: 8%;
     display: flex;
     align-items: center;
     gap: 1rem;
     color: var(--text-muted);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     letter-spacing: 2px;
     text-transform: uppercase;
+    z-index: 10;
 }
 
 .scroll-line {
@@ -1117,6 +1118,8 @@ footer {
 /* ----------------------------------------
    Responsive Design
    ---------------------------------------- */
+
+/* Large Desktop */
 @media (max-width: 1200px) {
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1127,6 +1130,7 @@ footer {
     }
 }
 
+/* Tablet Landscape */
 @media (max-width: 1024px) {
     .commands-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1148,11 +1152,26 @@ footer {
     .feature-detail.reverse {
         direction: ltr;
     }
+
+    .feature-visual {
+        order: -1;
+    }
+
+    .terminal-body {
+        font-size: 0.8rem;
+        padding: 1.5rem;
+    }
 }
 
+/* Tablet Portrait & Small Devices */
 @media (max-width: 768px) {
+    /* Navigation */
     nav {
-        padding: 1rem 1.5rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .logo {
+        font-size: 0.9rem;
     }
 
     .nav-link {
@@ -1163,85 +1182,500 @@ footer {
         display: none;
     }
 
-    .section {
-        padding: 6rem 5%;
+    .menu-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
     }
 
-    .hero {
-        padding: 0 5%;
-    }
-
-    .hero h1 .project-name {
-        font-size: clamp(2.5rem, 15vw, 5rem);
-        letter-spacing: 2px;
-    }
-
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .commands-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .shortcuts-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .install-section {
+    /* Loading Screen */
+    .loading-screen {
         padding: 2rem;
+    }
+
+    .loading-logo {
+        font-size: clamp(2rem, 12vw, 4rem);
+        letter-spacing: 3px;
+        margin-bottom: 1.5rem;
+    }
+
+    .loading-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 2.5rem;
     }
 
     .version-selector {
         flex-direction: column;
         gap: 1rem;
+        width: 100%;
+        max-width: 280px;
     }
 
     .version-btn {
         min-width: 100%;
-        padding: 2rem;
+        padding: 1.5rem;
+        border-radius: 16px;
     }
 
+    .version-btn .icon {
+        font-size: 2rem;
+    }
+
+    .version-btn .title {
+        font-size: 1rem;
+    }
+
+    .version-btn .desc {
+        font-size: 0.75rem;
+    }
+
+    .loading-progress {
+        bottom: 5%;
+    }
+
+    .progress-bar {
+        width: 150px;
+    }
+
+    /* Hero */
+    .hero {
+        padding: 5rem 5% 3rem;
+        min-height: auto;
+    }
+
+    .hero-badge {
+        font-size: 0.65rem;
+        padding: 0.4rem 0.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+        font-size: clamp(1.8rem, 8vw, 3rem);
+        letter-spacing: -1px;
+        margin-bottom: 1rem;
+    }
+
+    .hero h1 br {
+        display: none;
+    }
+
+    .hero h1 .project-name {
+        font-size: clamp(2rem, 12vw, 4rem);
+        letter-spacing: 2px;
+        margin-top: 0.5rem;
+    }
+
+    .hero-desc {
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+        line-height: 1.7;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-cta .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-scroll {
+        display: none;
+    }
+
+    /* Sections */
+    .section {
+        padding: 4rem 5%;
+    }
+
+    .section-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .section-label {
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        margin-bottom: 1rem;
+    }
+
+    .section-label::before {
+        width: 20px;
+    }
+
+    .section-title {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+    }
+
+    .section-desc {
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+
+    /* Features Grid */
+    .features-grid {
+        grid-template-columns: 1fr;
+        border-radius: 16px;
+    }
+
+    .feature-item {
+        padding: 1.5rem;
+    }
+
+    .feature-number {
+        font-size: 0.7rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-item h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .feature-item p {
+        font-size: 0.85rem;
+        line-height: 1.7;
+    }
+
+    /* Feature Detail */
+    .feature-detail {
+        padding: 3rem 0;
+    }
+
+    .feature-detail-label {
+        font-size: 0.65rem;
+    }
+
+    .feature-detail-title {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-detail-desc {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-list li {
+        font-size: 0.85rem;
+        padding: 0.5rem 0;
+    }
+
+    .feature-visual {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    /* Terminal */
+    .terminal-showcase {
+        border-radius: 12px;
+    }
+
+    .terminal-bar {
+        padding: 0.75rem 1rem;
+    }
+
+    .terminal-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .terminal-title {
+        font-size: 0.65rem;
+    }
+
+    .terminal-body {
+        padding: 1rem;
+        font-size: 0.7rem;
+        line-height: 2;
+        overflow-x: auto;
+    }
+
+    .terminal-menu {
+        margin: 0.75rem 0 0.75rem 1rem;
+        padding: 0.75rem;
+    }
+
+    .terminal-menu-item .name {
+        width: auto;
+        margin-right: 0.5rem;
+    }
+
+    .terminal-menu-item .desc {
+        font-size: 0.6rem;
+    }
+
+    .terminal-comment {
+        display: none;
+    }
+
+    /* Editor */
+    .editor-showcase {
+        border-radius: 12px;
+    }
+
+    .editor-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .editor-tab {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.65rem;
+    }
+
+    .editor-body {
+        font-size: 0.7rem;
+        grid-template-columns: 30px 1fr;
+    }
+
+    .editor-lines {
+        padding: 1rem 0;
+        padding-right: 0.5rem;
+    }
+
+    .editor-content {
+        padding: 1rem;
+        overflow-x: auto;
+    }
+
+    /* Commands */
+    .commands-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .command-category {
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+
+    .command-category h4 {
+        font-size: 0.7rem;
+        margin-bottom: 1rem;
+    }
+
+    .command-tag {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Shortcuts */
+    .shortcuts-grid {
+        grid-template-columns: 1fr;
+        border-radius: 12px;
+    }
+
+    .shortcut-item {
+        padding: 1.25rem;
+        gap: 1rem;
+    }
+
+    .key {
+        min-width: 2rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+    }
+
+    .shortcut-desc {
+        font-size: 0.8rem;
+    }
+
+    /* Install */
+    .install-section {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .install-grid {
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .install-method {
+        padding: 1.25rem;
+        border-radius: 12px;
+    }
+
+    .install-method h4 {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .code-block {
+        padding: 1rem;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        line-height: 1.8;
+    }
+
+    .code-block pre {
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    .copy-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.65rem;
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+
+    /* Demo */
+    .demo-section {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .demo-section img {
+        border-radius: 8px;
+    }
+
+    /* CTA */
+    .cta-section {
+        padding: 5rem 5%;
+    }
+
+    .cta-section::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .cta-title {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+    }
+
+    .cta-desc {
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    .cta-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Footer */
     .footer-content {
         flex-direction: column;
         text-align: center;
+        gap: 1.5rem;
+    }
+
+    footer {
+        padding: 2rem 5%;
+    }
+
+    .footer-logo {
+        font-size: 0.9rem;
+    }
+
+    .footer-copy {
+        font-size: 0.75rem;
     }
 
     .footer-links {
         flex-wrap: wrap;
         justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .footer-links a {
+        font-size: 0.8rem;
     }
 }
 
+/* Small Mobile */
 @media (max-width: 480px) {
     .hero h1 {
-        font-size: 2rem;
-    }
-
-    .hero h1 .project-name {
-        font-size: 2.5rem;
-    }
-
-    .hero-desc {
-        font-size: 1rem;
-    }
-
-    .btn {
-        padding: 0.8rem 1.5rem;
-        font-size: 0.85rem;
-    }
-
-    .section-title {
         font-size: 1.5rem;
     }
 
+    .hero h1 .project-name {
+        font-size: 2rem;
+    }
+
+    .hero-desc {
+        font-size: 0.85rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.8rem;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+
     .feature-item {
-        padding: 2rem;
+        padding: 1.25rem;
+    }
+
+    .feature-item h3 {
+        font-size: 1rem;
+    }
+
+    .feature-item p {
+        font-size: 0.8rem;
     }
 
     .loading-logo {
-        font-size: 2.5rem;
-        letter-spacing: 5px;
+        font-size: 2rem;
+        letter-spacing: 3px;
+    }
+
+    .loading-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .version-btn {
+        padding: 1.25rem;
+    }
+
+    .version-btn .icon {
+        font-size: 1.5rem;
+    }
+
+    .version-btn .title {
+        font-size: 0.9rem;
+    }
+
+    .terminal-body {
+        font-size: 0.6rem;
+    }
+
+    .code-block {
+        font-size: 0.6rem;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .hero {
+        padding: 4rem 4% 2rem;
+    }
+
+    .hero h1 {
+        font-size: 1.3rem;
+    }
+
+    .hero h1 .project-name {
+        font-size: 1.8rem;
+    }
+
+    .section {
+        padding: 3rem 4%;
+    }
+
+    .loading-logo {
+        font-size: 1.6rem;
     }
 }
 
