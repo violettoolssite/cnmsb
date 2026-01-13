@@ -154,6 +154,7 @@ pub trait SqlSyntax: Send + Sync {
                     SqlCompletion::keyword("*", "所有列"),
                     SqlCompletion::keyword("DISTINCT", "去重"),
                     SqlCompletion::keyword("COUNT(*)", "计数"),
+                    SqlCompletion::keyword("FROM", "数据来源"),
                 ];
                 comps.extend(self.functions());
                 comps
@@ -251,6 +252,26 @@ pub trait SqlSyntax: Send + Sync {
             completions = completions.into_iter()
                 .filter(|c| c.text.to_uppercase().starts_with(&current_word_upper))
                 .collect();
+        }
+        
+        // 根据用户输入的大小写风格调整补全项
+        if !current_word.is_empty() {
+            let is_all_lower = current_word.chars().all(|c| c.is_lowercase() || !c.is_alphabetic());
+            let is_all_upper = current_word.chars().all(|c| c.is_uppercase() || !c.is_alphabetic());
+            
+            if is_all_lower {
+                // 用户输入全小写，补全项也用小写
+                completions = completions.into_iter()
+                    .map(|mut c| {
+                        c.text = c.text.to_lowercase();
+                        c
+                    })
+                    .collect();
+            } else if is_all_upper {
+                // 用户输入全大写，补全项也用大写（默认就是大写，不需要改）
+            } else {
+                // 混合大小写，保持补全项的大写格式（SQL 关键字通常大写）
+            }
         }
         
         // 排序：精确匹配优先
