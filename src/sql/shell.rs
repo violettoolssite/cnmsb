@@ -1,7 +1,7 @@
 //! SQL 交互式 Shell
 
 use super::connection::{DbConnection, QueryResult};
-use super::database::DatabaseType;
+use super::database::{DatabaseType, DatabaseConfig};
 use super::engine::SqlEngine;
 use super::syntax::SqlCompletionKind;
 use std::io::{self, Read, Write, stdout, stdin};
@@ -54,8 +54,26 @@ impl SqlShell {
                 // SQLite: 路径或 :memory:
                 DbConnection::connect_sqlite(conn_str)
             }
+            DatabaseType::MySQL | DatabaseType::MariaDB => {
+                // 尝试解析连接字符串
+                if let Some(config) = DatabaseConfig::parse(conn_str) {
+                    DbConnection::connect_mysql(&config.host, config.port, &config.username, &config.password, &config.database)
+                } else {
+                    // 作为 URL 直接使用
+                    DbConnection::connect_mysql_url(conn_str)
+                }
+            }
+            DatabaseType::PostgreSQL => {
+                // 尝试解析连接字符串
+                if let Some(config) = DatabaseConfig::parse(conn_str) {
+                    DbConnection::connect_postgres(&config.host, config.port, &config.username, &config.password, &config.database)
+                } else {
+                    // 作为 URL 直接使用
+                    DbConnection::connect_postgres_url(conn_str)
+                }
+            }
             _ => {
-                return Err(format!("当前仅支持 SQLite 数据库连接（{:?} 需要更新 Rust 版本）", db_type));
+                return Err(format!("{} 数据库暂不支持", db_type.name()));
             }
         };
         
@@ -64,14 +82,28 @@ impl SqlShell {
                 self.connection = conn;
                 self.connected = true;
                 
-                // 获取表列表用于补全
-                if let Ok(tables) = self.connection.get_tables() {
-                    self.engine.set_tables(tables);
-                }
+                // 加载 Schema 信息用于补全
+                self.load_schema();
                 
                 Ok(())
             }
             Err(e) => Err(e.to_string()),
+        }
+    }
+    
+    /// 加载数据库 Schema 信息
+    fn load_schema(&mut self) {
+        // 获取表列表
+        if let Ok(tables) = self.connection.get_tables() {
+            self.engine.set_tables(tables.clone());
+            
+            // 获取每个表的列信息
+            for table in &tables {
+                if let Ok(columns) = self.connection.get_columns(table) {
+                    let col_names: Vec<String> = columns.iter().map(|c| c.name.clone()).collect();
+                    self.engine.set_columns(table, col_names);
+                }
+            }
         }
     }
     
@@ -149,6 +181,7 @@ impl SqlShell {
                         } else {
                             println!("{}✓ 已连接到 {}{}", term::GREEN, path, term::RESET);
                         }
+                        self.print_schema_info();
                     }
                     Err(e) => {
                         println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
@@ -156,14 +189,136 @@ impl SqlShell {
                     }
                 }
             }
+            DatabaseType::MySQL | DatabaseType::MariaDB => {
+                println!("{}请输入 MySQL 连接信息:{}", term::YELLOW, term::RESET);
+                println!("{}格式: mysql://user:password@host:port/database{}", term::GRAY, term::RESET);
+                println!("{}或者依次输入各项:{}", term::GRAY, term::RESET);
+                println!();
+                
+                // 主机
+                print!("  主机 (默认 localhost): ");
+                stdout().flush()?;
+                let mut host = String::new();
+                stdin().read_line(&mut host)?;
+                let host = host.trim();
+                let host = if host.is_empty() { "localhost" } else { host };
+                
+                // 端口
+                print!("  端口 (默认 3306): ");
+                stdout().flush()?;
+                let mut port_str = String::new();
+                stdin().read_line(&mut port_str)?;
+                let port: u16 = port_str.trim().parse().unwrap_or(3306);
+                
+                // 用户名
+                print!("  用户名 (默认 root): ");
+                stdout().flush()?;
+                let mut user = String::new();
+                stdin().read_line(&mut user)?;
+                let user = user.trim();
+                let user = if user.is_empty() { "root" } else { user };
+                
+                // 密码
+                print!("  密码: ");
+                stdout().flush()?;
+                let mut password = String::new();
+                stdin().read_line(&mut password)?;
+                let password = password.trim();
+                
+                // 数据库
+                print!("  数据库: ");
+                stdout().flush()?;
+                let mut database = String::new();
+                stdin().read_line(&mut database)?;
+                let database = database.trim();
+                
+                let conn_str = format!("mysql://{}:{}@{}:{}/{}", user, password, host, port, database);
+                
+                match self.connect(&conn_str) {
+                    Ok(()) => {
+                        println!("{}✓ 已连接到 MySQL {}:{}/{}{}", term::GREEN, host, port, database, term::RESET);
+                        self.print_schema_info();
+                    }
+                    Err(e) => {
+                        println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
+                    }
+                }
+            }
+            DatabaseType::PostgreSQL => {
+                println!("{}请输入 PostgreSQL 连接信息:{}", term::YELLOW, term::RESET);
+                println!("{}格式: postgresql://user:password@host:port/database{}", term::GRAY, term::RESET);
+                println!("{}或者依次输入各项:{}", term::GRAY, term::RESET);
+                println!();
+                
+                // 主机
+                print!("  主机 (默认 localhost): ");
+                stdout().flush()?;
+                let mut host = String::new();
+                stdin().read_line(&mut host)?;
+                let host = host.trim();
+                let host = if host.is_empty() { "localhost" } else { host };
+                
+                // 端口
+                print!("  端口 (默认 5432): ");
+                stdout().flush()?;
+                let mut port_str = String::new();
+                stdin().read_line(&mut port_str)?;
+                let port: u16 = port_str.trim().parse().unwrap_or(5432);
+                
+                // 用户名
+                print!("  用户名 (默认 postgres): ");
+                stdout().flush()?;
+                let mut user = String::new();
+                stdin().read_line(&mut user)?;
+                let user = user.trim();
+                let user = if user.is_empty() { "postgres" } else { user };
+                
+                // 密码
+                print!("  密码: ");
+                stdout().flush()?;
+                let mut password = String::new();
+                stdin().read_line(&mut password)?;
+                let password = password.trim();
+                
+                // 数据库
+                print!("  数据库 (默认 postgres): ");
+                stdout().flush()?;
+                let mut database = String::new();
+                stdin().read_line(&mut database)?;
+                let database = database.trim();
+                let database = if database.is_empty() { "postgres" } else { database };
+                
+                let conn_str = format!("postgresql://{}:{}@{}:{}/{}", user, password, host, port, database);
+                
+                match self.connect(&conn_str) {
+                    Ok(()) => {
+                        println!("{}✓ 已连接到 PostgreSQL {}:{}/{}{}", term::GREEN, host, port, database, term::RESET);
+                        self.print_schema_info();
+                    }
+                    Err(e) => {
+                        println!("{}✗ 连接失败: {}{}", term::RED, e, term::RESET);
+                    }
+                }
+            }
             _ => {
-                println!("{}当前仅支持 SQLite 数据库（{:?} 需要更新 Rust 版本）{}", term::YELLOW, db_type, term::RESET);
+                println!("{}{} 数据库暂不支持真实连接{}", term::YELLOW, db_type.name(), term::RESET);
                 println!("{}将以离线模式运行（仅提供语法补全）{}", term::GRAY, term::RESET);
             }
         }
         println!();
         
         Ok(())
+    }
+    
+    /// 打印 Schema 信息摘要
+    fn print_schema_info(&mut self) {
+        if let Ok(tables) = self.connection.get_tables() {
+            if tables.is_empty() {
+                println!("{}  (数据库中没有表){}", term::GRAY, term::RESET);
+            } else {
+                println!("{}  发现 {} 个表{}", term::GRAY, tables.len(), term::RESET);
+            }
+        }
     }
     
     /// 执行 SQL 语句
@@ -246,14 +401,17 @@ impl SqlShell {
         println!("  {}{}", term::GRAY, db_type.description());
         println!("{}", term::RESET);
         println!("{}快捷键:{}", term::YELLOW, term::RESET);
-        println!("  {}Tab{}        补全 SQL 关键字/函数", term::CYAN, term::RESET);
-        println!("  {}↑ ↓{}        浏览历史", term::CYAN, term::RESET);
+        println!("  {}Tab{}        补全 SQL 关键字/表名/列名", term::CYAN, term::RESET);
+        println!("  {}↑ ↓{}        浏览历史/选择补全", term::CYAN, term::RESET);
+        println!("  {}→{}          接受内联建议", term::CYAN, term::RESET);
         println!("  {}Ctrl+C{}     取消当前输入", term::CYAN, term::RESET);
         println!("  {}Ctrl+D{}     退出", term::CYAN, term::RESET);
         println!();
         println!("{}命令:{}", term::YELLOW, term::RESET);
         println!("  {}.help{}      显示帮助", term::GREEN, term::RESET);
-        println!("  {}.tables{}    显示表列表（模拟）", term::GREEN, term::RESET);
+        println!("  {}.tables{}    显示所有表", term::GREEN, term::RESET);
+        println!("  {}.desc{}      显示表结构", term::GREEN, term::RESET);
+        println!("  {}.schema{}    显示完整 Schema", term::GREEN, term::RESET);
         println!("  {}.clear{}     清屏", term::GREEN, term::RESET);
         println!("  {}exit/quit{} 退出", term::GREEN, term::RESET);
         println!();
@@ -276,6 +434,19 @@ impl SqlShell {
         
         if lower == ".tables" || lower == "\\dt" || lower == "\\d" {
             self.show_tables();
+            return true;
+        }
+        
+        // .desc table_name 或 \d table_name
+        if lower.starts_with(".desc ") || lower.starts_with("\\d ") || lower.starts_with("describe ") {
+            let table = if lower.starts_with(".desc ") {
+                &line[6..]
+            } else if lower.starts_with("\\d ") {
+                &line[3..]
+            } else {
+                &line[9..]
+            };
+            self.describe_table(table.trim());
             return true;
         }
         
@@ -302,7 +473,84 @@ impl SqlShell {
             return true;
         }
         
+        if lower == ".schema" || lower == "\\ds" {
+            self.show_schema();
+            return true;
+        }
+        
         false
+    }
+    
+    /// 显示表结构
+    fn describe_table(&mut self, table: &str) {
+        println!();
+        
+        if !self.connected {
+            println!("{}未连接数据库{}", term::YELLOW, term::RESET);
+            println!();
+            return;
+        }
+        
+        match self.connection.get_columns(table) {
+            Ok(columns) => {
+                if columns.is_empty() {
+                    println!("{}表 '{}' 不存在或没有列{}", term::YELLOW, table, term::RESET);
+                } else {
+                    println!("{}表 '{}' 结构:{}", term::YELLOW, table, term::RESET);
+                    println!();
+                    println!("  {}{:<20} {:<15} {:<10} {}{}", 
+                        term::CYAN, "列名", "类型", "可空", "主键", term::RESET);
+                    println!("  {}", "-".repeat(55));
+                    
+                    for col in &columns {
+                        let nullable = if col.nullable { "YES" } else { "NO" };
+                        let pk = if col.primary_key { "PK" } else { "" };
+                        println!("  {:<20} {:<15} {:<10} {}", 
+                            col.name, col.data_type, nullable, pk);
+                    }
+                }
+            }
+            Err(e) => {
+                println!("{}获取表结构失败: {}{}", term::RED, e, term::RESET);
+            }
+        }
+        println!();
+    }
+    
+    /// 显示所有表和列的 Schema
+    fn show_schema(&mut self) {
+        println!();
+        
+        if !self.connected {
+            println!("{}未连接数据库{}", term::YELLOW, term::RESET);
+            println!();
+            return;
+        }
+        
+        match self.connection.get_tables() {
+            Ok(tables) => {
+                if tables.is_empty() {
+                    println!("{}数据库中没有表{}", term::GRAY, term::RESET);
+                } else {
+                    println!("{}数据库 Schema ({} 个表):{}", term::YELLOW, tables.len(), term::RESET);
+                    println!();
+                    
+                    for table in &tables {
+                        print!("  {}{}{}", term::GREEN, table, term::RESET);
+                        
+                        if let Ok(columns) = self.connection.get_columns(table) {
+                            let col_names: Vec<&str> = columns.iter().map(|c| c.name.as_str()).collect();
+                            print!(" {}({}){}", term::GRAY, col_names.join(", "), term::RESET);
+                        }
+                        println!();
+                    }
+                }
+            }
+            Err(e) => {
+                println!("{}获取 Schema 失败: {}{}", term::RED, e, term::RESET);
+            }
+        }
+        println!();
     }
     
     /// 重新连接数据库
@@ -337,11 +585,13 @@ impl SqlShell {
         println!("{}{} SQL 帮助{}", term::BOLD, db_type.name(), term::RESET);
         println!();
         println!("{}Shell 命令:{}", term::YELLOW, term::RESET);
-        println!("  {}\\c, .connect{}   连接/重连数据库", term::CYAN, term::RESET);
-        println!("  {}\\d, .tables{}    显示所有表", term::CYAN, term::RESET);
-        println!("  {}\\s, .status{}    显示连接状态", term::CYAN, term::RESET);
-        println!("  {}.clear{}         清屏", term::CYAN, term::RESET);
-        println!("  {}exit, \\q{}       退出", term::CYAN, term::RESET);
+        println!("  {}\\c, .connect{}      连接/重连数据库", term::CYAN, term::RESET);
+        println!("  {}\\d, .tables{}       显示所有表", term::CYAN, term::RESET);
+        println!("  {}\\d TABLE, .desc{}   显示表结构", term::CYAN, term::RESET);
+        println!("  {}\\ds, .schema{}      显示完整 Schema", term::CYAN, term::RESET);
+        println!("  {}\\s, .status{}       显示连接状态", term::CYAN, term::RESET);
+        println!("  {}.clear{}            清屏", term::CYAN, term::RESET);
+        println!("  {}exit, \\q{}          退出", term::CYAN, term::RESET);
         println!();
         println!("{}常用 SQL:{}", term::YELLOW, term::RESET);
         println!("  {}SELECT{} * FROM table_name WHERE condition", term::BLUE, term::RESET);
@@ -350,7 +600,10 @@ impl SqlShell {
         println!("  {}DELETE FROM{} table_name WHERE condition", term::BLUE, term::RESET);
         println!("  {}CREATE TABLE{} table_name (col1 TYPE, col2 TYPE)", term::BLUE, term::RESET);
         println!();
-        println!("按 {}Tab{} 查看补全建议", term::CYAN, term::RESET);
+        println!("{}补全功能:{}", term::YELLOW, term::RESET);
+        println!("  - 按 {}Tab{} 显示补全菜单", term::CYAN, term::RESET);
+        println!("{}  - 输入表名后自动补全列名{}", term::GRAY, term::RESET);
+        println!("{}  - 支持 表名.列名 格式{}", term::GRAY, term::RESET);
         println!();
     }
     

@@ -25,9 +25,10 @@ indexmap = "2.0"
 # 终端控制（编辑器功能）
 crossterm = "0.27"
 
-# 数据库驱动 - 仅 SQLite（自带，无需服务器）
-# MySQL/PostgreSQL 支持需要更新的 Rust 版本
+# 数据库驱动
 rusqlite = { version = "0.29", features = ["bundled"] }
+mysql = "25.0"
+postgres = "0.19"
 
 # Unix 终端控制
 [target.'cfg(unix)'.dependencies]

@@ -154,3 +154,137 @@ impl Default for DatabaseConfig {
     }
 }
 
+impl DatabaseConfig {
+    /// 从连接字符串解析配置
+    /// 支持格式：
+    /// - MySQL: mysql://user:pass@host:port/database
+    /// - PostgreSQL: postgresql://user:pass@host:port/database 或 postgres://...
+    /// - SQLite: sqlite:///path/to/db 或直接路径
+    pub fn parse(url: &str) -> Option<Self> {
+        let url = url.trim();
+        
+        // SQLite
+        if url.starts_with("sqlite://") || url.starts_with("sqlite:") {
+            let path = url.trim_start_matches("sqlite://").trim_start_matches("sqlite:");
+            return Some(Self::sqlite(path));
+        }
+        
+        // 如果看起来像文件路径，当作 SQLite
+        if url.ends_with(".db") || url.ends_with(".sqlite") || url.ends_with(".sqlite3") || url == ":memory:" {
+            return Some(Self::sqlite(url));
+        }
+        
+        // MySQL
+        if url.starts_with("mysql://") {
+            return Self::parse_mysql_url(url);
+        }
+        
+        // PostgreSQL
+        if url.starts_with("postgresql://") || url.starts_with("postgres://") {
+            return Self::parse_postgres_url(url);
+        }
+        
+        None
+    }
+    
+    /// 解析 MySQL URL
+    fn parse_mysql_url(url: &str) -> Option<Self> {
+        // mysql://user:pass@host:port/database
+        let rest = url.strip_prefix("mysql://")?;
+        Self::parse_db_url(rest, DatabaseType::MySQL)
+    }
+    
+    /// 解析 PostgreSQL URL
+    fn parse_postgres_url(url: &str) -> Option<Self> {
+        // postgresql://user:pass@host:port/database
+        let rest = url.strip_prefix("postgresql://")
+            .or_else(|| url.strip_prefix("postgres://"))?;
+        Self::parse_db_url(rest, DatabaseType::PostgreSQL)
+    }
+    
+    /// 通用 URL 解析
+    fn parse_db_url(rest: &str, db_type: DatabaseType) -> Option<Self> {
+        let mut config = Self::new(db_type);
+        
+        // 分离用户信息和主机信息
+        let (auth_part, host_part) = if let Some(at_pos) = rest.rfind('@') {
+            (&rest[..at_pos], &rest[at_pos + 1..])
+        } else {
+            ("", rest)
+        };
+        
+        // 解析用户名和密码
+        if !auth_part.is_empty() {
+            if let Some(colon_pos) = auth_part.find(':') {
+                config.username = auth_part[..colon_pos].to_string();
+                config.password = auth_part[colon_pos + 1..].to_string();
+            } else {
+                config.username = auth_part.to_string();
+            }
+        }
+        
+        // 解析主机、端口和数据库
+        let (host_port, database) = if let Some(slash_pos) = host_part.find('/') {
+            (&host_part[..slash_pos], &host_part[slash_pos + 1..])
+        } else {
+            (host_part, "")
+        };
+        
+        // 解析主机和端口
+        if let Some(colon_pos) = host_port.rfind(':') {
+            config.host = host_port[..colon_pos].to_string();
+            if let Ok(port) = host_port[colon_pos + 1..].parse() {
+                config.port = port;
+            }
+        } else {
+            config.host = host_port.to_string();
+        }
+        
+        config.database = database.to_string();
+        
+        Some(config)
+    }
+    
+    /// 生成连接字符串
+    pub fn to_connection_string(&self) -> String {
+        match self.db_type {
+            DatabaseType::SQLite => {
+                self.file_path.clone().unwrap_or_else(|| ":memory:".to_string())
+            }
+            DatabaseType::MySQL | DatabaseType::MariaDB => {
+                if self.password.is_empty() {
+                    format!("mysql://{}@{}:{}/{}", self.username, self.host, self.port, self.database)
+                } else {
+                    format!("mysql://{}:{}@{}:{}/{}", self.username, self.password, self.host, self.port, self.database)
+                }
+            }
+            DatabaseType::PostgreSQL => {
+                if self.password.is_empty() {
+                    format!("postgresql://{}@{}:{}/{}", self.username, self.host, self.port, self.database)
+                } else {
+                    format!("postgresql://{}:{}@{}:{}/{}", self.username, self.password, self.host, self.port, self.database)
+                }
+            }
+            _ => String::new(),
+        }
+    }
+    
+    /// 生成安全的连接字符串（隐藏密码）
+    pub fn to_safe_string(&self) -> String {
+        match self.db_type {
+            DatabaseType::SQLite => {
+                self.file_path.clone().unwrap_or_else(|| ":memory:".to_string())
+            }
+            DatabaseType::MySQL | DatabaseType::MariaDB => {
+                let pass = if self.password.is_empty() { "" } else { ":***" };
+                format!("mysql://{}{}@{}:{}/{}", self.username, pass, self.host, self.port, self.database)
+            }
+            DatabaseType::PostgreSQL => {
+                let pass = if self.password.is_empty() { "" } else { ":***" };
+                format!("postgresql://{}{}@{}:{}/{}", self.username, pass, self.host, self.port, self.database)
+            }
+            _ => format!("{} ({}:{})", self.db_type, self.host, self.port),
+        }
+    }
+}
+

@@ -7,7 +7,7 @@ mod engine;
 mod shell;
 mod syntax;
 
-pub use connection::{DbConnection, DbError, QueryResult};
+pub use connection::{DbConnection, DbError, QueryResult, ColumnInfo};
 pub use database::{DatabaseType, DatabaseConfig};
 pub use engine::SqlEngine;
 pub use shell::SqlShell;
