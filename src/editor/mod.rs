@@ -514,6 +514,91 @@ impl Editor {
         // 获取补全建议
         self.current_suggestion = self.completer.get_suggestion(current_word);
     }
+    
+    /// 根据文件扩展名添加文件头
+    fn add_file_header(&mut self, path: &std::path::Path) {
+        let ext = path.extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("");
+        
+        let filename = path.file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("");
+        
+        let header = match ext.to_lowercase().as_str() {
+            "sh" => Some(SHEBANG_BASH),
+            "bash" => Some(SHEBANG_BASH),
+            "zsh" => Some(SHEBANG_ZSH),
+            "py" => Some(SHEBANG_PYTHON),
+            "python" => Some(SHEBANG_PYTHON),
+            "pl" => Some(SHEBANG_PERL),
+            "rb" => Some(SHEBANG_RUBY),
+            "js" if filename.ends_with(".mjs") || filename.starts_with("cli") => Some(SHEBANG_NODE),
+            "rs" => Some(HEADER_RUST),
+            "c" => Some(HEADER_C),
+            "cpp" | "cc" | "cxx" => Some(HEADER_CPP),
+            "go" => Some(HEADER_GO),
+            "java" => Some(HEADER_JAVA),
+            "html" | "htm" => Some(HEADER_HTML),
+            "yml" | "yaml" => Some(HEADER_YAML),
+            _ => None,
+        };
+        
+        // 检查特殊文件名
+        let header = header.or_else(|| {
+            match filename.to_lowercase().as_str() {
+                "makefile" | "gnumakefile" => Some(HEADER_MAKEFILE),
+                "dockerfile" => Some(HEADER_DOCKERFILE),
+                _ => None,
+            }
+        });
+        
+        if let Some(content) = header {
+            // 将内容按行分割并添加到缓冲区
+            self.buffer = Buffer::new();
+            for (i, line) in content.lines().enumerate() {
+                if i == 0 {
+                    // 第一行替换空缓冲区
+                    for c in line.chars() {
+                        self.buffer.insert_char(0, self.buffer.line_len(0), c);
+                    }
+                } else {
+                    // 后续行添加
+                    self.buffer.insert_newline(i - 1, self.buffer.line_len(i - 1));
+                    for c in line.chars() {
+                        self.buffer.insert_char(i, self.buffer.line_len(i), c);
+                    }
+                }
+            }
+            // 添加最后一个空行
+            let last = self.buffer.line_count() - 1;
+            self.buffer.insert_newline(last, self.buffer.line_len(last));
+            
+            // 将光标移到合适位置
+            self.cursor.row = self.buffer.line_count().saturating_sub(2);
+            self.cursor.col = 0;
+        }
+    }
+    
+    /// 显示欢迎信息
+    fn show_welcome(&mut self) {
+        self.buffer = Buffer::new();
+        for (i, line) in WELCOME_MESSAGE.lines().enumerate() {
+            if i == 0 {
+                for c in line.chars() {
+                    self.buffer.insert_char(0, self.buffer.line_len(0), c);
+                }
+            } else {
+                self.buffer.insert_newline(i - 1, self.buffer.line_len(i - 1));
+                for c in line.chars() {
+                    self.buffer.insert_char(i, self.buffer.line_len(i), c);
+                }
+            }
+        }
+        self.status_message = "cntmd - 按 i 开始编辑，:q 退出".to_string();
+        // 欢迎屏幕不算修改
+        self.modified = false;
+    }
 }
 
 impl Default for Editor {
@@ -526,15 +611,76 @@ impl Default for Editor {
 pub fn run_editor(file: Option<PathBuf>) -> io::Result<()> {
     let mut editor = Editor::new()?;
     
-    if let Some(ref path) = file {
-        if path.exists() {
+    match file {
+        Some(ref path) if path.exists() => {
+            // 打开已存在的文件
             editor.open(path)?;
-        } else {
+        }
+        Some(ref path) => {
+            // 新文件：自动添加文件头
             editor.file_path = Some(path.clone());
+            editor.add_file_header(path);
+            editor.modified = true;
             editor.status_message = format!("新文件: {}", path.display());
+        }
+        None => {
+            // 无文件参数：显示欢迎信息
+            editor.show_welcome();
         }
     }
     
     editor.run()
 }
+
+/// 文件头模板
+const SHEBANG_BASH: &str = "#!/bin/bash\n# \n# 描述: \n# 作者: \n# 日期: \n\nset -euo pipefail\n\n";
+const SHEBANG_ZSH: &str = "#!/bin/zsh\n# \n# 描述: \n# 作者: \n# 日期: \n\nset -euo pipefail\n\n";
+const SHEBANG_PYTHON: &str = "#!/usr/bin/env python3\n# -*- coding: utf-8 -*-\n\"\"\"\n描述: \n作者: \n日期: \n\"\"\"\n\n";
+const SHEBANG_PERL: &str = "#!/usr/bin/env perl\nuse strict;\nuse warnings;\n\n";
+const SHEBANG_RUBY: &str = "#!/usr/bin/env ruby\n# frozen_string_literal: true\n\n";
+const SHEBANG_NODE: &str = "#!/usr/bin/env node\n\n";
+const HEADER_RUST: &str = "//! \n//! 描述: \n//! \n\n";
+const HEADER_C: &str = "/**\n * 描述: \n * 作者: \n * 日期: \n */\n\n#include <stdio.h>\n\nint main(int argc, char *argv[]) {\n    \n    return 0;\n}\n";
+const HEADER_CPP: &str = "/**\n * 描述: \n * 作者: \n * 日期: \n */\n\n#include <iostream>\n\nint main(int argc, char *argv[]) {\n    \n    return 0;\n}\n";
+const HEADER_GO: &str = "// 描述: \n// 作者: \n// 日期: \n\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n\t\n}\n";
+const HEADER_JAVA: &str = "/**\n * 描述: \n * 作者: \n * 日期: \n */\n\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}\n";
+const HEADER_HTML: &str = "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title></title>\n</head>\n<body>\n    \n</body>\n</html>\n";
+const HEADER_MAKEFILE: &str = "# Makefile\n# 描述: \n\n.PHONY: all clean\n\nall:\n\t\n\nclean:\n\trm -rf \n";
+const HEADER_DOCKERFILE: &str = "# Dockerfile\n# 描述: \n\nFROM ubuntu:22.04\n\nRUN apt-get update && apt-get install -y \\\n    && rm -rf /var/lib/apt/lists/*\n\nWORKDIR /app\n\nCOPY . .\n\nCMD [\"bash\"]\n";
+const HEADER_YAML: &str = "# \n# 描述: \n#\n\n";
+
+/// 欢迎信息
+const WELCOME_MESSAGE: &str = r#"
+    ██████╗███╗   ██╗████████╗███╗   ███╗██████╗ 
+   ██╔════╝████╗  ██║╚══██╔══╝████╗ ████║██╔══██╗
+   ██║     ██╔██╗ ██║   ██║   ██╔████╔██║██║  ██║
+   ██║     ██║╚██╗██║   ██║   ██║╚██╔╝██║██║  ██║
+   ╚██████╗██║ ╚████║   ██║   ██║ ╚═╝ ██║██████╔╝
+    ╚═════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝     ╚═╝╚═════╝ 
+
+   操你他妈的编辑器 (cntmd) v0.1.0
+   基于历史的智能补全文本编辑器
+
+   快捷键:
+     i          进入插入模式
+     Esc        返回普通模式
+     :w         保存文件
+     :q         退出
+     :wq        保存并退出
+     Tab        接受补全建议
+     →          接受补全建议
+     h/j/k/l    光标移动
+
+   使用方法:
+     cntmd <文件名>    打开或创建文件
+     cnmsb edit <文件>  同上
+
+   智能补全:
+     输入时自动显示灰色建议
+     按 Tab 或 → 接受建议
+     支持 100+ 常用词汇
+     实时学习你输入的词
+
+   按 i 开始编辑，或 :q 退出
+"#;
 
