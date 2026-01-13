@@ -9,6 +9,17 @@ autoload -Uz compinit && compinit -u -C
 # 禁用 ? 作为通配符（避免 "no matches found" 错误）
 setopt nonomatch
 
+# 禁用特定命令的默认补全，让 cnmsb 接管
+# sudo 及其它前缀命令
+compdef -d sudo
+compdef -d time
+compdef -d env
+compdef -d nice
+compdef -d nohup
+compdef -d strace
+compdef -d gdb
+compdef -d valgrind
+
 # ================== 配置 ==================
 
 PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
@@ -265,6 +276,19 @@ _cnmsb_tab() {
             _cnmsb_menu=1
             _cnmsb_show_menu
         else
+            # 检查是否是前缀命令（sudo, time, env 等）
+            local words=(${(z)BUFFER})
+            local first_word="${words[1]}"
+            local prefix_commands=("sudo" "time" "env" "nice" "nohup" "strace" "gdb" "valgrind")
+            
+            # 如果是前缀命令，不调用默认补全，直接返回
+            if [[ -n "$first_word" && " ${prefix_commands[@]} " =~ " $first_word " ]]; then
+                # 前缀命令，使用我们的补全系统（即使没有结果也不调用默认补全）
+                zle -R
+                return
+            fi
+            
+            # 其他情况，如果没有补全结果，使用默认补全
             zle expand-or-complete
         fi
     fi
