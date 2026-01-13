@@ -1,8 +1,28 @@
+<div align="center">
+
 # cnmsb - 命令行智能补全工具
 
-一款 Linux 命令行智能补全工具，提供类似 IDE 的代码补全体验。
+**Linux 命令行智能补全工具，提供类似 IDE 的代码补全体验**
+
+[![GitHub stars](https://img.shields.io/github/stars/violettoolssite/cnmsb?style=for-the-badge&logo=github)](https://github.com/violettoolssite/cnmsb/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/violettoolssite/cnmsb?style=for-the-badge&logo=github)](https://github.com/violettoolssite/cnmsb/network/members)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+[![Star History Chart](https://api.star-history.com/svg?repos=violettoolssite/cnmsb&type=Date)](https://star-history.com/#violettoolssite/cnmsb&Date)
+
+</div>
+
+---
+
+<div align="center">
+
+### 🚀 **300+ 命令支持 | 智能内联补全 | 交互式选择器 | 历史命令模式 | 内置编辑器 | SQL Shell**
+
+**一款强大的 Linux 命令行智能补全工具，让命令行操作更高效、更智能。**
 
 > [查看另一个版本](README.md)
+
+</div>
 
 ---
 

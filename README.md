@@ -1,8 +1,28 @@
+<div align="center">
+
 # cnmsb - 操你妈傻逼
 
-妈的，Linux 命令行补全工具，让你敲命令不用再他妈的翻那些狗屁文档。
+**Linux 命令行智能补全工具，提供类似 IDE 的补全体验**
+
+[![GitHub stars](https://img.shields.io/github/stars/violettoolssite/cnmsb?style=for-the-badge&logo=github)](https://github.com/violettoolssite/cnmsb/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/violettoolssite/cnmsb?style=for-the-badge&logo=github)](https://github.com/violettoolssite/cnmsb/network/members)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+[![Star History Chart](https://api.star-history.com/svg?repos=violettoolssite/cnmsb&type=Date)](https://star-history.com/#violettoolssite/cnmsb&Date)
+
+</div>
+
+---
+
+<div align="center">
+
+### 🚀 **300+ 命令支持 | 智能内联补全 | 交互式选择器 | 历史命令模式 | 内置编辑器 | SQL Shell**
+
+**妈的，Linux 命令行补全工具，让你敲命令不用再他妈的翻那些狗屁文档。**
 
 > **不想看脏话？** [点这里看正常版本](README.normal.md)
+
+</div>
 
 ---
 
