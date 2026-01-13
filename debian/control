@@ -22,6 +22,17 @@ Description: cnmsb - Linux 命令行智能补全工具
   - 历史命令模式（Alt+H）
   - 实时更新补全列表
  .
+ 内置编辑器 cntmd：
+  - 类 vim 文本编辑器
+  - 基于历史的智能补全
+  - 预装 100+ 常用词汇
+  - 实时学习用户输入
+ .
+ 包含命令：
+  - cnmsb: 主程序
+  - cntmd: 智能补全编辑器
+  - cnmsb-sql: SQL 客户端
+ .
  支持命令分类：
   - 版本控制: git
   - 容器: docker, kubectl, podman

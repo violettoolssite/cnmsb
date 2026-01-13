@@ -173,8 +173,12 @@ install_from_source() {
     
     sudo cp target/release/cnmsb /usr/bin/
     sudo chmod +x /usr/bin/cnmsb
+    
+    # 创建命令别名
     sudo ln -sf /usr/bin/cnmsb /usr/bin/cnmsb-sql
     sudo ln -sf /usr/bin/cnmsb /usr/bin/cntmd
+    
+    # 复制 shell 集成脚本
     sudo cp shell/cnmsb.zsh /usr/share/cnmsb/
     sudo cp shell/cnmsb.bash /usr/share/cnmsb/
     
@@ -252,6 +256,16 @@ main() {
     echo ""
     echo "如果当前 shell 不是 zsh，请执行："
     echo "  chsh -s \$(which zsh)"
+    echo ""
+    echo "可用命令："
+    echo "  cnmsb        - 命令行智能补全（自动生效）"
+    echo "  cnmsb edit   - 打开智能补全编辑器"
+    echo "  cntmd        - 打开智能补全编辑器（快捷命令）"
+    echo "  cnmsb-sql    - SQL 智能补全客户端"
+    echo ""
+    echo "编辑器示例："
+    echo "  cntmd myfile.txt"
+    echo "  cnmsb edit myfile.txt"
     echo ""
     echo "支持的发行版："
     echo "  - Debian/Ubuntu/Mint/Pop!_OS/Kali"

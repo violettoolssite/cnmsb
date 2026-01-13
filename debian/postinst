@@ -5,6 +5,10 @@ set -e
 
 case "$1" in
     configure)
+        # 创建符号链接
+        ln -sf /usr/bin/cnmsb /usr/bin/cnmsb-sql 2>/dev/null || true
+        ln -sf /usr/bin/cnmsb /usr/bin/cntmd 2>/dev/null || true
+        
         echo ""
         echo "====================================="
         echo "  cnmsb (操你妈傻逼) 安装成功！"
@@ -12,21 +16,21 @@ case "$1" in
         echo ""
         echo "智能命令补全已安装。"
         echo ""
-        echo "使用方法："
-        echo "  1. 重新登录或执行以下命令立即启用："
+        echo "可用命令："
+        echo "  cnmsb        - 命令行智能补全（自动生效）"
+        echo "  cnmsb edit   - 打开智能补全编辑器"
+        echo "  cntmd        - 打开智能补全编辑器（快捷命令）"
+        echo "  cnmsb-sql    - SQL 智能补全客户端"
         echo ""
-        echo "     Bash: source /usr/share/cnmsb/cnmsb.bash"
-        echo "     Zsh:  source /usr/share/cnmsb/cnmsb.zsh"
+        echo "编辑器使用："
+        echo "  cntmd myfile.txt"
+        echo "  cnmsb edit myfile.txt"
         echo ""
-        echo "  2. 或者将以下内容添加到你的 shell 配置文件："
+        echo "启用补全："
+        echo "  Zsh:  source /usr/share/cnmsb/cnmsb.zsh"
         echo ""
-        echo "     Bash (~/.bashrc):"
-        echo "       eval \"\$(cnmsb init bash)\""
-        echo ""
-        echo "     Zsh (~/.zshrc):"
-        echo "       eval \"\$(cnmsb init zsh)\""
-        echo ""
-        echo "开始享受智能补全体验吧！"
+        echo "或在 ~/.zshrc 中添加："
+        echo "  eval \"\$(cnmsb init zsh)\""
         echo ""
         ;;
 esac

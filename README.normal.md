@@ -66,6 +66,46 @@ $ tar ?
 - **灰色**: 描述文字
 - **白色**: 输入内容
 
+---
+
+## cntmd - 内置文本编辑器
+
+cnmsb 包含一个类 vim 文本编辑器 **cntmd**，具有基于历史的智能补全功能。
+
+### 启动编辑器
+
+```bash
+# 方式一：使用 cntmd 命令
+cntmd myfile.txt
+
+# 方式二：使用 cnmsb edit 子命令
+cnmsb edit myfile.txt
+```
+
+### 功能特点
+
+- 类 vim 操作模式（Normal/Insert/Command）
+- 智能补全：输入时自动显示灰色建议
+- 实时学习：记忆用户输入的词汇
+- 预装 100+ 常用词汇（shell 命令、编程关键词）
+
+### 编辑器快捷键
+
+| 模式 | 按键 | 功能 |
+|------|------|------|
+| Normal | i | 进入插入模式 |
+| Normal | a | 在光标后插入 |
+| Normal | o | 下方新建一行 |
+| Normal | h/j/k/l | 光标移动 |
+| Normal | :w | 保存文件 |
+| Normal | :q | 退出 |
+| Normal | :wq | 保存并退出 |
+| Insert | Tab | 接受补全建议 |
+| Insert | 右箭头 | 接受补全建议 |
+| Insert | Esc | 返回 Normal 模式 |
+
+---
+
 ## 支持命令
 
 支持 300+ 常用 Linux 命令，涵盖：
