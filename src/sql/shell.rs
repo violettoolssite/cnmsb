@@ -3,7 +3,6 @@
 use super::connection::{DbConnection, QueryResult};
 use super::database::{DatabaseType, DatabaseConfig};
 use super::engine::SqlEngine;
-use super::syntax::SqlCompletionKind;
 use std::io::{self, stdout, stdin, Write};
 use std::borrow::Cow;
 

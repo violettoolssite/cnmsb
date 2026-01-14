@@ -1,6 +1,6 @@
 //! 补全引擎核心
 
-use crate::completions::{args::ArgsCompleter, commands::CommandCompleter, files::FileCompleter, history::HistoryCompleter};
+use crate::completions::{args::ArgsCompleter, commands::CommandCompleter, context::ContextAwareCompleter, files::FileCompleter, history::HistoryCompleter};
 use crate::parser::CommandParser;
 use fuzzy_matcher::skim::SkimMatcherV2;
 use fuzzy_matcher::FuzzyMatcher;
@@ -67,19 +67,27 @@ pub struct CompletionEngine {
     file_completer: FileCompleter,
     history_completer: HistoryCompleter,
     args_completer: ArgsCompleter,
+    context_completer: ContextAwareCompleter,
     matcher: SkimMatcherV2,
 }
 
 impl CompletionEngine {
     pub fn new() -> Self {
-        CompletionEngine {
+        let mut engine = CompletionEngine {
             parser: CommandParser::new(),
             command_completer: CommandCompleter::new(),
             file_completer: FileCompleter::new(),
             history_completer: HistoryCompleter::new(),
             args_completer: ArgsCompleter::new(),
+            context_completer: ContextAwareCompleter::new(),
             matcher: SkimMatcherV2::default().ignore_case(),
-        }
+        };
+        
+        // 从历史命令中提取环境变量
+        let history = engine.history_completer.get_all_history();
+        engine.context_completer.extract_env_vars(history);
+        
+        engine
     }
 
     /// 获取补全建议
@@ -115,7 +123,13 @@ impl CompletionEngine {
         } else {
             // 已有命令，根据上下文补全参数/选项
             
-            // 1. 参数/选项补全（优先）
+            // 0. 上下文感知补全（优先，特别是 export 命令）
+            if self.context_completer.is_export_command(&parsed) {
+                let context_completions = self.context_completer.complete_env_var(&parsed);
+                completions.extend(context_completions);
+            }
+            
+            // 1. 参数/选项补全
             completions.extend(self.args_completer.complete(&parsed));
 
             // 2. 检查是否有子命令补全

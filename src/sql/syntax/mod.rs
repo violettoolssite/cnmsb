@@ -5,7 +5,7 @@ mod mysql;
 mod postgresql;
 mod sqlite;
 
-pub use common::{SqlSyntax, SqlCompletion, SqlCompletionKind, SqlContext};
+pub use common::{SqlSyntax, SqlCompletion};
 pub use mysql::MySqlSyntax;
 pub use postgresql::PostgreSqlSyntax;
 pub use sqlite::SqliteSyntax;

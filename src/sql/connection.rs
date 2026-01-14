@@ -268,7 +268,7 @@ impl DbConnection {
                 message: None,
             })
         } else {
-            let result = conn.exec_drop(sql, ()).map_err(|e| DbError::Query(e.to_string()))?;
+            let _result = conn.exec_drop(sql, ()).map_err(|e| DbError::Query(e.to_string()))?;
             let affected = conn.affected_rows();
             Ok(QueryResult {
                 columns: Vec::new(),

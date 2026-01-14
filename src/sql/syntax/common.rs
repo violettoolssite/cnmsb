@@ -128,7 +128,7 @@ pub trait SqlSyntax: Send + Sync {
         };
         
         let input_upper = input.to_uppercase();
-        let input_lower = input.to_lowercase();
+        let _input_lower = input.to_lowercase();
         
         // 获取当前正在输入的词
         let current_word = input.split_whitespace().last().unwrap_or("");

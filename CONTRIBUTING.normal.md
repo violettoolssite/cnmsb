@@ -19,7 +19,8 @@ cnmsb-tool/
 │   │   ├── commands.rs      # Command completion
 │   │   ├── args.rs          # Argument completion (combinable options)
 │   │   ├── files.rs         # File path completion
-│   │   └── history.rs       # History completion
+│   │   ├── history.rs       # History completion
+│   │   └── context.rs       # Context-aware completion (env vars, path finding)
 │   ├── database/            # Command database
 │   │   ├── mod.rs           # Database loading
 │   │   └── commands/        # Command definition files (YAML format)
@@ -43,7 +44,9 @@ cnmsb-tool/
 │       ├── render.rs        # Renderer
 │       ├── input.rs         # Input handling
 │       ├── history.rs       # History management
-│       └── completion.rs    # History-based completion (Trie structure)
+│       ├── completion.rs    # History-based completion (Trie structure)
+│       ├── context.rs       # Context-aware completion (env vars, PATH suggestions)
+│       └── nlp.rs           # Natural language understanding and path finding
 ├── shell/
 │   ├── cnmsb.zsh            # Zsh integration (inline completion, selector menu)
 │   └── cnmsb.bash           # Bash integration (deprecated, Zsh only)
@@ -361,10 +364,52 @@ Supports short option combination completion, for example:
 ### Editor Features
 
 - **History completion**: Trie-based completion using edit history and preloaded common words
+- **Context-aware completion**: Automatically analyzes file content, identifies environment variable definitions, provides intelligent suggestions
+- **Natural language understanding**: Understands user intent (e.g., `export JAVA_HOME=`), automatically finds system paths
+- **PATH intelligent suggestions**: Based on defined `*_HOME` variables, automatically generates PATH configuration suggestions
+- **Variable reference completion**: When typing `$VAR`, automatically matches defined variables (case-insensitive)
 - **Mode switching**: Three modes (Normal/Insert/Command)
 - **Auto file headers**: Automatically adds appropriate file headers based on file extension
 - **Welcome screen**: Shows help information for new files
 - **History persistence**: Saves edit history for future completions
+- **Right arrow acceptance**: Press right arrow (->) to accept context-aware suggestions
+
+### Context-Aware Completion
+
+#### Context Completion in Editor
+
+The editor automatically analyzes file content, extracts environment variable definitions, and provides intelligent completion:
+
+- **Environment variable recognition**: Recognizes `export VAR=value` and `VAR=value` formats
+- **Automatic path finding**: When typing `export JAVA_HOME=`, automatically finds Java installation paths in the system
+- **PATH intelligent suggestions**: When typing `export PATH=`, generates suggestions based on defined `*_HOME` variables
+- **Variable reference completion**: When typing `$VAR`, automatically matches defined variables
+
+#### Context Completion in Command Line
+
+Command line completion also supports context awareness:
+
+- **Environment variable completion**: Provides environment variable name and value completion in `export` commands
+- **Path finding**: Automatically finds installation paths for Java, Hadoop, Maven, and other tools
+- **PATH suggestions**: Intelligently generates PATH configuration suggestions
+
+#### Path Finding Features
+
+The system automatically searches for installation paths in the following locations:
+
+- **Java**: `/usr/lib/jvm`, `/opt/jdk`, `/opt/java`, etc.
+- **Hadoop**: `/opt/hadoop`, `/usr/local/hadoop`, etc.
+- **Maven**: `/opt/maven`, `/opt/apache-maven`, etc.
+- **Python/Node.js**: Uses `which` command to find paths
+- **Generic search**: Searches in `/opt`, `/usr/local`
+
+#### Natural Language Understanding
+
+The system can understand the following intents:
+
+- **Set environment variable**: Recognizes intent of `export VAR=`, finds paths based on variable type
+- **Configure PATH**: Recognizes intent of `export PATH=`, generates intelligent suggestions
+- **Find paths**: Extracts keywords from text, finds related paths
 
 ## Code Style
 

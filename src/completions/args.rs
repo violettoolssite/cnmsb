@@ -135,7 +135,7 @@ impl ArgsCompleter {
         completions: &mut Vec<Completion>,
         cmd: &crate::database::CommandDef,
         current: &str,
-        existing_chars: &[char]
+        _existing_chars: &[char]
     ) {
         // tar 的常见组合
         if cmd.name == "tar" {

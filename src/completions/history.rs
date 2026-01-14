@@ -103,6 +103,21 @@ impl HistoryCompleter {
             })
             .collect()
     }
+
+    /// 获取最近的 export 命令
+    pub fn get_recent_exports(&self, limit: usize) -> Vec<String> {
+        self.history
+            .iter()
+            .filter(|cmd| cmd.trim().starts_with("export"))
+            .take(limit)
+            .cloned()
+            .collect()
+    }
+
+    /// 获取所有历史命令（用于上下文分析）
+    pub fn get_all_history(&self) -> &[String] {
+        &self.history
+    }
 }
 
 impl Default for HistoryCompleter {

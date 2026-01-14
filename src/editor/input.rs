@@ -63,8 +63,10 @@ impl InputHandler {
     /// 映射按键事件
     fn map_key_event(&self, key: KeyEvent) -> EditorEvent {
         // 处理 Ctrl 组合键（但不包括 Ctrl+Shift 等组合）
+        // 注意：Ctrl+Home 和 Ctrl+End 等组合键不在这里处理，直接传递 Home/End
         if key.modifiers.contains(KeyModifiers::CONTROL) && 
-           !key.modifiers.contains(KeyModifiers::SHIFT) {
+           !key.modifiers.contains(KeyModifiers::SHIFT) &&
+           !key.modifiers.contains(KeyModifiers::ALT) {
             if let KeyCode::Char(c) = key.code {
                 return EditorEvent::Ctrl(c);
             }
@@ -86,6 +88,8 @@ impl InputHandler {
             KeyCode::End => EditorEvent::End,
             KeyCode::PageUp => EditorEvent::PageUp,
             KeyCode::PageDown => EditorEvent::PageDown,
+            // 处理某些终端可能发送的其他键码
+            KeyCode::F(_) => EditorEvent::None, // 功能键暂不支持
             _ => EditorEvent::None,
         }
     }

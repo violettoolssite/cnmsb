@@ -9,6 +9,8 @@ pub mod render;
 pub mod input;
 pub mod history;
 pub mod completion;
+pub mod context;
+pub mod nlp;
 
 use std::io;
 use std::path::PathBuf;
@@ -20,6 +22,8 @@ pub use render::Renderer;
 pub use input::InputHandler;
 pub use history::HistoryManager;
 pub use completion::Completer;
+pub use context::EditorContext;
+pub use nlp::{NLPAnalyzer, PathFinder, UserIntent, EnvVarType};
 
 /// 编辑器主结构
 pub struct Editor {
@@ -37,6 +41,8 @@ pub struct Editor {
     history: HistoryManager,
     /// 补全器
     completer: Completer,
+    /// 上下文分析器
+    context: EditorContext,
     /// 当前文件路径
     file_path: Option<PathBuf>,
     /// 是否已修改
@@ -65,6 +71,7 @@ impl Editor {
             input: InputHandler::new(),
             history,
             completer,
+            context: EditorContext::new(),
             file_path: None,
             modified: false,
             should_quit: false,
@@ -165,9 +172,15 @@ impl Editor {
             None => {}
         }
         
-        // 更新补全建议
+        // 更新补全建议（在 Insert 模式下实时更新）
         if matches!(self.mode, Mode::Insert) {
-            self.update_suggestion();
+            // 对于字符输入事件，延迟更新建议（避免在输入时清除建议）
+            if !matches!(event, input::EditorEvent::Char(_)) {
+                self.update_suggestion();
+            } else {
+                // 字符输入后，延迟更新建议以允许上下文分析
+                self.update_suggestion();
+            }
         }
     }
     
@@ -266,7 +279,12 @@ impl Editor {
         self.buffer.insert_char(self.cursor.row, self.cursor.col, c);
         self.cursor.col += 1;
         self.modified = true;
-        self.current_suggestion = None;
+        
+        // 输入字符后不清除建议，让 update_suggestion 根据新输入更新建议
+        // 只有在输入空格或标点时，才清除建议（因为已经完成了一个词）
+        if c.is_whitespace() || c == ';' || c == ':' || c == ',' {
+            self.current_suggestion = None;
+        }
     }
     
     /// 学习当前光标前的词
@@ -436,9 +454,10 @@ impl Editor {
     }
     
     fn handle_right(&mut self) {
-        // 在 Insert 模式下，右箭头也可以接受建议
+        // 在 Insert 模式下，右方向键（->）接受上下文补全建议
         if matches!(self.mode, Mode::Insert) {
             if let Some(ref suggestion) = self.current_suggestion.clone() {
+                // 接受上下文补全建议
                 for c in suggestion.chars() {
                     self.buffer.insert_char(self.cursor.row, self.cursor.col, c);
                     self.cursor.col += 1;
@@ -448,15 +467,32 @@ impl Editor {
                 return;
             }
         }
+        // 没有建议时，正常移动光标
         self.cursor.move_right(&self.buffer);
     }
     
     fn handle_home(&mut self) {
-        self.cursor.move_to_start_of_line();
+        match self.mode {
+            Mode::Insert | Mode::Normal => {
+                self.cursor.move_to_start_of_line();
+            }
+            Mode::Command => {
+                // 在命令模式下，Home 移到命令开头
+                self.buffer.command_buffer.clear();
+                self.status_message = ":".to_string();
+            }
+        }
     }
     
     fn handle_end(&mut self) {
-        self.cursor.move_to_end_of_line(&self.buffer);
+        match self.mode {
+            Mode::Insert | Mode::Normal => {
+                self.cursor.move_to_end_of_line(&self.buffer);
+            }
+            Mode::Command => {
+                // 在命令模式下，End 移到命令末尾（已经是末尾）
+            }
+        }
     }
     
     fn handle_page_up(&mut self) {
@@ -492,6 +528,13 @@ impl Editor {
     
     /// 更新补全建议
     fn update_suggestion(&mut self) {
+        // 分析文件上下文
+        let lines: Vec<String> = (0..self.buffer.line_count())
+            .map(|i| self.buffer.get_line(i).to_string())
+            .collect();
+        
+        self.context.analyze_file(&lines, self.cursor.row, self.cursor.col);
+        
         // 获取当前行光标前的文本
         let line = self.buffer.get_line(self.cursor.row);
         if self.cursor.col == 0 || line.is_empty() {
@@ -505,7 +548,7 @@ impl Editor {
         let prefix: String = line.chars().take(col).collect();
         
         // 找到当前正在输入的词
-        let word_start = prefix.rfind(|c: char| c.is_whitespace() || c == '(' || c == '{' || c == '[' || c == '"' || c == '\'')
+        let word_start = prefix.rfind(|c: char| c.is_whitespace() || c == '(' || c == '{' || c == '[' || c == '"' || c == '\'' || c == '=')
             .map(|i| i + 1)
             .unwrap_or(0);
         
@@ -522,7 +565,13 @@ impl Editor {
             return;
         }
         
-        // 获取补全建议
+        // 优先使用上下文补全
+        if let Some(context_suggestion) = self.context.get_contextual_suggestion(current_word) {
+            self.current_suggestion = Some(context_suggestion);
+            return;
+        }
+        
+        // 回退到普通补全
         self.current_suggestion = self.completer.get_suggestion(current_word);
     }
     

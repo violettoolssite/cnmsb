@@ -2,6 +2,7 @@
 
 pub mod args;
 pub mod commands;
+pub mod context;
 pub mod files;
 pub mod history;
 
