@@ -162,7 +162,7 @@
                 <div class="section-label">核心功能</div>
                 <h2 class="section-title" data-rude>让命令行<strong>不再那么操蛋</strong></h2>
                 <h2 class="section-title" data-normal style="display: none;">让命令行<strong>更高效</strong></h2>
-                <p class="section-desc">9 大核心功能，全面提升命令行使用体验</p>
+                <p class="section-desc">12 大核心功能，全面提升命令行使用体验</p>
             </div>
 
             <div class="features-grid">
@@ -212,6 +212,24 @@
                     <p data-rude>自带 cntmd（操你他妈的）文本编辑器，类 vim 操作。输入时自动显示补全建议，预装 100+ 常用词汇，边打边学。</p>
                     <p data-normal style="display: none;">自带 cntmd 文本编辑器，类 vim 操作。输入时自动显示补全建议，预装 100+ 常用词汇，实时学习你的输入习惯。</p>
                 </div>
+                <div class="feature-item">
+                    <div class="feature-number">10</div>
+                    <h3>上下文感知补全</h3>
+                    <p data-rude>妈的，这功能太智能了。输入 export JAVA_HOME= 时，自动在系统中查找 Java 安装路径并建议。写脚本配置环境变量时，不用再手动找路径了。</p>
+                    <p data-normal style="display: none;">智能分析上下文，输入 export JAVA_HOME= 时，自动在系统中查找 Java 安装路径并建议。写脚本配置环境变量时，无需手动查找路径。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">11</div>
+                    <h3>PATH 智能建议</h3>
+                    <p data-rude>输入 export PATH= 时，基于已定义的 *_HOME 变量自动生成 PATH 配置建议。比如定义了 JAVA_HOME，会自动建议 $PATH:$JAVA_HOME/bin，省得你一个个敲。</p>
+                    <p data-normal style="display: none;">输入 export PATH= 时，基于已定义的 *_HOME 变量自动生成 PATH 配置建议。比如定义了 JAVA_HOME，会自动建议 $PATH:$JAVA_HOME/bin，提高配置效率。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">12</div>
+                    <h3>自然语言理解</h3>
+                    <p data-rude>系统能理解你的意图。输入 export VAR= 时，根据变量名自动识别类型（Java、Hadoop、Maven 等），然后在系统中查找对应的安装路径。就像有个助手在帮你找东西。</p>
+                    <p data-normal style="display: none;">系统能理解你的意图。输入 export VAR= 时，根据变量名自动识别类型（Java、Hadoop、Maven 等），然后在系统中查找对应的安装路径，提供智能建议。</p>
+                </div>
             </div>
         </section>
 
@@ -239,6 +257,10 @@
                         <li>预装 100+ 常用编程词汇</li>
                         <li>实时学习你的输入习惯</li>
                         <li>支持变量名、函数名、关键字补全</li>
+                        <li>上下文感知：自动识别环境变量定义</li>
+                        <li>路径自动查找：输入 export JAVA_HOME= 时自动查找路径</li>
+                        <li>PATH 智能建议：基于 *_HOME 变量生成配置建议</li>
+                        <li>变量引用补全：输入 $VAR 时自动匹配已定义变量</li>
                     </ul>
                 </div>
                 <div class="feature-visual">
@@ -262,9 +284,9 @@
                             <div class="editor-content">
                                 <div class="editor-line"><span class="comment">#!/bin/bash</span></div>
                                 <div class="editor-line"></div>
-                                <div class="editor-line"><span class="keyword">export</span> PATH=<span class="string">"/usr/local/bin:$PATH"</span></div>
-                                <div class="editor-line"></div>
-                                <div class="editor-line"><span class="keyword">func</span><span class="suggestion">tion</span></div>
+                                <div class="editor-line"><span class="keyword">export</span> <span class="variable">JAVA_HOME</span>=<span class="suggestion">/opt/jdk</span></div>
+                                <div class="editor-line"><span class="keyword">export</span> <span class="variable">HADOOP_HOME</span>=<span class="suggestion">/opt/hadoop</span></div>
+                                <div class="editor-line"><span class="keyword">export</span> PATH=<span class="suggestion">$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin</span></div>
                             </div>
                         </div>
                     </div>
@@ -305,6 +327,58 @@
                                 <div>:w — 保存文件</div>
                                 <div>:q — 退出</div>
                                 <div>Tab — 接受补全</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 上下文感知补全 -->
+            <div class="feature-detail reverse animate-in">
+                <div class="feature-detail-content">
+                    <div class="feature-detail-label">上下文感知补全</div>
+                    <h3 class="feature-detail-title">AI 级别的智能补全</h3>
+                    <p class="feature-detail-desc" data-rude>
+                        这功能太他妈智能了。系统会自动分析文件内容，识别环境变量定义，然后提供智能建议。
+                        输入 export JAVA_HOME= 时，自动在系统中查找 Java 安装路径。写脚本配置环境变量时，不用再手动找路径了。
+                    </p>
+                    <p class="feature-detail-desc" data-normal style="display: none;">
+                        系统会自动分析文件内容，识别环境变量定义，然后提供智能建议。
+                        输入 export JAVA_HOME= 时，自动在系统中查找 Java 安装路径。写脚本配置环境变量时，无需手动查找路径。
+                    </p>
+                    <ul class="feature-list">
+                        <li>自动识别 export VAR=value 格式</li>
+                        <li>根据变量类型查找系统路径（Java、Hadoop、Maven 等）</li>
+                        <li>PATH 智能建议：基于 *_HOME 变量生成配置</li>
+                        <li>变量引用补全：输入 $VAR 时自动匹配</li>
+                        <li>大小写智能匹配：输入 $path 自动建议 $PATH</li>
+                        <li>支持部分路径输入，自动补全剩余部分</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="editor-showcase">
+                        <div class="editor-header">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                            <div class="editor-tabs">
+                                <div class="editor-tab active">env.sh</div>
+                            </div>
+                        </div>
+                        <div class="editor-body">
+                            <div class="editor-lines">
+                                <div>1</div>
+                                <div>2</div>
+                                <div>3</div>
+                                <div>4</div>
+                                <div>5</div>
+                            </div>
+                            <div class="editor-content">
+                                <div class="editor-line"><span class="comment">#!/bin/bash</span></div>
+                                <div class="editor-line"></div>
+                                <div class="editor-line"><span class="keyword">export</span> <span class="variable">JAVA_HOME</span>=<span class="suggestion">/opt/jdk</span></div>
+                                <div class="editor-line"><span class="keyword">export</span> <span class="variable">HADOOP_HOME</span>=<span class="suggestion">/opt/hadoop</span></div>
+                                <div class="editor-line"><span class="keyword">export</span> PATH=<span class="suggestion">$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin</span></div>
                             </div>
                         </div>
                     </div>
