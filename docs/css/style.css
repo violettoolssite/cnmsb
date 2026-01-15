@@ -91,9 +91,9 @@ body.loading {
     background: var(--bg);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    padding-top: 15vh;
+    gap: 0;
     z-index: 9999;
     transition: opacity 0.8s ease, visibility 0.8s ease;
     overflow: hidden;
@@ -105,26 +105,25 @@ body.loading {
     pointer-events: none;
 }
 
-/* Letter Animation Container - 全屏但不遮挡按钮 */
+/* Letter Animation Container */
 .letter-animation-container {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    height: 60%; /* 只占上半部分 */
+    height: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1;
     pointer-events: none;
+    margin-bottom: 2rem;
 }
 
 #letterCanvas {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: -100px;
+    left: -100px;
+    width: calc(100% + 200px);
+    height: calc(100% + 200px);
     pointer-events: none;
 }
 
@@ -206,53 +205,140 @@ body.loading {
     display: flex;
     gap: 2rem;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(40px);
     z-index: 200;
     position: relative;
-    margin-top: 2rem;
-    /* 动画由 JS 控制，不使用 CSS animation */
+    margin-top: 3rem;
+    /* 动画由 JS 控制 */
+}
+
+.version-selector.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .version-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    padding: 2.5rem 3rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
+    gap: 0.8rem;
+    padding: 2rem 3rem;
+    background: linear-gradient(145deg, rgba(22, 22, 22, 0.9), rgba(10, 10, 10, 0.9));
+    border: 1px solid rgba(212, 255, 0, 0.1);
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.4s ease;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     text-decoration: none;
     min-width: 200px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+/* 按钮光晕背景 */
+.version-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, rgba(212, 255, 0, 0.05) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.version-btn:hover::before {
+    opacity: 1;
+}
+
+/* 按钮边框发光 */
+.version-btn::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent, rgba(212, 255, 0, 0.3), transparent);
+    border-radius: 18px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.version-btn:hover::after {
+    opacity: 1;
+    animation: borderGlow 2s linear infinite;
+}
+
+@keyframes borderGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .version-btn:hover {
-    border-color: var(--accent);
-    transform: translateY(-5px);
-    box-shadow: 0 20px 60px rgba(212, 255, 0, 0.15);
+    border-color: rgba(212, 255, 0, 0.5);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(212, 255, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .version-btn .title {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.3rem;
+    font-weight: 700;
     color: var(--text);
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.version-btn:hover .title {
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(212, 255, 0, 0.5);
 }
 
 .version-btn .desc {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     text-align: center;
+    transition: color 0.3s ease;
+}
+
+.version-btn:hover .desc {
+    color: var(--text-secondary);
+}
+
+/* 脏话版本特殊样式 */
+.version-btn.rude::before {
+    background: radial-gradient(ellipse at center, rgba(255, 95, 86, 0.05) 0%, transparent 70%);
+}
+
+.version-btn.rude::after {
+    background: linear-gradient(45deg, transparent, rgba(255, 95, 86, 0.3), transparent);
 }
 
 .version-btn.rude:hover {
-    border-color: var(--red);
-    box-shadow: 0 20px 60px rgba(255, 95, 86, 0.15);
+    border-color: rgba(255, 95, 86, 0.5);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(255, 95, 86, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .version-btn.rude:hover .title {
     color: var(--red);
+    text-shadow: 0 0 20px rgba(255, 95, 86, 0.5);
+}
+
+/* 按钮入场动画 */
+.version-btn:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.version-btn:nth-child(2) {
+    transition-delay: 0.2s;
 }
 
 .loading-progress {

@@ -231,11 +231,9 @@ class LetterSwirl {
         }, 200);
         
         setTimeout(() => {
-            // 显示版本选择按钮
+            // 显示版本选择按钮（带入场动画）
             if (this.versionSelector) {
-                this.versionSelector.style.opacity = '1';
-                this.versionSelector.style.transform = 'translateY(0)';
-                this.versionSelector.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                this.versionSelector.classList.add('visible');
             }
         }, 500);
         
