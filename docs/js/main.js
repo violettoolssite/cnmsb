@@ -12,26 +12,32 @@ class LetterSwirl {
         this.canvas = document.getElementById('letterCanvas');
         this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
         this.formedWord = document.getElementById('formedWord');
+        this.versionSelector = document.querySelector('.version-selector');
         this.word = 'CNMSB';
         this.letters = [];
-        this.targetPositions = [];
-        this.phase = 'swirl'; // swirl, forming, formed, dissolving
+        this.phase = 'swirl'; // swirl, forming, formed
         this.phaseTime = 0;
         this.animationId = null;
+        this.isComplete = false;
         
-        // Timing (in frames, ~60fps)
-        this.swirlDuration = 120;      // 2 seconds of chaos
-        this.formDuration = 60;         // 1 second to form
-        this.holdDuration = 90;         // 1.5 seconds holding
-        this.dissolveDuration = 60;     // 1 second to dissolve
+        // Timing (in frames, ~60fps) - 更慢更丝滑
+        this.swirlDuration = 180;       // 3 seconds of swirl
+        this.formDuration = 120;        // 2 seconds to form (慢速聚合)
         
-        // All possible letters for swirling
-        this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
-        this.numLetters = 50;
+        // Only use the word letters for cleaner animation
+        this.alphabet = 'CNMSB';
+        this.numLetters = 30; // 减少字母数量
         
         if (this.canvas) {
             this.resize();
             window.addEventListener('resize', () => this.resize());
+        }
+        
+        // 初始隐藏版本选择按钮
+        if (this.versionSelector) {
+            this.versionSelector.style.opacity = '0';
+            this.versionSelector.style.transform = 'translateY(20px)';
+            this.versionSelector.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
         }
     }
     
@@ -52,20 +58,20 @@ class LetterSwirl {
     init() {
         if (!this.canvas || !this.ctx) return;
         
-        // Create swirling letters
+        // Create swirling letters - 只用 CNMSB 字母
         for (let i = 0; i < this.numLetters; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const radius = 50 + Math.random() * 150;
+            const radius = 80 + Math.random() * 200;
             this.letters.push({
                 char: this.alphabet[Math.floor(Math.random() * this.alphabet.length)],
                 x: this.centerX + Math.cos(angle) * radius,
                 y: this.centerY + Math.sin(angle) * radius,
-                vx: (Math.random() - 0.5) * 4,
-                vy: (Math.random() - 0.5) * 4,
+                vx: (Math.random() - 0.5) * 2, // 更慢的初始速度
+                vy: (Math.random() - 0.5) * 2,
                 angle: Math.random() * Math.PI * 2,
-                angularVel: (Math.random() - 0.5) * 0.2,
-                size: 12 + Math.random() * 20,
-                opacity: 0.3 + Math.random() * 0.7,
+                angularVel: (Math.random() - 0.5) * 0.08, // 更慢的旋转
+                size: 14 + Math.random() * 24,
+                opacity: 0.2 + Math.random() * 0.5,
                 targetX: 0,
                 targetY: 0,
                 isWordLetter: false,
@@ -73,9 +79,9 @@ class LetterSwirl {
             });
         }
         
-        // Assign word letters
+        // Assign word letters (前5个是 CNMSB)
         const wordLetters = this.word.split('');
-        const letterSpacing = 60;
+        const letterSpacing = 70;
         const totalWidth = (wordLetters.length - 1) * letterSpacing;
         const startX = this.centerX - totalWidth / 2;
         
@@ -85,13 +91,16 @@ class LetterSwirl {
             this.letters[i].wordIndex = i;
             this.letters[i].targetX = startX + i * letterSpacing;
             this.letters[i].targetY = this.centerY;
-            this.letters[i].size = 40;
+            this.letters[i].size = 50;
+            this.letters[i].opacity = 0.6;
         }
         
         this.animate();
     }
     
     animate() {
+        if (this.isComplete) return;
+        
         this.ctx.clearRect(0, 0, this.width, this.height);
         
         this.phaseTime++;
@@ -110,69 +119,71 @@ class LetterSwirl {
                 if (this.phaseTime > this.formDuration) {
                     this.phase = 'formed';
                     this.phaseTime = 0;
-                    if (this.formedWord) {
-                        this.formedWord.classList.add('visible');
-                    }
+                    this.onFormComplete();
                 }
                 break;
                 
             case 'formed':
-                this.updateFormed();
-                if (this.phaseTime > this.holdDuration) {
-                    this.phase = 'dissolving';
-                    this.phaseTime = 0;
-                    if (this.formedWord) {
-                        this.formedWord.classList.remove('visible');
-                        this.formedWord.classList.add('dissolving');
-                    }
-                }
-                break;
-                
-            case 'dissolving':
-                this.updateDissolving();
-                if (this.phaseTime > this.dissolveDuration) {
-                    this.phase = 'swirl';
-                    this.phaseTime = 0;
-                    if (this.formedWord) {
-                        this.formedWord.classList.remove('dissolving');
-                    }
-                    // Randomize letters again
-                    this.letters.forEach(letter => {
-                        if (!letter.isWordLetter) {
-                            letter.char = this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
-                        }
-                        letter.vx = (Math.random() - 0.5) * 6;
-                        letter.vy = (Math.random() - 0.5) * 6;
-                    });
-                }
+                // 保持静止，不再更新
                 break;
         }
         
         this.draw();
-        this.animationId = requestAnimationFrame(() => this.animate());
+        
+        if (this.phase !== 'formed') {
+            this.animationId = requestAnimationFrame(() => this.animate());
+        }
+    }
+    
+    onFormComplete() {
+        this.isComplete = true;
+        
+        // 显示 CSS 文字
+        if (this.formedWord) {
+            this.formedWord.classList.add('visible');
+        }
+        
+        // 隐藏 canvas 上的字母
+        this.letters.forEach(letter => {
+            if (letter.isWordLetter) {
+                letter.opacity = 0;
+            }
+        });
+        
+        // 重新绘制（隐藏 word letters）
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.draw();
+        
+        // 延迟显示版本选择按钮
+        setTimeout(() => {
+            if (this.versionSelector) {
+                this.versionSelector.style.opacity = '1';
+                this.versionSelector.style.transform = 'translateY(0)';
+            }
+        }, 300);
     }
     
     updateSwirl() {
         this.letters.forEach(letter => {
-            // Orbital motion around center
+            // Orbital motion around center - 更平滑
             const dx = letter.x - this.centerX;
             const dy = letter.y - this.centerY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
             
-            // Tangential velocity (swirl)
+            // Tangential velocity (swirl) - 更慢
             const tangentX = -dy / dist;
             const tangentY = dx / dist;
             
-            letter.vx += tangentX * 0.3;
-            letter.vy += tangentY * 0.3;
+            letter.vx += tangentX * 0.15;
+            letter.vy += tangentY * 0.15;
             
             // Slight attraction to center
-            letter.vx -= dx * 0.002;
-            letter.vy -= dy * 0.002;
+            letter.vx -= dx * 0.001;
+            letter.vy -= dy * 0.001;
             
-            // Damping
-            letter.vx *= 0.98;
-            letter.vy *= 0.98;
+            // Damping - 更平滑
+            letter.vx *= 0.99;
+            letter.vy *= 0.99;
             
             letter.x += letter.vx;
             letter.y += letter.vy;
@@ -187,61 +198,30 @@ class LetterSwirl {
     
     updateForming() {
         const progress = this.phaseTime / this.formDuration;
-        const eased = this.easeOutCubic(progress);
+        const eased = this.easeInOutCubic(progress); // 更丝滑的缓动
         
         this.letters.forEach(letter => {
             if (letter.isWordLetter) {
-                // Move toward target position
-                letter.x += (letter.targetX - letter.x) * 0.15;
-                letter.y += (letter.targetY - letter.y) * 0.15;
-                letter.angle *= 0.9;
-                letter.opacity = Math.min(1, letter.opacity + 0.05);
+                // 平滑移动到目标位置
+                const ease = 0.05 + eased * 0.1; // 渐进加速
+                letter.x += (letter.targetX - letter.x) * ease;
+                letter.y += (letter.targetY - letter.y) * ease;
+                letter.angle *= 0.95; // 慢慢停止旋转
+                letter.opacity = Math.min(1, 0.6 + eased * 0.4);
+                letter.size = 50 + eased * 10; // 轻微放大
             } else {
-                // Non-word letters fade and scatter
-                letter.x += letter.vx;
-                letter.y += letter.vy;
-                letter.opacity = Math.max(0, 1 - eased);
+                // 非目标字母慢慢淡出
+                letter.x += letter.vx * 0.5;
+                letter.y += letter.vy * 0.5;
+                letter.opacity = Math.max(0, letter.opacity - 0.015);
+                letter.angle += letter.angularVel * 0.5;
             }
-        });
-    }
-    
-    updateFormed() {
-        // Word letters stay in place with subtle float
-        this.letters.forEach(letter => {
-            if (letter.isWordLetter) {
-                letter.x = letter.targetX + Math.sin(this.phaseTime * 0.05 + letter.wordIndex) * 2;
-                letter.y = letter.targetY + Math.cos(this.phaseTime * 0.07 + letter.wordIndex) * 1;
-                letter.opacity = 0; // Hide canvas letters, show CSS word
-            }
-        });
-    }
-    
-    updateDissolving() {
-        const progress = this.phaseTime / this.dissolveDuration;
-        
-        this.letters.forEach(letter => {
-            if (letter.isWordLetter) {
-                // Explode outward
-                const angle = Math.random() * Math.PI * 2;
-                letter.vx += Math.cos(angle) * 0.5;
-                letter.vy += Math.sin(angle) * 0.5;
-                letter.opacity = Math.min(1, progress);
-            } else {
-                // Fade back in
-                letter.opacity = Math.min(0.7, progress);
-            }
-            
-            letter.x += letter.vx;
-            letter.y += letter.vy;
-            letter.vx *= 0.98;
-            letter.vy *= 0.98;
-            letter.angle += letter.angularVel;
         });
     }
     
     draw() {
         this.letters.forEach(letter => {
-            if (letter.opacity <= 0) return;
+            if (letter.opacity <= 0.01) return;
             
             this.ctx.save();
             this.ctx.translate(letter.x, letter.y);
@@ -251,10 +231,10 @@ class LetterSwirl {
             this.ctx.textAlign = 'center';
             this.ctx.textBaseline = 'middle';
             
-            // Glow effect for word letters
-            if (letter.isWordLetter && this.phase !== 'swirl') {
+            // Glow effect for word letters during forming
+            if (letter.isWordLetter && this.phase === 'forming') {
                 this.ctx.shadowColor = '#d4ff00';
-                this.ctx.shadowBlur = 20;
+                this.ctx.shadowBlur = 15 * letter.opacity;
             }
             
             this.ctx.fillStyle = `rgba(212, 255, 0, ${letter.opacity})`;
@@ -264,11 +244,12 @@ class LetterSwirl {
         });
     }
     
-    easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
+    easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
     
     stop() {
+        this.isComplete = true;
         if (this.animationId) {
             cancelAnimationFrame(this.animationId);
         }

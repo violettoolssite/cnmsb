@@ -172,7 +172,8 @@ body.loading {
     display: flex;
     gap: 2rem;
     opacity: 0;
-    animation: fadeInUp 1s ease 0.6s forwards;
+    transform: translateY(20px);
+    /* 动画由 JS 控制，不使用 CSS animation */
 }
 
 .version-btn {
@@ -194,10 +195,6 @@ body.loading {
     border-color: var(--accent);
     transform: translateY(-5px);
     box-shadow: 0 20px 60px rgba(212, 255, 0, 0.15);
-}
-
-.version-btn .icon {
-    font-size: 2.5rem;
 }
 
 .version-btn .title {
@@ -1276,10 +1273,6 @@ footer {
         border-radius: 16px;
     }
 
-    .version-btn .icon {
-        font-size: 2rem;
-    }
-
     .version-btn .title {
         font-size: 1rem;
     }
@@ -1697,10 +1690,6 @@ footer {
 
     .version-btn {
         padding: 1.25rem;
-    }
-
-    .version-btn .icon {
-        font-size: 1.5rem;
     }
 
     .version-btn .title {
