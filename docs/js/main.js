@@ -38,14 +38,11 @@ class LetterSwirl {
             window.addEventListener('resize', () => this.resize());
         }
         
-        // 初始隐藏所有内容（等动画结束才显示）
-        const elementsToHide = [this.versionSelector, this.loadingSubtitle, this.loadingProgress];
-        elementsToHide.forEach(el => {
-            if (el) {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-            }
-        });
+        // 初始隐藏按钮和进度条（等动画结束才显示）
+        // 注意：不要隐藏 versionSelector，因为它的初始状态已在 CSS 中设置
+        if (this.loadingProgress) {
+            this.loadingProgress.style.opacity = '0';
+        }
     }
     
     resize() {
@@ -230,10 +227,14 @@ class LetterSwirl {
             }
         }, 200);
         
+        // 显示版本选择按钮（带入场动画）
         setTimeout(() => {
-            // 显示版本选择按钮（带入场动画）
             if (this.versionSelector) {
                 this.versionSelector.classList.add('visible');
+                // 备用：直接设置样式确保可见
+                this.versionSelector.style.opacity = '1';
+                this.versionSelector.style.transform = 'translateY(0)';
+                this.versionSelector.style.visibility = 'visible';
             }
         }, 500);
         
@@ -413,6 +414,25 @@ class LoadingScreen {
         versionBtns.forEach(btn => {
             btn.addEventListener('click', (e) => this.handleVersionSelect(e));
         });
+        
+        // 备用方案：6秒后强制显示所有内容
+        setTimeout(() => {
+            const versionSelector = document.querySelector('.version-selector');
+            const formedWord = document.getElementById('formedWord');
+            const loadingSubtitle = document.querySelector('.loading-subtitle');
+            
+            if (versionSelector) {
+                versionSelector.classList.add('visible');
+                versionSelector.style.opacity = '1';
+                versionSelector.style.visibility = 'visible';
+            }
+            if (formedWord) {
+                formedWord.classList.add('visible');
+            }
+            if (loadingSubtitle) {
+                loadingSubtitle.classList.add('visible');
+            }
+        }, 6000);
     }
 
     handleVersionSelect(e) {

@@ -93,10 +93,10 @@ body.loading {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 0;
+    gap: 1rem;
     z-index: 9999;
     transition: opacity 0.8s ease, visibility 0.8s ease;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .loading-screen.hidden {
@@ -213,8 +213,9 @@ body.loading {
 }
 
 .version-selector.visible {
-    opacity: 1;
-    transform: translateY(0);
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    visibility: visible !important;
 }
 
 .version-btn {
