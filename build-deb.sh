@@ -16,7 +16,21 @@ echo
 
 # 构建 release 版本
 echo "1. 编译 Rust 项目..."
+
+# 检测 WSL 并设置编译目录（避免 Windows 文件系统权限问题）
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    export CARGO_TARGET_DIR="$HOME/.cargo/cnmsb-build"
+    echo "检测到 WSL 环境，使用 CARGO_TARGET_DIR=$CARGO_TARGET_DIR"
+fi
+
 cargo build --release
+
+# 确定二进制文件路径（WSL 使用自定义 target 目录）
+if [ -n "$CARGO_TARGET_DIR" ] && [ -f "$CARGO_TARGET_DIR/release/cnmsb" ]; then
+    BINARY_PATH="$CARGO_TARGET_DIR/release/cnmsb"
+else
+    BINARY_PATH="target/release/cnmsb"
+fi
 
 # 在 Linux 原生文件系统创建包目录
 echo "2. 创建包目录结构..."
@@ -28,7 +42,7 @@ mkdir -p "$BUILD_DIR/$PKG_NAME/etc/profile.d"
 
 # 复制文件
 echo "3. 复制文件..."
-cp target/release/cnmsb "$BUILD_DIR/$PKG_NAME/usr/bin/"
+cp "$BINARY_PATH" "$BUILD_DIR/$PKG_NAME/usr/bin/cnmsb"
 chmod 755 "$BUILD_DIR/$PKG_NAME/usr/bin/cnmsb"
 
 # 创建 cntmd 符号链接

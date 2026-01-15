@@ -15,10 +15,15 @@
     <div class="grain"></div>
 
     <!-- ======================================== -->
-    <!-- Loading Screen with Version Selection   -->
+    <!-- Loading Screen with Letter Animation    -->
     <!-- ======================================== -->
     <div class="loading-screen">
-        <div class="loading-logo">CNMSB</div>
+        <!-- Letter Swirl Animation Container -->
+        <div class="letter-animation-container">
+            <canvas id="letterCanvas"></canvas>
+            <div class="formed-word" id="formedWord">CNMSB</div>
+        </div>
+        
         <div class="loading-subtitle">Linux 命令行智能补全工具</div>
         
         <div class="version-selector">

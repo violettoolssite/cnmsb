@@ -4,6 +4,278 @@
  */
 
 // ========================================
+// Letter Swirl Animation
+// ========================================
+
+class LetterSwirl {
+    constructor() {
+        this.canvas = document.getElementById('letterCanvas');
+        this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+        this.formedWord = document.getElementById('formedWord');
+        this.word = 'CNMSB';
+        this.letters = [];
+        this.targetPositions = [];
+        this.phase = 'swirl'; // swirl, forming, formed, dissolving
+        this.phaseTime = 0;
+        this.animationId = null;
+        
+        // Timing (in frames, ~60fps)
+        this.swirlDuration = 120;      // 2 seconds of chaos
+        this.formDuration = 60;         // 1 second to form
+        this.holdDuration = 90;         // 1.5 seconds holding
+        this.dissolveDuration = 60;     // 1 second to dissolve
+        
+        // All possible letters for swirling
+        this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
+        this.numLetters = 50;
+        
+        if (this.canvas) {
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+        }
+    }
+    
+    resize() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        this.canvas.style.width = rect.width + 'px';
+        this.canvas.style.height = rect.height + 'px';
+        this.ctx.scale(dpr, dpr);
+        this.width = rect.width;
+        this.height = rect.height;
+        this.centerX = this.width / 2;
+        this.centerY = this.height / 2;
+    }
+    
+    init() {
+        if (!this.canvas || !this.ctx) return;
+        
+        // Create swirling letters
+        for (let i = 0; i < this.numLetters; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 50 + Math.random() * 150;
+            this.letters.push({
+                char: this.alphabet[Math.floor(Math.random() * this.alphabet.length)],
+                x: this.centerX + Math.cos(angle) * radius,
+                y: this.centerY + Math.sin(angle) * radius,
+                vx: (Math.random() - 0.5) * 4,
+                vy: (Math.random() - 0.5) * 4,
+                angle: Math.random() * Math.PI * 2,
+                angularVel: (Math.random() - 0.5) * 0.2,
+                size: 12 + Math.random() * 20,
+                opacity: 0.3 + Math.random() * 0.7,
+                targetX: 0,
+                targetY: 0,
+                isWordLetter: false,
+                wordIndex: -1
+            });
+        }
+        
+        // Assign word letters
+        const wordLetters = this.word.split('');
+        const letterSpacing = 60;
+        const totalWidth = (wordLetters.length - 1) * letterSpacing;
+        const startX = this.centerX - totalWidth / 2;
+        
+        for (let i = 0; i < wordLetters.length; i++) {
+            this.letters[i].char = wordLetters[i];
+            this.letters[i].isWordLetter = true;
+            this.letters[i].wordIndex = i;
+            this.letters[i].targetX = startX + i * letterSpacing;
+            this.letters[i].targetY = this.centerY;
+            this.letters[i].size = 40;
+        }
+        
+        this.animate();
+    }
+    
+    animate() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        
+        this.phaseTime++;
+        
+        switch (this.phase) {
+            case 'swirl':
+                this.updateSwirl();
+                if (this.phaseTime > this.swirlDuration) {
+                    this.phase = 'forming';
+                    this.phaseTime = 0;
+                }
+                break;
+                
+            case 'forming':
+                this.updateForming();
+                if (this.phaseTime > this.formDuration) {
+                    this.phase = 'formed';
+                    this.phaseTime = 0;
+                    if (this.formedWord) {
+                        this.formedWord.classList.add('visible');
+                    }
+                }
+                break;
+                
+            case 'formed':
+                this.updateFormed();
+                if (this.phaseTime > this.holdDuration) {
+                    this.phase = 'dissolving';
+                    this.phaseTime = 0;
+                    if (this.formedWord) {
+                        this.formedWord.classList.remove('visible');
+                        this.formedWord.classList.add('dissolving');
+                    }
+                }
+                break;
+                
+            case 'dissolving':
+                this.updateDissolving();
+                if (this.phaseTime > this.dissolveDuration) {
+                    this.phase = 'swirl';
+                    this.phaseTime = 0;
+                    if (this.formedWord) {
+                        this.formedWord.classList.remove('dissolving');
+                    }
+                    // Randomize letters again
+                    this.letters.forEach(letter => {
+                        if (!letter.isWordLetter) {
+                            letter.char = this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
+                        }
+                        letter.vx = (Math.random() - 0.5) * 6;
+                        letter.vy = (Math.random() - 0.5) * 6;
+                    });
+                }
+                break;
+        }
+        
+        this.draw();
+        this.animationId = requestAnimationFrame(() => this.animate());
+    }
+    
+    updateSwirl() {
+        this.letters.forEach(letter => {
+            // Orbital motion around center
+            const dx = letter.x - this.centerX;
+            const dy = letter.y - this.centerY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            // Tangential velocity (swirl)
+            const tangentX = -dy / dist;
+            const tangentY = dx / dist;
+            
+            letter.vx += tangentX * 0.3;
+            letter.vy += tangentY * 0.3;
+            
+            // Slight attraction to center
+            letter.vx -= dx * 0.002;
+            letter.vy -= dy * 0.002;
+            
+            // Damping
+            letter.vx *= 0.98;
+            letter.vy *= 0.98;
+            
+            letter.x += letter.vx;
+            letter.y += letter.vy;
+            
+            letter.angle += letter.angularVel;
+            
+            // Keep within bounds
+            if (letter.x < 0 || letter.x > this.width) letter.vx *= -0.8;
+            if (letter.y < 0 || letter.y > this.height) letter.vy *= -0.8;
+        });
+    }
+    
+    updateForming() {
+        const progress = this.phaseTime / this.formDuration;
+        const eased = this.easeOutCubic(progress);
+        
+        this.letters.forEach(letter => {
+            if (letter.isWordLetter) {
+                // Move toward target position
+                letter.x += (letter.targetX - letter.x) * 0.15;
+                letter.y += (letter.targetY - letter.y) * 0.15;
+                letter.angle *= 0.9;
+                letter.opacity = Math.min(1, letter.opacity + 0.05);
+            } else {
+                // Non-word letters fade and scatter
+                letter.x += letter.vx;
+                letter.y += letter.vy;
+                letter.opacity = Math.max(0, 1 - eased);
+            }
+        });
+    }
+    
+    updateFormed() {
+        // Word letters stay in place with subtle float
+        this.letters.forEach(letter => {
+            if (letter.isWordLetter) {
+                letter.x = letter.targetX + Math.sin(this.phaseTime * 0.05 + letter.wordIndex) * 2;
+                letter.y = letter.targetY + Math.cos(this.phaseTime * 0.07 + letter.wordIndex) * 1;
+                letter.opacity = 0; // Hide canvas letters, show CSS word
+            }
+        });
+    }
+    
+    updateDissolving() {
+        const progress = this.phaseTime / this.dissolveDuration;
+        
+        this.letters.forEach(letter => {
+            if (letter.isWordLetter) {
+                // Explode outward
+                const angle = Math.random() * Math.PI * 2;
+                letter.vx += Math.cos(angle) * 0.5;
+                letter.vy += Math.sin(angle) * 0.5;
+                letter.opacity = Math.min(1, progress);
+            } else {
+                // Fade back in
+                letter.opacity = Math.min(0.7, progress);
+            }
+            
+            letter.x += letter.vx;
+            letter.y += letter.vy;
+            letter.vx *= 0.98;
+            letter.vy *= 0.98;
+            letter.angle += letter.angularVel;
+        });
+    }
+    
+    draw() {
+        this.letters.forEach(letter => {
+            if (letter.opacity <= 0) return;
+            
+            this.ctx.save();
+            this.ctx.translate(letter.x, letter.y);
+            this.ctx.rotate(letter.angle);
+            
+            this.ctx.font = `bold ${letter.size}px 'JetBrains Mono', monospace`;
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            
+            // Glow effect for word letters
+            if (letter.isWordLetter && this.phase !== 'swirl') {
+                this.ctx.shadowColor = '#d4ff00';
+                this.ctx.shadowBlur = 20;
+            }
+            
+            this.ctx.fillStyle = `rgba(212, 255, 0, ${letter.opacity})`;
+            this.ctx.fillText(letter.char, 0, 0);
+            
+            this.ctx.restore();
+        });
+    }
+    
+    easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+    
+    stop() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
+    }
+}
+
+// ========================================
 // Loading Screen & Version Selection
 // ========================================
 
@@ -17,9 +289,14 @@ class LoadingScreen {
         this.progress = 0;
         this.targetProgress = 0;
         this.isVersionSelected = false;
+        this.letterSwirl = null;
     }
 
     init() {
+        // 初始化字母动画
+        this.letterSwirl = new LetterSwirl();
+        this.letterSwirl.init();
+        
         // 模拟加载进度
         this.simulateLoading();
         
@@ -129,6 +406,11 @@ class LoadingScreen {
     }
 
     hideLoadingScreen() {
+        // 停止字母动画
+        if (this.letterSwirl) {
+            this.letterSwirl.stop();
+        }
+        
         this.screen.classList.add('hidden');
         this.mainContent.classList.add('visible');
         this.nav.classList.add('visible');

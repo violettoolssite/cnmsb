@@ -103,6 +103,51 @@ body.loading {
     pointer-events: none;
 }
 
+/* Letter Animation Container */
+.letter-animation-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#letterCanvas {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 200px;
+    pointer-events: none;
+}
+
+.formed-word {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 700;
+    letter-spacing: 10px;
+    color: var(--accent);
+    opacity: 0;
+    transform: scale(0.8);
+    text-shadow: 0 0 60px rgba(212, 255, 0, 0.5);
+    z-index: 10;
+    position: relative;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.formed-word.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.formed-word.dissolving {
+    opacity: 0;
+    transform: scale(1.1);
+}
+
 .loading-logo {
     font-family: 'JetBrains Mono', monospace;
     font-size: clamp(3rem, 10vw, 8rem);
@@ -1190,6 +1235,21 @@ footer {
     /* Loading Screen */
     .loading-screen {
         padding: 2rem;
+    }
+
+    .letter-animation-container {
+        height: 150px;
+        margin-bottom: 1rem;
+    }
+
+    #letterCanvas {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .formed-word {
+        font-size: clamp(2rem, 12vw, 4rem);
+        letter-spacing: 3px;
     }
 
     .loading-logo {
