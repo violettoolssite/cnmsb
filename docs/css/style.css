@@ -109,29 +109,29 @@ body.loading {
 .letter-animation-container {
     position: relative;
     width: 100%;
-    height: 250px;
+    height: 180px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1;
     pointer-events: none;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 #letterCanvas {
     position: absolute;
-    top: -100px;
-    left: -100px;
-    width: calc(100% + 200px);
-    height: calc(100% + 200px);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
 }
 
 .formed-word {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(3rem, 10vw, 8rem);
+    font-size: clamp(2.5rem, 8vw, 5rem);
     font-weight: 700;
-    letter-spacing: 12px;
+    letter-spacing: clamp(5px, 2vw, 12px);
     color: var(--accent);
     opacity: 0;
     transform: scale(0.8);
@@ -141,14 +141,16 @@ body.loading {
         0 0 80px rgba(212, 255, 0, 0.4),
         0 0 120px rgba(212, 255, 0, 0.2);
     z-index: 102;
-    position: relative;
-    margin-bottom: 1rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
     transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .formed-word.visible {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
     animation: wordGlow 2s ease-in-out infinite alternate;
 }
 
@@ -1366,18 +1368,18 @@ footer {
     }
 
     .letter-animation-container {
-        height: 150px;
-        margin-bottom: 1rem;
+        height: 120px;
+        margin-bottom: 0.5rem;
     }
 
     #letterCanvas {
         width: 100%;
-        max-width: 400px;
+        height: 100%;
     }
 
     .formed-word {
-        font-size: clamp(2rem, 12vw, 4rem);
-        letter-spacing: 3px;
+        font-size: clamp(1.8rem, 10vw, 3rem);
+        letter-spacing: clamp(3px, 1vw, 6px);
     }
 
     .loading-logo {

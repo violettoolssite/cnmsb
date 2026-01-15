@@ -52,15 +52,53 @@ class LetterSwirl {
         const container = this.canvas.parentElement;
         const rect = container.getBoundingClientRect();
         
-        this.canvas.width = rect.width * dpr;
-        this.canvas.height = rect.height * dpr;
-        this.canvas.style.width = rect.width + 'px';
-        this.canvas.style.height = rect.height + 'px';
+        // Canvas 尺寸 = 容器尺寸
+        const canvasWidth = rect.width;
+        const canvasHeight = rect.height;
+        
+        this.canvas.width = canvasWidth * dpr;
+        this.canvas.height = canvasHeight * dpr;
+        this.canvas.style.width = canvasWidth + 'px';
+        this.canvas.style.height = canvasHeight + 'px';
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0); // 重置变换
         this.ctx.scale(dpr, dpr);
-        this.width = rect.width;
-        this.height = rect.height;
-        this.centerX = this.width / 2;
-        this.centerY = this.height / 2;
+        
+        this.width = canvasWidth;
+        this.height = canvasHeight;
+        
+        // 获取 formed-word 的实际位置作为聚合目标
+        if (this.formedWord) {
+            const wordRect = this.formedWord.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            // 相对于 canvas 的中心位置
+            this.centerX = (wordRect.left + wordRect.width / 2) - containerRect.left;
+            this.centerY = (wordRect.top + wordRect.height / 2) - containerRect.top;
+        } else {
+            this.centerX = this.width / 2;
+            this.centerY = this.height / 2;
+        }
+        
+        // 更新字母的目标位置
+        this.updateLetterTargets();
+    }
+    
+    updateLetterTargets() {
+        if (!this.letters.length) return;
+        
+        const wordLetters = this.word.split('');
+        // 响应式字母间距
+        const fontSize = Math.min(80, Math.max(40, this.width / 10));
+        const letterSpacing = fontSize * 0.9;
+        const totalWidth = (wordLetters.length - 1) * letterSpacing;
+        const startX = this.centerX - totalWidth / 2;
+        
+        for (let i = 0; i < Math.min(wordLetters.length, this.letters.length); i++) {
+            if (this.letters[i].isWordLetter) {
+                this.letters[i].targetX = startX + i * letterSpacing;
+                this.letters[i].targetY = this.centerY;
+                this.letters[i].size = fontSize;
+            }
+        }
     }
     
     init() {
@@ -102,20 +140,15 @@ class LetterSwirl {
         
         // Assign word letters (前5个是 CNMSB)
         const wordLetters = this.word.split('');
-        const letterSpacing = Math.min(100, this.width / 8);
+        const fontSize = Math.min(80, Math.max(40, this.width / 10));
+        const letterSpacing = fontSize * 0.9;
         const totalWidth = (wordLetters.length - 1) * letterSpacing;
         const startX = this.centerX - totalWidth / 2;
         
         for (let i = 0; i < wordLetters.length; i++) {
-            // 随机起始位置（屏幕边缘）
-            const edge = Math.floor(Math.random() * 4);
-            let startPosX, startPosY;
-            switch(edge) {
-                case 0: startPosX = Math.random() * this.width; startPosY = -50; break;
-                case 1: startPosX = this.width + 50; startPosY = Math.random() * this.height; break;
-                case 2: startPosX = Math.random() * this.width; startPosY = this.height + 50; break;
-                case 3: startPosX = -50; startPosY = Math.random() * this.height; break;
-            }
+            // 随机起始位置（屏幕各处）
+            const startPosX = Math.random() * this.width;
+            const startPosY = Math.random() * this.height;
             
             this.letters[i].char = wordLetters[i];
             this.letters[i].isWordLetter = true;
@@ -124,7 +157,7 @@ class LetterSwirl {
             this.letters[i].y = startPosY;
             this.letters[i].targetX = startX + i * letterSpacing;
             this.letters[i].targetY = this.centerY;
-            this.letters[i].size = 60;
+            this.letters[i].size = fontSize;
             this.letters[i].opacity = 0.8;
             this.letters[i].layer = 1;
         }
