@@ -13,6 +13,10 @@ class LetterSwirl {
         this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
         this.formedWord = document.getElementById('formedWord');
         this.versionSelector = document.querySelector('.version-selector');
+        this.loadingSubtitle = document.querySelector('.loading-subtitle');
+        this.loadingProgress = document.querySelector('.loading-progress');
+        this.progressFill = document.querySelector('.progress-fill');
+        this.progressText = document.querySelector('.progress-text');
         this.word = 'CNMSB';
         this.letters = [];
         this.phase = 'swirl'; // swirl, forming, formed
@@ -23,6 +27,7 @@ class LetterSwirl {
         // Timing (in frames, ~60fps) - 更慢更丝滑
         this.swirlDuration = 180;       // 3 seconds of swirl
         this.formDuration = 120;        // 2 seconds to form (慢速聚合)
+        this.totalDuration = this.swirlDuration + this.formDuration;
         
         // Only use the word letters for cleaner animation
         this.alphabet = 'CNMSB';
@@ -33,12 +38,14 @@ class LetterSwirl {
             window.addEventListener('resize', () => this.resize());
         }
         
-        // 初始隐藏版本选择按钮
-        if (this.versionSelector) {
-            this.versionSelector.style.opacity = '0';
-            this.versionSelector.style.transform = 'translateY(20px)';
-            this.versionSelector.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-        }
+        // 初始隐藏所有内容（等动画结束才显示）
+        const elementsToHide = [this.versionSelector, this.loadingSubtitle, this.loadingProgress];
+        elementsToHide.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+            }
+        });
     }
     
     resize() {
@@ -105,6 +112,9 @@ class LetterSwirl {
         
         this.phaseTime++;
         
+        // 更新进度条（与动画同步）
+        this.updateProgress();
+        
         switch (this.phase) {
             case 'swirl':
                 this.updateSwirl();
@@ -135,8 +145,36 @@ class LetterSwirl {
         }
     }
     
+    updateProgress() {
+        let totalElapsed;
+        if (this.phase === 'swirl') {
+            totalElapsed = this.phaseTime;
+        } else if (this.phase === 'forming') {
+            totalElapsed = this.swirlDuration + this.phaseTime;
+        } else {
+            totalElapsed = this.totalDuration;
+        }
+        
+        const progress = Math.min(100, Math.round((totalElapsed / this.totalDuration) * 100));
+        
+        if (this.progressFill) {
+            this.progressFill.style.width = `${progress}%`;
+        }
+        if (this.progressText) {
+            this.progressText.textContent = `${progress}%`;
+        }
+    }
+    
     onFormComplete() {
         this.isComplete = true;
+        
+        // 确保进度条到100%
+        if (this.progressFill) {
+            this.progressFill.style.width = '100%';
+        }
+        if (this.progressText) {
+            this.progressText.textContent = '100%';
+        }
         
         // 显示 CSS 文字
         if (this.formedWord) {
@@ -154,13 +192,29 @@ class LetterSwirl {
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.draw();
         
-        // 延迟显示版本选择按钮
+        // 依次显示其他内容
         setTimeout(() => {
+            // 显示副标题
+            if (this.loadingSubtitle) {
+                this.loadingSubtitle.classList.add('visible');
+            }
+        }, 200);
+        
+        setTimeout(() => {
+            // 显示版本选择按钮
             if (this.versionSelector) {
                 this.versionSelector.style.opacity = '1';
                 this.versionSelector.style.transform = 'translateY(0)';
+                this.versionSelector.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
             }
-        }, 300);
+        }, 500);
+        
+        setTimeout(() => {
+            // 显示进度条（可选，作为装饰）
+            if (this.loadingProgress) {
+                this.loadingProgress.classList.add('visible');
+            }
+        }, 800);
     }
     
     updateSwirl() {
@@ -274,55 +328,15 @@ class LoadingScreen {
     }
 
     init() {
-        // 初始化字母动画
+        // 初始化字母动画（进度条由动画控制）
         this.letterSwirl = new LetterSwirl();
         this.letterSwirl.init();
-        
-        // 模拟加载进度
-        this.simulateLoading();
         
         // 监听版本选择按钮
         const versionBtns = document.querySelectorAll('.version-btn');
         versionBtns.forEach(btn => {
             btn.addEventListener('click', (e) => this.handleVersionSelect(e));
         });
-    }
-
-    simulateLoading() {
-        const stages = [
-            { progress: 20, delay: 300 },
-            { progress: 45, delay: 600 },
-            { progress: 70, delay: 400 },
-            { progress: 90, delay: 500 },
-            { progress: 100, delay: 300 }
-        ];
-
-        let currentStage = 0;
-        
-        const runStage = () => {
-            if (currentStage >= stages.length) return;
-            
-            const stage = stages[currentStage];
-            this.targetProgress = stage.progress;
-            this.animateProgress();
-            
-            currentStage++;
-            setTimeout(runStage, stage.delay);
-        };
-
-        setTimeout(runStage, 500);
-    }
-
-    animateProgress() {
-        const animate = () => {
-            if (this.progress < this.targetProgress) {
-                this.progress += 1;
-                this.progressFill.style.width = `${this.progress}%`;
-                this.progressText.textContent = `加载中 ${this.progress}%`;
-                requestAnimationFrame(animate);
-            }
-        };
-        animate();
     }
 
     handleVersionSelect(e) {
