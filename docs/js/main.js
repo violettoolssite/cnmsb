@@ -49,8 +49,12 @@ class LetterSwirl {
     }
     
     resize() {
+        if (!this.canvas || !this.canvas.parentElement) return;
+        
         const dpr = window.devicePixelRatio || 1;
-        const rect = this.canvas.parentElement.getBoundingClientRect();
+        const container = this.canvas.parentElement;
+        const rect = container.getBoundingClientRect();
+        
         this.canvas.width = rect.width * dpr;
         this.canvas.height = rect.height * dpr;
         this.canvas.style.width = rect.width + 'px';
@@ -65,41 +69,67 @@ class LetterSwirl {
     init() {
         if (!this.canvas || !this.ctx) return;
         
-        // Create swirling letters - 只用 CNMSB 字母
+        // 增加字母数量，分布在整个屏幕
+        this.numLetters = 60;
+        
+        // Create swirling letters - 分布在整个屏幕
         for (let i = 0; i < this.numLetters; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const radius = 80 + Math.random() * 200;
+            // 随机分布在屏幕各处
+            const x = Math.random() * this.width;
+            const y = Math.random() * this.height;
+            
+            // 不同层次的字母大小和透明度
+            const layer = Math.random(); // 0-1 表示层次
+            const baseSize = 10 + layer * 40;
+            const baseOpacity = 0.1 + layer * 0.5;
+            
             this.letters.push({
                 char: this.alphabet[Math.floor(Math.random() * this.alphabet.length)],
-                x: this.centerX + Math.cos(angle) * radius,
-                y: this.centerY + Math.sin(angle) * radius,
-                vx: (Math.random() - 0.5) * 2, // 更慢的初始速度
-                vy: (Math.random() - 0.5) * 2,
+                x: x,
+                y: y,
+                vx: (Math.random() - 0.5) * 3,
+                vy: (Math.random() - 0.5) * 3,
                 angle: Math.random() * Math.PI * 2,
-                angularVel: (Math.random() - 0.5) * 0.08, // 更慢的旋转
-                size: 14 + Math.random() * 24,
-                opacity: 0.2 + Math.random() * 0.5,
+                angularVel: (Math.random() - 0.5) * 0.1,
+                size: baseSize,
+                opacity: baseOpacity,
                 targetX: 0,
                 targetY: 0,
                 isWordLetter: false,
-                wordIndex: -1
+                wordIndex: -1,
+                layer: layer, // 用于绘制效果
+                hue: Math.random() * 30, // 色相偏移
+                pulseOffset: Math.random() * Math.PI * 2 // 脉冲偏移
             });
         }
         
         // Assign word letters (前5个是 CNMSB)
         const wordLetters = this.word.split('');
-        const letterSpacing = 70;
+        const letterSpacing = Math.min(100, this.width / 8);
         const totalWidth = (wordLetters.length - 1) * letterSpacing;
         const startX = this.centerX - totalWidth / 2;
         
         for (let i = 0; i < wordLetters.length; i++) {
+            // 随机起始位置（屏幕边缘）
+            const edge = Math.floor(Math.random() * 4);
+            let startPosX, startPosY;
+            switch(edge) {
+                case 0: startPosX = Math.random() * this.width; startPosY = -50; break;
+                case 1: startPosX = this.width + 50; startPosY = Math.random() * this.height; break;
+                case 2: startPosX = Math.random() * this.width; startPosY = this.height + 50; break;
+                case 3: startPosX = -50; startPosY = Math.random() * this.height; break;
+            }
+            
             this.letters[i].char = wordLetters[i];
             this.letters[i].isWordLetter = true;
             this.letters[i].wordIndex = i;
+            this.letters[i].x = startPosX;
+            this.letters[i].y = startPosY;
             this.letters[i].targetX = startX + i * letterSpacing;
             this.letters[i].targetY = this.centerY;
-            this.letters[i].size = 50;
-            this.letters[i].opacity = 0.6;
+            this.letters[i].size = 60;
+            this.letters[i].opacity = 0.8;
+            this.letters[i].layer = 1;
         }
         
         this.animate();
@@ -219,34 +249,57 @@ class LetterSwirl {
     
     updateSwirl() {
         this.letters.forEach(letter => {
-            // Orbital motion around center - 更平滑
             const dx = letter.x - this.centerX;
             const dy = letter.y - this.centerY;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
             
-            // Tangential velocity (swirl) - 更慢
-            const tangentX = -dy / dist;
-            const tangentY = dx / dist;
+            if (letter.isWordLetter) {
+                // 主要字母：更大范围的旋转，逐渐靠近中心
+                const tangentX = -dy / dist;
+                const tangentY = dx / dist;
+                
+                // 切向速度（旋转）
+                letter.vx += tangentX * 0.2;
+                letter.vy += tangentY * 0.2;
+                
+                // 逐渐吸引到中心区域（但不是最终位置）
+                const attractStrength = 0.0005;
+                letter.vx -= dx * attractStrength;
+                letter.vy -= dy * attractStrength;
+            } else {
+                // 背景字母：自由飘动
+                const tangentX = -dy / dist;
+                const tangentY = dx / dist;
+                
+                // 轻微的旋转效果
+                letter.vx += tangentX * 0.05;
+                letter.vy += tangentY * 0.05;
+                
+                // 非常轻微的向中心吸引
+                letter.vx -= dx * 0.0002;
+                letter.vy -= dy * 0.0002;
+                
+                // 添加一些随机扰动
+                letter.vx += (Math.random() - 0.5) * 0.1;
+                letter.vy += (Math.random() - 0.5) * 0.1;
+            }
             
-            letter.vx += tangentX * 0.15;
-            letter.vy += tangentY * 0.15;
-            
-            // Slight attraction to center
-            letter.vx -= dx * 0.001;
-            letter.vy -= dy * 0.001;
-            
-            // Damping - 更平滑
-            letter.vx *= 0.99;
-            letter.vy *= 0.99;
+            // 阻尼 - 使运动更平滑
+            letter.vx *= 0.995;
+            letter.vy *= 0.995;
             
             letter.x += letter.vx;
             letter.y += letter.vy;
             
             letter.angle += letter.angularVel;
+            letter.angularVel *= 0.999; // 旋转逐渐减慢
             
-            // Keep within bounds
-            if (letter.x < 0 || letter.x > this.width) letter.vx *= -0.8;
-            if (letter.y < 0 || letter.y > this.height) letter.vy *= -0.8;
+            // 边界处理 - 平滑反弹
+            const margin = 50;
+            if (letter.x < -margin) { letter.x = -margin; letter.vx = Math.abs(letter.vx) * 0.5; }
+            if (letter.x > this.width + margin) { letter.x = this.width + margin; letter.vx = -Math.abs(letter.vx) * 0.5; }
+            if (letter.y < -margin) { letter.y = -margin; letter.vy = Math.abs(letter.vy) * 0.5; }
+            if (letter.y > this.height + margin) { letter.y = this.height + margin; letter.vy = -Math.abs(letter.vy) * 0.5; }
         });
     }
     
@@ -274,7 +327,10 @@ class LetterSwirl {
     }
     
     draw() {
-        this.letters.forEach(letter => {
+        // 按层次排序，后面的先画
+        const sortedLetters = [...this.letters].sort((a, b) => a.layer - b.layer);
+        
+        sortedLetters.forEach(letter => {
             if (letter.opacity <= 0.01) return;
             
             this.ctx.save();
@@ -285,14 +341,36 @@ class LetterSwirl {
             this.ctx.textAlign = 'center';
             this.ctx.textBaseline = 'middle';
             
-            // Glow effect for word letters during forming
-            if (letter.isWordLetter && this.phase === 'forming') {
+            // 根据层次和状态应用不同效果
+            if (letter.isWordLetter) {
+                // 主要字母 - 强烈发光效果
+                const glowIntensity = this.phase === 'forming' ? 
+                    (this.phaseTime / this.formDuration) : 
+                    (this.phase === 'formed' ? 1 : 0.3);
+                
                 this.ctx.shadowColor = '#d4ff00';
-                this.ctx.shadowBlur = 15 * letter.opacity;
+                this.ctx.shadowBlur = 20 + glowIntensity * 30;
+                
+                // 多层发光
+                for (let i = 0; i < 3; i++) {
+                    this.ctx.shadowBlur = (20 + glowIntensity * 30) * (i + 1) * 0.5;
+                    this.ctx.fillStyle = `rgba(212, 255, 0, ${letter.opacity * (1 - i * 0.2)})`;
+                    this.ctx.fillText(letter.char, 0, 0);
+                }
+            } else {
+                // 背景字母 - 根据层次调整颜色
+                const hueShift = letter.hue || 0;
+                const pulse = Math.sin(this.phaseTime * 0.02 + (letter.pulseOffset || 0)) * 0.2 + 0.8;
+                
+                // 轻微发光
+                this.ctx.shadowColor = `hsl(${65 + hueShift}, 100%, 50%)`;
+                this.ctx.shadowBlur = 5 + letter.layer * 10;
+                
+                // 颜色变化：从绿黄色到黄色
+                const lightness = 50 + letter.layer * 10;
+                this.ctx.fillStyle = `hsla(${65 + hueShift}, 100%, ${lightness}%, ${letter.opacity * pulse})`;
+                this.ctx.fillText(letter.char, 0, 0);
             }
-            
-            this.ctx.fillStyle = `rgba(212, 255, 0, ${letter.opacity})`;
-            this.ctx.fillText(letter.char, 0, 0);
             
             this.ctx.restore();
         });
