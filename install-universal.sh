@@ -241,6 +241,21 @@ setup_zsh() {
         echo "[ -f /usr/share/cnmsb/cnmsb.zsh ] && source /usr/share/cnmsb/cnmsb.zsh" >> "$HOME/.zshrc"
         echo "已创建 ~/.zshrc"
     fi
+    
+    # 询问是否将默认 shell 改为 zsh
+    ZSH_PATH=$(which zsh 2>/dev/null)
+    CURRENT_SHELL=$(getent passwd "$USER" 2>/dev/null | cut -d: -f7)
+    
+    if [ -n "$ZSH_PATH" ] && [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
+        echo ""
+        echo "当前默认 shell: $CURRENT_SHELL"
+        echo -n "是否将默认 shell 改为 zsh? [y/N]: "
+        read -r change_shell
+        
+        if [ "$change_shell" = "y" ] || [ "$change_shell" = "Y" ]; then
+            chsh -s "$ZSH_PATH" 2>/dev/null && echo "默认 shell 已更改为 zsh" || echo "更改失败，请手动执行: chsh -s $ZSH_PATH"
+        fi
+    fi
 }
 
 # 显示系统信息
