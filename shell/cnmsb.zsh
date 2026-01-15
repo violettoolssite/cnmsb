@@ -22,7 +22,99 @@ compdef -d valgrind
 
 # ================== 配置 ==================
 
-PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+# 主题设置控制
+# 设置 CNMSB_NO_THEME=1 可禁用 cnmsb 主题
+# 设置 CNMSB_FORCE_THEME=1 可强制使用 cnmsb 主题
+_cnmsb_setup_theme() {
+    # 如果用户明确禁用主题，直接返回
+    [[ "$CNMSB_NO_THEME" == "1" ]] && return
+    
+    # 如果用户强制使用主题，直接设置
+    if [[ "$CNMSB_FORCE_THEME" == "1" ]]; then
+        PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+        return
+    fi
+    
+    # 检测用户是否有自定义主题
+    local has_custom_theme=0
+    
+    # 检测 oh-my-zsh
+    [[ -n "$ZSH_THEME" ]] && has_custom_theme=1
+    
+    # 检测 powerlevel10k
+    [[ -n "$POWERLEVEL9K_MODE" || -f ~/.p10k.zsh ]] && has_custom_theme=1
+    
+    # 检测 starship
+    command -v starship >/dev/null 2>&1 && [[ "$PROMPT" == *"starship"* || -f ~/.config/starship.toml ]] && has_custom_theme=1
+    
+    # 检测 prezto
+    [[ -n "$ZPREZTODIR" ]] && has_custom_theme=1
+    
+    # 检测 PS1/PROMPT 是否已被自定义（非默认值）
+    if [[ -n "$PS1" && "$PS1" != "%m%# " && "$PS1" != "%n@%m %~ %# " ]]; then
+        has_custom_theme=1
+    fi
+    
+    if [[ $has_custom_theme -eq 1 ]]; then
+        # 检查是否已经询问过用户（保存在文件中）
+        local config_file="$HOME/.config/cnmsb/theme_choice"
+        
+        if [[ -f "$config_file" ]]; then
+            local choice=$(cat "$config_file" 2>/dev/null)
+            if [[ "$choice" == "yes" ]]; then
+                PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+            fi
+            # 如果是 "no" 则保留原主题
+            return
+        fi
+        
+        # 首次检测到自定义主题，询问用户
+        echo ""
+        echo -e "\033[38;5;208m[cnmsb]\033[0m 检测到您已有自定义 zsh 主题。"
+        echo -e "是否要使用 cnmsb 主题覆盖? (y=覆盖 / n=保留原主题 / a=总是保留 / f=总是覆盖)"
+        echo -n "请选择 [y/n/a/f]: "
+        
+        # 读取用户输入
+        local user_choice
+        read -r user_choice
+        
+        # 创建配置目录
+        mkdir -p "$HOME/.config/cnmsb"
+        
+        case "$user_choice" in
+            [Yy])
+                PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+                ;;
+            [Nn])
+                # 保留原主题，不做任何事
+                ;;
+            [Aa])
+                # 总是保留原主题
+                echo "no" > "$config_file"
+                echo -e "\033[32m已保存选择：保留原主题\033[0m"
+                echo -e "提示：可通过删除 ~/.config/cnmsb/theme_choice 重置此选择"
+                ;;
+            [Ff])
+                # 总是使用 cnmsb 主题
+                echo "yes" > "$config_file"
+                PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+                echo -e "\033[32m已保存选择：使用 cnmsb 主题\033[0m"
+                echo -e "提示：可通过删除 ~/.config/cnmsb/theme_choice 重置此选择"
+                ;;
+            *)
+                # 默认保留原主题
+                echo -e "\033[33m未识别的选择，保留原主题\033[0m"
+                ;;
+        esac
+    else
+        # 没有自定义主题，使用 cnmsb 默认主题
+        PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+    fi
+}
+
+# 执行主题设置
+_cnmsb_setup_theme
+
 typeset -g zle_highlight=(default:fg=226,bold)
 
 # ================== 状态 ==================
@@ -169,7 +261,8 @@ _cnmsb_line_pre_redraw() {
             # 如果第一个词不是有效命令，尝试语义匹配
             if [[ -n "$first_word" ]] && ! command -v "$first_word" >/dev/null 2>&1; then
                 # 检查是否包含非ASCII字符（可能是中文或其他语言）
-                if [[ "$first_word" =~ [^[:ascii:]] ]]; then
+                # 使用字符范围检测：ASCII 可打印字符范围是 0x20-0x7E
+                if [[ "$first_word" == *[^$'\x20'-$'\x7e']* ]]; then
                     # 包含非ASCII字符，可能是意图描述，自动显示建议菜单
                     _cnmsb_fetch "$input"
                     if [[ ${#_cnmsb_list[@]} -gt 0 ]]; then
@@ -265,29 +358,36 @@ _cnmsb_tab() {
         if [[ ${#_cnmsb_list[@]} -gt 0 && $_cnmsb_idx -gt 0 ]]; then
             local selected="${_cnmsb_list[$_cnmsb_idx]}"
             
-            # 获取当前词和位置
-            local words=(${(z)BUFFER})
-            local curword=""
-            local curword_start=0
-            
-            if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
-                curword="${words[-1]}"
-                curword_start=$((${#BUFFER} - ${#curword}))
-            fi
-            
-            if [[ -n "$curword" ]]; then
-                if [[ "$selected" == "$curword"* ]]; then
-                    # 前缀匹配：追加后缀部分
-                    BUFFER+="${selected#$curword}"
-                else
-                    # 模糊匹配：用子串方式替换
-                    BUFFER="${BUFFER[1,$curword_start]}${selected}"
-                fi
+            # 历史模式：直接替换整个 BUFFER（因为历史命令是完整的命令）
+            if [[ $_cnmsb_hist_mode -eq 1 ]]; then
+                BUFFER="$selected"
+                CURSOR=${#BUFFER}
             else
-                # 没有当前词，直接追加
-                BUFFER+="$selected"
+                # 普通补全模式：智能追加/替换
+                # 获取当前词和位置
+                local words=(${(z)BUFFER})
+                local curword=""
+                local curword_start=0
+                
+                if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
+                    curword="${words[-1]}"
+                    curword_start=$((${#BUFFER} - ${#curword}))
+                fi
+                
+                if [[ -n "$curword" ]]; then
+                    if [[ "$selected" == "$curword"* ]]; then
+                        # 前缀匹配：追加后缀部分
+                        BUFFER+="${selected#$curword}"
+                    else
+                        # 模糊匹配：用子串方式替换
+                        BUFFER="${BUFFER[1,$curword_start]}${selected}"
+                    fi
+                else
+                    # 没有当前词，直接追加
+                    BUFFER+="$selected"
+                fi
+                CURSOR=${#BUFFER}
             fi
-            CURSOR=${#BUFFER}
         fi
         _cnmsb_reset
         _cnmsb_lastbuf="$BUFFER"
@@ -324,29 +424,36 @@ _cnmsb_accept() {
     if [[ ($_cnmsb_menu -eq 1 || $_cnmsb_hist_mode -eq 1 || ${#_cnmsb_list[@]} -gt 0) && $_cnmsb_idx -gt 0 ]]; then
         local selected="${_cnmsb_list[$_cnmsb_idx]}"
         
-        # 获取当前词和位置
-        local words=(${(z)BUFFER})
-        local curword=""
-        local curword_start=0
-        
-        if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
-            curword="${words[-1]}"
-            curword_start=$((${#BUFFER} - ${#curword}))
-        fi
-        
-        if [[ -n "$curword" ]]; then
-            if [[ "$selected" == "$curword"* ]]; then
-                # 前缀匹配：追加后缀部分
-                BUFFER+="${selected#$curword}"
-            else
-                # 模糊匹配：用子串方式替换
-                BUFFER="${BUFFER[1,$curword_start]}${selected}"
-            fi
+        # 历史模式：直接替换整个 BUFFER（因为历史命令是完整的命令）
+        if [[ $_cnmsb_hist_mode -eq 1 ]]; then
+            BUFFER="$selected"
+            CURSOR=${#BUFFER}
         else
-            # 没有当前词，直接追加
-            BUFFER+="$selected"
+            # 普通补全模式：智能追加/替换
+            # 获取当前词和位置
+            local words=(${(z)BUFFER})
+            local curword=""
+            local curword_start=0
+            
+            if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
+                curword="${words[-1]}"
+                curword_start=$((${#BUFFER} - ${#curword}))
+            fi
+            
+            if [[ -n "$curword" ]]; then
+                if [[ "$selected" == "$curword"* ]]; then
+                    # 前缀匹配：追加后缀部分
+                    BUFFER+="${selected#$curword}"
+                else
+                    # 模糊匹配：用子串方式替换
+                    BUFFER="${BUFFER[1,$curword_start]}${selected}"
+                fi
+            else
+                # 没有当前词，直接追加
+                BUFFER+="$selected"
+            fi
+            CURSOR=${#BUFFER}
         fi
-        CURSOR=${#BUFFER}
         _cnmsb_reset
         _cnmsb_lastbuf="$BUFFER"
         _cnmsb_fetch "$BUFFER"
@@ -368,7 +475,8 @@ _cnmsb_run() {
     # 如果第一个词不是有效命令，尝试语义匹配
     if [[ -n "$first_word" ]] && ! command -v "$first_word" >/dev/null 2>&1; then
         # 检查是否包含非ASCII字符（可能是中文或其他语言）
-        if [[ "$first_word" =~ [^[:ascii:]] ]]; then
+        # 使用字符范围检测：ASCII 可打印字符范围是 0x20-0x7E
+        if [[ "$first_word" == *[^$'\x20'-$'\x7e']* ]]; then
             # 包含非ASCII字符，可能是意图描述
             # 触发补全建议，而不是直接执行
             _cnmsb_fetch "$input"
@@ -383,19 +491,28 @@ _cnmsb_run() {
         fi
     fi
     
-    # 清除所有显示
-    POSTDISPLAY=""
-    region_highlight=()
+    # 清除所有显示和状态
     _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=()
     _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_lastbuf=""
     
-    # 使用终端转义序列清除光标后的内容
-    print -n '\e[K'
+    # 清除 POSTDISPLAY（建议文字）
+    POSTDISPLAY=""
+    region_highlight=()
     
-    # 如果有菜单，清除多行
-    print -n '\e[J'
+    # 方法：清除当前行并重新打印干净的命令
+    local cmd="$BUFFER"
     
-    zle -R
+    # 清除当前行（回到行首，清除到行尾）
+    print -rn -- $'\r\e[K'
+    
+    # 重新打印提示符（使用 -P 展开 % 格式化）和命令（不带建议）
+    print -Prn -- "${PS1}"
+    print -rn -- "${cmd}"
+    
+    # 清除光标后的任何残留
+    print -rn -- $'\e[K\e[J'
+    
+    # 执行命令
     zle .accept-line
 }
 
