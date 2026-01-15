@@ -4,6 +4,25 @@ use crate::engine::{Completion, CompletionKind};
 use std::fs;
 use std::path::Path;
 
+/// 需要在 shell 中转义的特殊字符
+const SHELL_SPECIAL_CHARS: &[char] = &[
+    ' ',  // 空格
+    '[', ']',  // 通配符
+    '&',  // 后台运行
+    '(', ')',  // 子 shell
+    ';',  // 命令分隔
+    '|',  // 管道
+    '*', '?',  // 通配符
+    '$',  // 变量
+    '!',  // 历史扩展
+    '#',  // 注释
+    '{', '}',  // 花括号展开
+    '<', '>',  // 重定向
+    '`',  // 命令替换
+    '\'', '"',  // 引号
+    '\\',  // 转义符
+];
+
 /// 文件补全器
 pub struct FileCompleter;
 
@@ -12,9 +31,53 @@ impl FileCompleter {
         FileCompleter
     }
 
+    /// 转义文件名中的特殊字符
+    /// 将空格、[]、& 等 shell 特殊字符前添加反斜杠
+    fn escape_shell_chars(s: &str) -> String {
+        // 检查是否需要转义
+        let needs_escape = s.chars().any(|c| SHELL_SPECIAL_CHARS.contains(&c));
+        if !needs_escape {
+            return s.to_string();
+        }
+        
+        let mut result = String::with_capacity(s.len() * 2);
+        for c in s.chars() {
+            if SHELL_SPECIAL_CHARS.contains(&c) {
+                result.push('\\');
+            }
+            result.push(c);
+        }
+        result
+    }
+
+    /// 反转义 shell 字符串
+    /// 将 \[ 还原为 [，将 \ 空格还原为空格等
+    fn unescape_shell_chars(s: &str) -> String {
+        let mut result = String::with_capacity(s.len());
+        let mut chars = s.chars().peekable();
+        while let Some(c) = chars.next() {
+            if c == '\\' {
+                // 检查下一个字符
+                if let Some(&next) = chars.peek() {
+                    if SHELL_SPECIAL_CHARS.contains(&next) {
+                        // 跳过反斜杠，直接添加下一个字符
+                        result.push(chars.next().unwrap());
+                        continue;
+                    }
+                }
+            }
+            result.push(c);
+        }
+        result
+    }
+
     /// 获取文件/目录补全
     pub fn complete(&self, prefix: &str) -> Vec<Completion> {
         let mut completions = Vec::new();
+
+        // 先反转义用户输入的前缀（用户可能输入了 cd \[Neko 这样的内容）
+        let unescaped_prefix = Self::unescape_shell_chars(prefix);
+        let prefix = unescaped_prefix.as_str();
 
         // 确定要搜索的目录和文件名前缀
         let (dir_path, file_prefix) = if prefix.is_empty() {
@@ -72,6 +135,10 @@ impl FileCompleter {
                 }
 
                 let is_dir = entry.path().is_dir();
+                
+                // 转义文件名中的特殊字符
+                let escaped_name = Self::escape_shell_chars(&name_str);
+                
                 let full_path = if prefix.contains('/') || prefix.contains('\\') {
                     let base = if dir_path == "." {
                         String::new()
@@ -80,9 +147,9 @@ impl FileCompleter {
                     } else {
                         format!("{}/", dir_path)
                     };
-                    format!("{}{}", base, name_str)
+                    format!("{}{}", base, escaped_name)
                 } else {
-                    name_str.to_string()
+                    escaped_name
                 };
 
                 let display_name = if is_dir {

@@ -35,81 +35,84 @@ _cnmsb_setup_theme() {
         return
     fi
     
-    # 检测用户是否有自定义主题
+    local config_file="$HOME/.config/cnmsb/theme_choice"
+    
+    # 检查是否已经有保存的选择
+    if [[ -f "$config_file" ]]; then
+        local choice=$(cat "$config_file" 2>/dev/null)
+        if [[ "$choice" == "yes" ]]; then
+            PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+        fi
+        # 如果是 "no" 则保留原主题
+        return
+    fi
+    
+    # 首次运行，检测用户是否有自定义主题
     local has_custom_theme=0
+    local theme_info=""
     
     # 检测 oh-my-zsh
-    [[ -n "$ZSH_THEME" ]] && has_custom_theme=1
+    if [[ -n "$ZSH_THEME" ]]; then
+        has_custom_theme=1
+        theme_info="oh-my-zsh ($ZSH_THEME)"
+    fi
     
     # 检测 powerlevel10k
-    [[ -n "$POWERLEVEL9K_MODE" || -f ~/.p10k.zsh ]] && has_custom_theme=1
+    if [[ -n "$POWERLEVEL9K_MODE" || -f ~/.p10k.zsh ]]; then
+        has_custom_theme=1
+        theme_info="powerlevel10k"
+    fi
     
     # 检测 starship
-    command -v starship >/dev/null 2>&1 && [[ "$PROMPT" == *"starship"* || -f ~/.config/starship.toml ]] && has_custom_theme=1
+    if command -v starship >/dev/null 2>&1 && [[ "$PROMPT" == *"starship"* || -f ~/.config/starship.toml ]]; then
+        has_custom_theme=1
+        theme_info="starship"
+    fi
     
     # 检测 prezto
-    [[ -n "$ZPREZTODIR" ]] && has_custom_theme=1
+    if [[ -n "$ZPREZTODIR" ]]; then
+        has_custom_theme=1
+        theme_info="prezto"
+    fi
     
     # 检测 PS1/PROMPT 是否已被自定义（非默认值）
-    if [[ -n "$PS1" && "$PS1" != "%m%# " && "$PS1" != "%n@%m %~ %# " ]]; then
+    if [[ -n "$PS1" && "$PS1" != "%m%# " && "$PS1" != "%n@%m %~ %# " && -z "$theme_info" ]]; then
         has_custom_theme=1
+        theme_info="自定义 PS1"
     fi
     
+    # 首次运行，询问用户
+    echo ""
     if [[ $has_custom_theme -eq 1 ]]; then
-        # 检查是否已经询问过用户（保存在文件中）
-        local config_file="$HOME/.config/cnmsb/theme_choice"
-        
-        if [[ -f "$config_file" ]]; then
-            local choice=$(cat "$config_file" 2>/dev/null)
-            if [[ "$choice" == "yes" ]]; then
-                PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
-            fi
-            # 如果是 "no" 则保留原主题
-            return
-        fi
-        
-        # 首次检测到自定义主题，询问用户
-        echo ""
-        echo -e "\033[38;5;208m[cnmsb]\033[0m 检测到您已有自定义 zsh 主题。"
-        echo -e "是否要使用 cnmsb 主题覆盖? (y=覆盖 / n=保留原主题 / a=总是保留 / f=总是覆盖)"
-        echo -n "请选择 [y/n/a/f]: "
-        
-        # 读取用户输入
-        local user_choice
-        read -r user_choice
-        
-        # 创建配置目录
-        mkdir -p "$HOME/.config/cnmsb"
-        
-        case "$user_choice" in
-            [Yy])
-                PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
-                ;;
-            [Nn])
-                # 保留原主题，不做任何事
-                ;;
-            [Aa])
-                # 总是保留原主题
-                echo "no" > "$config_file"
-                echo -e "\033[32m已保存选择：保留原主题\033[0m"
-                echo -e "提示：可通过删除 ~/.config/cnmsb/theme_choice 重置此选择"
-                ;;
-            [Ff])
-                # 总是使用 cnmsb 主题
-                echo "yes" > "$config_file"
-                PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
-                echo -e "\033[32m已保存选择：使用 cnmsb 主题\033[0m"
-                echo -e "提示：可通过删除 ~/.config/cnmsb/theme_choice 重置此选择"
-                ;;
-            *)
-                # 默认保留原主题
-                echo -e "\033[33m未识别的选择，保留原主题\033[0m"
-                ;;
-        esac
+        echo -e "\033[38;5;208m[cnmsb]\033[0m 检测到您已有自定义 zsh 主题: $theme_info"
+        echo -e "是否要使用 cnmsb 主题覆盖?"
     else
-        # 没有自定义主题，使用 cnmsb 默认主题
-        PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+        echo -e "\033[38;5;208m[cnmsb]\033[0m 首次运行配置"
+        echo -e "是否使用 cnmsb 自带主题?"
     fi
+    echo -n "请选择 [Y/n]: "
+    
+    # 读取用户输入
+    local user_choice
+    read -r user_choice
+    
+    # 创建配置目录
+    mkdir -p "$HOME/.config/cnmsb"
+    
+    case "$user_choice" in
+        [Nn])
+            # 保留原主题
+            echo "no" > "$config_file"
+            echo -e "\033[32m已保存：保留原主题\033[0m"
+            ;;
+        *)
+            # 使用 cnmsb 主题（默认）
+            echo "yes" > "$config_file"
+            PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+            echo -e "\033[32m已保存：使用 cnmsb 主题\033[0m"
+            ;;
+    esac
+    echo -e "提示：可通过删除 ~/.config/cnmsb/theme_choice 重置此选择"
 }
 
 # 执行主题设置

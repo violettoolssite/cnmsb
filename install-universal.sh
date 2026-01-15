@@ -195,6 +195,13 @@ install_from_source() {
     sudo cp "$BINARY_PATH" /usr/bin/
     sudo chmod +x /usr/bin/cnmsb
     
+    # 如果 /usr/local/bin/cnmsb 存在，也更新它（避免 PATH 优先级问题）
+    if [ -f /usr/local/bin/cnmsb ]; then
+        sudo cp "$BINARY_PATH" /usr/local/bin/cnmsb
+        sudo chmod +x /usr/local/bin/cnmsb
+        echo "已更新 /usr/local/bin/cnmsb"
+    fi
+    
     # 创建命令别名
     sudo ln -sf /usr/bin/cnmsb /usr/bin/cnmsb-sql
     sudo ln -sf /usr/bin/cnmsb /usr/bin/cntmd
