@@ -1,0 +1,270 @@
+# 命令意图数据库
+# 定义用户意图到命令的映射，用于语义匹配
+
+intents:
+  view_file:
+    description: "查看文件内容"
+    commands:
+      - cat
+      - less
+      - head
+      - tail
+      - more
+      - bat
+    keywords:
+      - view
+      - show
+      - display
+      - read
+      - 查看
+      - 显示
+      - 看
+      - 文件
+  
+  search_text:
+    description: "搜索文本"
+    commands:
+      - grep
+      - rg
+      - ag
+      - ack
+    keywords:
+      - search
+      - find
+      - grep
+      - 搜索
+      - 查找
+      - 找
+      - 文本
+  
+  list_files:
+    description: "列出文件"
+    commands:
+      - ls
+      - tree
+      - exa
+      - fd
+    keywords:
+      - list
+      - ls
+      - files
+      - 列表
+      - 列出
+      - 文件
+  
+  edit_file:
+    description: "编辑文件"
+    commands:
+      - vim
+      - vi
+      - nano
+      - emacs
+      - code
+    keywords:
+      - edit
+      - modify
+      - 编辑
+      - 修改
+  
+  copy_file:
+    description: "复制文件"
+    commands:
+      - cp
+      - rsync
+    keywords:
+      - copy
+      - cp
+      - 复制
+      - 拷贝
+  
+  move_file:
+    description: "移动文件"
+    commands:
+      - mv
+    keywords:
+      - move
+      - mv
+      - 移动
+  
+  delete_file:
+    description: "删除文件"
+    commands:
+      - rm
+      - trash
+    keywords:
+      - delete
+      - remove
+      - rm
+      - 删除
+      - 移除
+  
+  find_file:
+    description: "查找文件"
+    commands:
+      - find
+      - fd
+      - locate
+    keywords:
+      - find
+      - locate
+      - 查找
+      - 找
+  
+  compress:
+    description: "压缩文件"
+    commands:
+      - tar
+      - zip
+      - gzip
+      - bzip2
+      - xz
+    keywords:
+      - compress
+      - archive
+      - 压缩
+      - 打包
+  
+  extract:
+    description: "解压文件"
+    commands:
+      - tar
+      - unzip
+      - gunzip
+      - bunzip2
+      - unxz
+    keywords:
+      - extract
+      - unzip
+      - 解压
+      - 解包
+  
+  http_request:
+    description: "HTTP 请求"
+    commands:
+      - curl
+      - wget
+    keywords:
+      - http
+      - download
+      - request
+      - 下载
+      - 请求
+  
+  process_manage:
+    description: "进程管理"
+    commands:
+      - ps
+      - top
+      - htop
+      - kill
+      - pkill
+    keywords:
+      - process
+      - kill
+      - 进程
+  
+  system_info:
+    description: "系统信息"
+    commands:
+      - uname
+      - hostname
+      - uptime
+      - df
+      - du
+      - free
+    keywords:
+      - info
+      - system
+      - 信息
+      - 系统
+  
+  network_info:
+    description: "网络信息"
+    commands:
+      - ifconfig
+      - ip
+      - netstat
+      - ss
+      - ping
+    keywords:
+      - network
+      - ip
+      - 网络
+  
+  git_operations:
+    description: "Git 操作"
+    commands:
+      - git
+    keywords:
+      - git
+      - version
+      - control
+      - 版本控制
+  
+  docker_operations:
+    description: "Docker 操作"
+    commands:
+      - docker
+      - docker-compose
+      - podman
+    keywords:
+      - docker
+      - container
+      - 容器
+
+  view_logs:
+    description: "查看日志"
+    commands:
+      - tail -f
+      - journalctl -f
+      - dmesg
+      - less
+    keywords:
+      - log
+      - 日志
+      - view
+      - 查看
+
+  monitor_performance:
+    description: "性能监控"
+    commands:
+      - top
+      - htop
+      - iostat
+      - vmstat
+      - sar
+    keywords:
+      - monitor
+      - performance
+      - 监控
+      - 性能
+
+  network_diagnosis:
+    description: "网络诊断"
+    commands:
+      - ping
+      - traceroute
+      - netstat
+      - ss
+      - tcpdump
+    keywords:
+      - network
+      - 网络
+      - ping
+      - 诊断
+
+  git_workflow:
+    description: "Git 工作流"
+    commands:
+      - git status
+      - git add
+      - git commit
+      - git push
+      - git pull
+    keywords:
+      - git
+      - commit
+      - push
+      - 提交
+      - 推送
+

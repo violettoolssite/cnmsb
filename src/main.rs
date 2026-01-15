@@ -64,6 +64,12 @@ enum Commands {
 
     /// 显示版本信息
     Version,
+
+    /// 记录命令执行（用于 NLP 预测学习）
+    Record {
+        /// 要记录的命令
+        command: String,
+    },
 }
 
 fn main() {
@@ -239,6 +245,11 @@ fn main() {
         Some(Commands::Version) => {
             println!("cnmsb (操你妈傻逼) v0.1.0");
             println!("Linux 命令行智能补全工具");
+        }
+
+        Some(Commands::Record { command }) => {
+            let mut engine = CompletionEngine::new();
+            engine.record_command(&command);
         }
 
         Some(Commands::Edit { file }) => {

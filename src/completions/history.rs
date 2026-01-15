@@ -118,6 +118,16 @@ impl HistoryCompleter {
     pub fn get_all_history(&self) -> &[String] {
         &self.history
     }
+    
+    /// 获取最近的一条命令（用于预测下一条命令）
+    pub fn get_last_command(&self) -> Option<String> {
+        self.history.first().cloned()
+    }
+    
+    /// 获取最近的 N 条命令
+    pub fn get_recent_commands(&self, n: usize) -> Vec<String> {
+        self.history.iter().take(n).cloned().collect()
+    }
 }
 
 impl Default for HistoryCompleter {

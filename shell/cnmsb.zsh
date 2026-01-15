@@ -160,6 +160,30 @@ _cnmsb_line_pre_redraw() {
     if [[ "$BUFFER" != "$_cnmsb_lastbuf" ]]; then
         _cnmsb_lastbuf="$BUFFER"
         
+        # 检测中文输入（可能是意图描述），自动触发语义匹配
+        local input="$BUFFER"
+        if [[ -n "$input" ]]; then
+            local words=(${(z)input})
+            local first_word="${words[1]}"
+            
+            # 如果第一个词不是有效命令，尝试语义匹配
+            if [[ -n "$first_word" ]] && ! command -v "$first_word" >/dev/null 2>&1; then
+                # 检查是否包含非ASCII字符（可能是中文或其他语言）
+                if [[ "$first_word" =~ [^[:ascii:]] ]]; then
+                    # 包含非ASCII字符，可能是意图描述，自动显示建议菜单
+                    _cnmsb_fetch "$input"
+                    if [[ ${#_cnmsb_list[@]} -gt 0 ]]; then
+                        # 有语义匹配建议，自动显示菜单
+                        _cnmsb_menu=1
+                        _cnmsb_hist_mode=0
+                        _cnmsb_idx=1
+                        _cnmsb_show_menu
+                        return
+                    fi
+                fi
+            fi
+        fi
+        
         if [[ $_cnmsb_hist_mode -eq 1 ]]; then
             # 历史模式：实时更新历史菜单
             _cnmsb_fetch_history
@@ -334,6 +358,31 @@ _cnmsb_accept() {
 }
 
 _cnmsb_run() {
+    # 检查输入是否是意图描述（不是有效命令）
+    local input="$BUFFER"
+    
+    # 检查是否是有效的命令（第一个词在 PATH 中）
+    local words=(${(z)input})
+    local first_word="${words[1]}"
+    
+    # 如果第一个词不是有效命令，尝试语义匹配
+    if [[ -n "$first_word" ]] && ! command -v "$first_word" >/dev/null 2>&1; then
+        # 检查是否包含非ASCII字符（可能是中文或其他语言）
+        if [[ "$first_word" =~ [^[:ascii:]] ]]; then
+            # 包含非ASCII字符，可能是意图描述
+            # 触发补全建议，而不是直接执行
+            _cnmsb_fetch "$input"
+            if [[ ${#_cnmsb_list[@]} -gt 0 ]]; then
+                # 有建议，显示菜单让用户选择
+                _cnmsb_menu=1
+                _cnmsb_idx=1
+                _cnmsb_show_menu
+                zle -R
+                return
+            fi
+        fi
+    fi
+    
     # 清除所有显示
     POSTDISPLAY=""
     region_highlight=()
@@ -403,6 +452,20 @@ _cnmsb_history_menu() {
     _cnmsb_show_history_menu
     zle -R
 }
+
+# ================== 命令记录（用于 NLP 预测） ==================
+
+# 记录命令执行（用于学习命令序列）
+_cnmsb_record_command() {
+    local cmd="$1"
+    [[ -z "$cmd" ]] && return
+    
+    # 调用 cnmsb 记录命令（后台执行，不阻塞）
+    (cnmsb record "$cmd" 2>/dev/null &)
+}
+
+# 在命令执行前记录（preexec 钩子）
+preexec_functions+=(_cnmsb_record_command)
 
 # ================== 注册 ==================
 

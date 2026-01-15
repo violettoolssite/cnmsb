@@ -20,19 +20,29 @@ impl FileCompleter {
         let (dir_path, file_prefix) = if prefix.is_empty() {
             (".", "")
         } else if prefix.ends_with('/') || prefix.ends_with('\\') {
-            (prefix, "")
+            // 以 / 或 \ 结尾，说明是目录路径
+            let dir = prefix.trim_end_matches('/').trim_end_matches('\\');
+            (if dir.is_empty() { "." } else { dir }, "")
         } else {
             let path = Path::new(prefix);
-            if path.is_dir() {
+            // 检查路径是否存在且是目录
+            if path.exists() && path.is_dir() {
                 (prefix, "")
             } else {
+                // 尝试检查父目录是否存在
                 let parent = path.parent().map(|p| p.to_str().unwrap_or(".")).unwrap_or(".");
                 let parent = if parent.is_empty() { "." } else { parent };
                 let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
-                (parent, name)
+                
+                // 如果父目录存在，使用父目录和文件名前缀
+                if Path::new(parent).exists() {
+                    (parent, name)
+                } else {
+                    // 父目录不存在，尝试将整个路径作为目录
+                    (prefix, "")
+                }
             }
-        }
-        ;
+        };
 
         // 展开 ~ 为用户主目录
         let dir_path = if dir_path.starts_with('~') {
