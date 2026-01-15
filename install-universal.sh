@@ -91,7 +91,8 @@ install_deps() {
         source "$HOME/.cargo/env"
     else
         # 检查 Rust 版本，如果太旧则更新
-        RUST_VER=$(rustc --version | grep -oP '\d+\.\d+' | head -1)
+        # 使用兼容的方式提取版本号（避免 grep -P）
+        RUST_VER=$(rustc --version | sed 's/rustc \([0-9]*\.[0-9]*\).*/\1/')
         RUST_MAJOR=$(echo "$RUST_VER" | cut -d. -f1)
         RUST_MINOR=$(echo "$RUST_VER" | cut -d. -f2)
         if [ "$RUST_MAJOR" -eq 1 ] && [ "$RUST_MINOR" -lt 82 ]; then
@@ -146,8 +147,16 @@ install_from_source() {
     # 确保 cargo 在 PATH 中
     [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
     
-    # 创建临时目录
-    TMPDIR=$(mktemp -d)
+    # 创建临时目录（确保在 Linux 原生文件系统中）
+    # 在 WSL 中使用 $HOME 下的目录避免权限问题
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        echo "检测到 WSL 环境，使用 Linux 原生文件系统编译..."
+        TMPDIR="$HOME/.cnmsb-build-tmp"
+        rm -rf "$TMPDIR"
+        mkdir -p "$TMPDIR"
+    else
+        TMPDIR=$(mktemp -d)
+    fi
     cd "$TMPDIR"
     
     # 下载源码
@@ -161,9 +170,14 @@ install_from_source() {
     
     cd cnmsb
     
-    # 编译
+    # 编译（WSL 中设置 target 目录到 Linux 原生文件系统）
     echo "编译中（可能需要几分钟）..."
-    cargo build --release
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        export CARGO_TARGET_DIR="$HOME/.cargo/cnmsb-build"
+        cargo build --release
+    else
+        cargo build --release
+    fi
     
     # 安装
     echo "安装..."
@@ -171,7 +185,14 @@ install_from_source() {
     sudo mkdir -p /usr/share/cnmsb
     sudo mkdir -p /etc/profile.d
     
-    sudo cp target/release/cnmsb /usr/bin/
+    # 确定二进制文件路径（WSL 使用自定义 target 目录）
+    if [ -n "$CARGO_TARGET_DIR" ] && [ -f "$CARGO_TARGET_DIR/release/cnmsb" ]; then
+        BINARY_PATH="$CARGO_TARGET_DIR/release/cnmsb"
+    else
+        BINARY_PATH="target/release/cnmsb"
+    fi
+    
+    sudo cp "$BINARY_PATH" /usr/bin/
     sudo chmod +x /usr/bin/cnmsb
     
     # 创建命令别名
