@@ -133,8 +133,20 @@ impl AiCompleter {
 
     /// 构建发送给 AI 的上下文
     fn build_context(&self, line: &str, cursor: usize) -> String {
-        let before_cursor = &line[..cursor.min(line.len())];
-        let after_cursor = &line[cursor.min(line.len())..];
+        // 安全处理 UTF-8 字符边界
+        let safe_cursor = if cursor >= line.len() {
+            line.len()
+        } else {
+            // 找到最近的字符边界
+            let mut pos = cursor;
+            while pos > 0 && !line.is_char_boundary(pos) {
+                pos -= 1;
+            }
+            pos
+        };
+        
+        let before_cursor = &line[..safe_cursor];
+        let after_cursor = &line[safe_cursor..];
         
         // 获取当前工作目录
         let cwd = std::env::current_dir()
@@ -143,13 +155,12 @@ impl AiCompleter {
         
         format!(
             "当前目录: {}\n\
-             命令行输入: {}\n\
-             光标位置: {} (光标后: {})\n\
-             请提供补全建议。",
+             用户输入: {}\n\
+             光标后内容: {}\n\
+             请提供对应的 shell 命令建议。",
             cwd,
             before_cursor,
-            cursor,
-            if after_cursor.is_empty() { "(行尾)" } else { after_cursor }
+            if after_cursor.is_empty() { "(无)" } else { after_cursor }
         )
     }
 
@@ -193,23 +204,40 @@ impl AiCompleter {
 }
 
 /// Shell 命令补全专用的 system prompt
-const SYSTEM_PROMPT: &str = r#"你是一个 Linux/Unix shell 命令补全助手。根据用户的部分输入，提供最可能的命令补全建议。
+const SYSTEM_PROMPT: &str = r#"你是一个 Linux/Unix shell 命令生成助手。根据用户输入，提供对应的 shell 命令建议。
+
+用户输入可能是：
+1. 部分命令（如 "git com"）- 提供命令补全
+2. 自然语言描述（如 "提交代码到仓库"）- 生成对应的 shell 命令
+3. 中英文混合 - 理解意图并生成命令
 
 规则：
-1. 每行输出一个完整的命令建议
+1. 每行输出一个完整的 shell 命令
 2. 格式：命令 # 简短描述
 3. 只输出最相关的 3-5 个建议
-4. 不要输出解释性文字，只输出命令建议
+4. 不要输出解释性文字，只输出命令
 5. 考虑当前目录上下文
-6. 建议应该是用户输入的自然延续
+6. 如果用户用中文描述意图，生成对应的英文 shell 命令
 
-示例输入：
-命令行输入: git com
-
-示例输出：
+示例1 - 命令补全：
+用户输入: git com
+输出：
 git commit -m "" # 提交更改
 git commit --amend # 修改上次提交
-git commit -a -m "" # 提交所有更改
+
+示例2 - 自然语言转命令：
+用户输入: 提交代码到仓库
+输出：
+git add . && git commit -m "update" && git push # 添加、提交并推送
+git commit -am "update" && git push # 提交所有更改并推送
+git push origin main # 推送到主分支
+
+示例3 - 自然语言：
+用户输入: 查看磁盘使用情况
+输出：
+df -h # 显示磁盘使用情况
+du -sh * # 显示当前目录各文件大小
+ncdu # 交互式磁盘使用分析
 "#;
 
 impl Default for AiCompleter {

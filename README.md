@@ -409,6 +409,16 @@ source /usr/share/cnmsb/cnmsb.zsh
 - 不确定具体参数，想让 AI 帮你生成完整命令
 - 想实现某个功能但不知道用什么命令
 - 普通补全没有你想要的建议时
+- **用自然语言描述意图**：输入中文描述，AI 生成对应命令
+
+**自然语言转命令示例：**
+```
+$ 提交代码到仓库     # 输入中文描述
+  [AI 智能补全]
+  > git add . && git commit -m "update" && git push  (添加、提交并推送)
+    git commit -am "update" && git push              (提交所有更改并推送)
+  [Tab=确认  ↑↓=选择  Esc=取消]
+```
 
 ### 配置 AI 补全
 
