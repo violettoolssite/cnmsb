@@ -617,7 +617,7 @@ _cnmsb_show_ai_menu() {
     local i item desc
     
     # 红色标题
-    disp+="\033[1;31m[AI 智能补全]\033[0m"$'\n'
+    disp+=$'\e[1;31m[AI 智能补全]\e[0m\n'
     
     for ((i=1; i<=${#_cnmsb_list[@]}; i++)); do
         item="${_cnmsb_list[$i]}"
@@ -628,16 +628,16 @@ _cnmsb_show_ai_menu() {
         
         if [[ $i -eq $_cnmsb_idx ]]; then
             # 选中项：蓝底白字
-            disp+="  \033[1;44;37m> $item\033[0m"
+            disp+=$'  \e[1;44;37m> '"$item"$'\e[0m'
         else
             # 未选中：蓝色
-            disp+="  \033[1;34m  $item\033[0m"
+            disp+=$'  \e[1;34m  '"$item"$'\e[0m'
         fi
-        [[ -n "$desc" ]] && disp+="  \033[38;5;245m($desc)\033[0m"
+        [[ -n "$desc" ]] && disp+=$'  \e[38;5;245m('"$desc"$')\e[0m'
         disp+=$'\n'
     done
     
-    disp+=$'\n'"\033[1;31m[Tab=确认  ↑↓=选择  Esc=取消]\033[0m"
+    disp+=$'\n\e[1;31m[Tab=确认  ↑↓=选择  Esc=取消]\e[0m'
     POSTDISPLAY="$disp"
 }
 
@@ -649,7 +649,7 @@ _cnmsb_ai_complete() {
     local cursor=$CURSOR
     
     # 显示正在加载的提示
-    POSTDISPLAY=$'\n'"\033[1;31m[AI] 正在获取智能建议...\033[0m"
+    POSTDISPLAY=$'\n\e[1;31m[AI] 正在获取智能建议...\e[0m'
     zle -R
     
     # 调用 AI 补全
@@ -658,13 +658,13 @@ _cnmsb_ai_complete() {
     local ret=$?
     
     if [[ $ret -ne 0 ]]; then
-        POSTDISPLAY=$'\n'"\033[1;31m[AI 错误] $completions\033[0m"
+        POSTDISPLAY=$'\n\e[1;31m[AI 错误] '"$completions"$'\e[0m'
         zle -R
         return
     fi
     
     if [[ -z "$completions" ]]; then
-        POSTDISPLAY=$'\n'"\033[1;31m[AI] 无补全建议\033[0m"
+        POSTDISPLAY=$'\n\e[1;31m[AI] 无补全建议\e[0m'
         zle -R
         return
     fi
@@ -682,7 +682,7 @@ _cnmsb_ai_complete() {
     done <<< "$completions"
     
     if [[ ${#_cnmsb_list[@]} -eq 0 ]]; then
-        POSTDISPLAY=$'\n'"\033[1;31m[AI] 无补全建议\033[0m"
+        POSTDISPLAY=$'\n\e[1;31m[AI] 无补全建议\e[0m'
         zle -R
         return
     fi
