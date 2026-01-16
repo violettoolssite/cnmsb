@@ -33,7 +33,7 @@
 
 <br>
 
-### ⭐ Star 增长趋势
+### Star 增长趋势
 
 <a href="https://star-history.com/#violettoolssite/cnmsb&Date">
   <picture>
