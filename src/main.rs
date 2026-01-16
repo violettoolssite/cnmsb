@@ -311,7 +311,8 @@ fn run_ai_complete(line: &str, cursor: usize) {
             }
         }
         Err(e) => {
-            eprintln!("\x1b[31mAI 补全错误: {}\x1b[0m", e);
+            // 不使用颜色代码，因为输出会被 zsh POSTDISPLAY 显示
+            eprintln!("{}", e);
             std::process::exit(1);
         }
     }
