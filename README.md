@@ -420,11 +420,67 @@ $ 提交代码到仓库     # 输入中文描述
   [Tab=确认  ↑↓=选择  Esc=取消]
 ```
 
-### 配置 AI 补全
+### 获取 ModelScope API 密钥（图文教程）
+
+**第 1 步：访问 ModelScope 官网**
+
+打开浏览器访问 [https://modelscope.cn/home](https://modelscope.cn/home)
+
+![ModelScope 首页](modelscope_home.png)
+
+**第 2 步：登录账号**
+
+点击右上角「登录/注册」，使用账号密码或第三方登录
+
+![登录页面](login.png)
+
+**第 3 步：进入账号设置**
+
+登录后点击右上角头像，选择「账号设置」
+
+![账号设置](setting.png)
+
+**第 4 步：打开访问令牌页面**
+
+在左侧菜单中点击「访问令牌」
+
+![访问令牌](api_setting.png)
+
+**第 5 步：新建访问令牌**
+
+点击「新建访问令牌」按钮
+
+![新建令牌](create_api.png)
+
+**第 6 步：填写令牌信息**
+
+- 输入令牌名称（如 `cnmsb`）
+- 选择有效期：「长期使用」或「短期使用」
+- 点击「新建令牌」
+
+![填写令牌名称](api_name.png)
+
+**第 7 步：复制令牌**
+
+点击复制按钮，复制生成的 API 密钥
+
+![复制令牌](copy_api.png)
+
+**第 8 步：配置 cnmsb**
+
+在终端中执行以下命令（注意：API 密钥需要用引号包裹）：
 
 ```bash
-# 设置 API 密钥（使用 ModelScope）
-cnmsb ai-config set api_key <your_api_key>
+cnmsb ai-config set api_key "你复制的API密钥"
+```
+
+![配置命令](cnmsb_api_setting.png)
+
+### 配置命令
+
+```bash
+# 设置 API 密钥（使用引号包裹）
+cnmsb ai-config set api_key "ms-xxxxxxxxxxxxxxxx"
 
 # 查看当前配置
 cnmsb ai-config show
