@@ -2,7 +2,7 @@
 //! Linux 命令行智能补全工具入口
 
 use clap::{Parser, Subcommand};
-use cnmsb::{CompletionEngine, CnmsbShell, SqlShell, DatabaseType, run_editor};
+use cnmsb::{CompletionEngine, CnmsbShell, SqlShell, DatabaseType, run_editor, AiConfig, AiCompleter};
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -69,6 +69,34 @@ enum Commands {
     Record {
         /// 要记录的命令
         command: String,
+    },
+
+    /// AI 智能补全（使用大语言模型）
+    #[command(name = "ai-complete")]
+    AiComplete {
+        /// 当前命令行输入
+        #[arg(short, long)]
+        line: String,
+
+        /// 光标位置
+        #[arg(short, long)]
+        cursor: usize,
+    },
+
+    /// 管理 AI 补全配置
+    #[command(name = "ai-config")]
+    AiConfig {
+        /// 操作: show, set, get
+        #[arg(value_name = "ACTION")]
+        action: String,
+
+        /// 配置项名称
+        #[arg(value_name = "KEY")]
+        key: Option<String>,
+
+        /// 配置项值
+        #[arg(value_name = "VALUE")]
+        value: Option<String>,
     },
 }
 
@@ -254,6 +282,97 @@ fn main() {
 
         Some(Commands::Edit { file }) => {
             run_editor_mode(file);
+        }
+
+        Some(Commands::AiComplete { line, cursor }) => {
+            run_ai_complete(&line, cursor);
+        }
+
+        Some(Commands::AiConfig { action, key, value }) => {
+            run_ai_config(&action, key.as_deref(), value.as_deref());
+        }
+    }
+}
+
+/// 运行 AI 补全
+fn run_ai_complete(line: &str, cursor: usize) {
+    let completer = AiCompleter::new();
+    
+    if !completer.is_available() {
+        eprintln!("\x1b[33mAI 补全未配置。请运行:\x1b[0m");
+        eprintln!("  cnmsb ai-config set api_key <your_api_key>");
+        std::process::exit(1);
+    }
+    
+    match completer.complete(line, cursor) {
+        Ok(completions) => {
+            for c in completions {
+                println!("{}\t{}", c.text, c.description);
+            }
+        }
+        Err(e) => {
+            eprintln!("\x1b[31mAI 补全错误: {}\x1b[0m", e);
+            std::process::exit(1);
+        }
+    }
+}
+
+/// 管理 AI 配置
+fn run_ai_config(action: &str, key: Option<&str>, value: Option<&str>) {
+    let mut config = AiConfig::load();
+    
+    match action {
+        "show" => {
+            println!("{}", config.show());
+        }
+        "get" => {
+            if let Some(key) = key {
+                if let Some(val) = config.get(key) {
+                    println!("{}", val);
+                } else {
+                    eprintln!("\x1b[31m未知配置项: {}\x1b[0m", key);
+                    std::process::exit(1);
+                }
+            } else {
+                eprintln!("\x1b[31m用法: cnmsb ai-config get <key>\x1b[0m");
+                std::process::exit(1);
+            }
+        }
+        "set" => {
+            if let (Some(key), Some(value)) = (key, value) {
+                if let Err(e) = config.set(key, value) {
+                    eprintln!("\x1b[31m设置失败: {}\x1b[0m", e);
+                    std::process::exit(1);
+                }
+                if let Err(e) = config.save() {
+                    eprintln!("\x1b[31m保存失败: {}\x1b[0m", e);
+                    std::process::exit(1);
+                }
+                println!("\x1b[32m已设置 {} = {}\x1b[0m", key, value);
+            } else {
+                eprintln!("\x1b[31m用法: cnmsb ai-config set <key> <value>\x1b[0m");
+                eprintln!("可用配置项: enabled, api_key, base_url, model, timeout");
+                std::process::exit(1);
+            }
+        }
+        "init" => {
+            // 使用默认配置初始化
+            let default_config = AiConfig::default();
+            if let Err(e) = default_config.save() {
+                eprintln!("\x1b[31m初始化失败: {}\x1b[0m", e);
+                std::process::exit(1);
+            }
+            println!("\x1b[32m已创建默认配置文件\x1b[0m");
+            if let Some(path) = AiConfig::config_path() {
+                println!("配置文件: {}", path.display());
+            }
+            println!("\n请设置 API 密钥:");
+            println!("  cnmsb ai-config set api_key <your_api_key>");
+        }
+        _ => {
+            eprintln!("\x1b[31m未知操作: {}\x1b[0m", action);
+            eprintln!("可用操作: show, get, set, init");
+            std::process::exit(1);
         }
     }
 }

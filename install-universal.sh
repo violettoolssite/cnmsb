@@ -155,7 +155,7 @@ install_from_source() {
         rm -rf "$TMPDIR"
         mkdir -p "$TMPDIR"
     else
-        TMPDIR=$(mktemp -d)
+    TMPDIR=$(mktemp -d)
     fi
     cd "$TMPDIR"
     
@@ -176,7 +176,7 @@ install_from_source() {
         export CARGO_TARGET_DIR="$HOME/.cargo/cnmsb-build"
         cargo build --release
     else
-        cargo build --release
+    cargo build --release
     fi
     
     # 安装

@@ -108,7 +108,7 @@ _cnmsb_setup_theme() {
         *)
             # 使用 cnmsb 主题（默认）
             echo "yes" > "$config_file"
-            PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
+PS1='%F{208}%n@%m%f:%F{51}%~%f%F{208}%%%f '
             echo -e "\033[32m已保存：使用 cnmsb 主题\033[0m"
             ;;
     esac
@@ -367,29 +367,29 @@ _cnmsb_tab() {
                 CURSOR=${#BUFFER}
             else
                 # 普通补全模式：智能追加/替换
-                # 获取当前词和位置
-                local words=(${(z)BUFFER})
-                local curword=""
-                local curword_start=0
-                
-                if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
-                    curword="${words[-1]}"
-                    curword_start=$((${#BUFFER} - ${#curword}))
-                fi
-                
-                if [[ -n "$curword" ]]; then
-                    if [[ "$selected" == "$curword"* ]]; then
-                        # 前缀匹配：追加后缀部分
-                        BUFFER+="${selected#$curword}"
-                    else
-                        # 模糊匹配：用子串方式替换
-                        BUFFER="${BUFFER[1,$curword_start]}${selected}"
-                    fi
+            # 获取当前词和位置
+            local words=(${(z)BUFFER})
+            local curword=""
+            local curword_start=0
+            
+            if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
+                curword="${words[-1]}"
+                curword_start=$((${#BUFFER} - ${#curword}))
+            fi
+            
+            if [[ -n "$curword" ]]; then
+                if [[ "$selected" == "$curword"* ]]; then
+                    # 前缀匹配：追加后缀部分
+                    BUFFER+="${selected#$curword}"
                 else
-                    # 没有当前词，直接追加
-                    BUFFER+="$selected"
+                    # 模糊匹配：用子串方式替换
+                    BUFFER="${BUFFER[1,$curword_start]}${selected}"
                 fi
-                CURSOR=${#BUFFER}
+            else
+                # 没有当前词，直接追加
+                BUFFER+="$selected"
+            fi
+            CURSOR=${#BUFFER}
             fi
         fi
         _cnmsb_reset
@@ -433,29 +433,29 @@ _cnmsb_accept() {
             CURSOR=${#BUFFER}
         else
             # 普通补全模式：智能追加/替换
-            # 获取当前词和位置
-            local words=(${(z)BUFFER})
-            local curword=""
-            local curword_start=0
-            
-            if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
-                curword="${words[-1]}"
-                curword_start=$((${#BUFFER} - ${#curword}))
-            fi
-            
-            if [[ -n "$curword" ]]; then
-                if [[ "$selected" == "$curword"* ]]; then
-                    # 前缀匹配：追加后缀部分
-                    BUFFER+="${selected#$curword}"
-                else
-                    # 模糊匹配：用子串方式替换
-                    BUFFER="${BUFFER[1,$curword_start]}${selected}"
-                fi
+        # 获取当前词和位置
+        local words=(${(z)BUFFER})
+        local curword=""
+        local curword_start=0
+        
+        if [[ "$BUFFER" != *" " && ${#words[@]} -gt 0 ]]; then
+            curword="${words[-1]}"
+            curword_start=$((${#BUFFER} - ${#curword}))
+        fi
+        
+        if [[ -n "$curword" ]]; then
+            if [[ "$selected" == "$curword"* ]]; then
+                # 前缀匹配：追加后缀部分
+                BUFFER+="${selected#$curword}"
             else
-                # 没有当前词，直接追加
-                BUFFER+="$selected"
+                # 模糊匹配：用子串方式替换
+                BUFFER="${BUFFER[1,$curword_start]}${selected}"
             fi
-            CURSOR=${#BUFFER}
+        else
+            # 没有当前词，直接追加
+            BUFFER+="$selected"
+        fi
+        CURSOR=${#BUFFER}
         fi
         _cnmsb_reset
         _cnmsb_lastbuf="$BUFFER"
@@ -597,6 +597,80 @@ zle -N _cnmsb_run
 zle -N _cnmsb_escape
 zle -N _cnmsb_history_menu
 
+# ================== AI 智能补全 ==================
+
+_cnmsb_ai_complete() {
+    _cnmsb_skip=1
+    _cnmsb_clear
+    
+    local line="$BUFFER"
+    local cursor=$CURSOR
+    
+    # 显示正在调用 AI 的提示
+    echo ""
+    echo "\033[1;35m🤖 正在调用 AI 补全...\033[0m"
+    
+    # 调用 AI 补全
+    local completions
+    completions=$(cnmsb ai-complete --line "$line" --cursor $cursor 2>&1)
+    local ret=$?
+    
+    # 清除提示
+    echo -ne "\033[2A\033[J"
+    
+    if [[ $ret -ne 0 ]]; then
+        echo "\033[31mAI 补全失败: $completions\033[0m"
+        echo ""
+        zle reset-prompt
+        return
+    fi
+    
+    if [[ -z "$completions" ]]; then
+        echo "\033[33m无 AI 补全建议\033[0m"
+        echo ""
+        zle reset-prompt
+        return
+    fi
+    
+    # 显示 AI 补全结果
+    echo "\033[1;35m🤖 AI 补全建议:\033[0m"
+    echo ""
+    
+    local -a items
+    local -a descs
+    local i=0
+    
+    while IFS=$'\t' read -r item desc; do
+        [[ -z "$item" ]] && continue
+        items+=("$item")
+        descs+=("$desc")
+        ((i++))
+        printf "  \033[36m%d.\033[0m \033[32m%s\033[0m  \033[38;5;240m%s\033[0m\n" "$i" "$item" "$desc"
+    done <<< "$completions"
+    
+    echo ""
+    echo "\033[38;5;245m输入数字选择，或按 Enter 取消:\033[0m"
+    
+    # 读取用户选择
+    local choice
+    read -k1 choice
+    
+    if [[ "$choice" =~ ^[1-9]$ ]] && (( choice <= ${#items[@]} )); then
+        BUFFER="${items[$choice]}"
+        CURSOR=${#BUFFER}
+        echo ""
+        echo "\033[32m已选择: ${items[$choice]}\033[0m"
+    else
+        echo ""
+        echo "\033[33m已取消\033[0m"
+    fi
+    
+    echo ""
+    zle reset-prompt
+}
+
+zle -N _cnmsb_ai_complete
+
 # ================== ? 帮助功能 ==================
 
 _cnmsb_show_help() {
@@ -677,6 +751,11 @@ bindkey '?' _cnmsb_question
 bindkey '^[h' _cnmsb_history_menu
 bindkey '^[H' _cnmsb_history_menu
 
+# Alt+F4 AI 智能补全
+bindkey '^[[1;3S' _cnmsb_ai_complete   # Alt+F4 (xterm)
+bindkey '^[^[[S' _cnmsb_ai_complete    # Alt+F4 (备用)
+bindkey '^[[15;3~' _cnmsb_ai_complete  # Alt+F4 (一些终端)
+
 # ================== 别名 ==================
 
 alias 操你妈傻逼='cnmsb'
@@ -686,4 +765,4 @@ alias caonimashabi='cnmsb'
 # ================== 完成 ==================
 
 print -P "%F{208}cnmsb%f 已加载 (输入 \x1b[38;5;226m操你妈傻逼\x1b[0m 或 \x1b[38;5;226mcnmsb\x1b[0m 查看帮助)"
-print -P "  %F{226}Tab%f=选择  %F{46}↑↓%f=切换  %F{51}→%f=接受  %F{201}?%f=帮助  %F{245}Alt+H%f=历史  %F{196}Esc%f=取消"
+print -P "  %F{226}Tab%f=选择  %F{46}↑↓%f=切换  %F{51}→%f=接受  %F{201}?%f=帮助  %F{245}Alt+H%f=历史  %F{135}Alt+F4%f=AI  %F{196}Esc%f=取消"

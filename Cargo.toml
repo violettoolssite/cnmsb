@@ -34,6 +34,9 @@ postgres = "0.19"
 # Readline 库（SQL shell）
 rustyline = "14.0"
 
+# HTTP 客户端（AI 补全）
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+
 # Unix 终端控制
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
