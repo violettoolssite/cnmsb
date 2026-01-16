@@ -109,6 +109,66 @@ cnmsb:
           long: ""
           description: "要编辑的文件路径"
           takes_value: true
+    record:
+      name: record
+      description: "记录命令执行（用于 NLP 预测学习）"
+      options:
+        - short: ""
+          long: ""
+          description: "要记录的命令"
+          takes_value: true
+          required: true
+    ai-complete:
+      name: ai-complete
+      description: "AI 智能补全（使用大语言模型）"
+      options:
+        - short: "-l"
+          long: "--line"
+          description: "当前命令行输入"
+          takes_value: true
+          required: true
+        - short: "-c"
+          long: "--cursor"
+          description: "光标位置"
+          takes_value: true
+          required: true
+    ai-config:
+      name: ai-config
+      description: "管理 AI 补全配置"
+      subcommands:
+        show:
+          name: show
+          description: "显示当前 AI 配置"
+        set:
+          name: set
+          description: "设置 AI 配置项"
+          options:
+            - short: ""
+              long: ""
+              description: "配置项名称 (enabled/api_key/base_url/model)"
+              takes_value: true
+              values:
+                - enabled
+                - api_key
+                - base_url
+                - model
+            - short: ""
+              long: ""
+              description: "配置项值"
+              takes_value: true
+        get:
+          name: get
+          description: "获取 AI 配置项值"
+          options:
+            - short: ""
+              long: ""
+              description: "配置项名称"
+              takes_value: true
+              values:
+                - enabled
+                - api_key
+                - base_url
+                - model
 
 # cnmsb-sql 作为独立命令
 cnmsb-sql:
@@ -190,3 +250,12 @@ cntmd:
     version:
       name: version
       description: "显示版本信息"
+    record:
+      name: record
+      description: "记录命令执行"
+    ai-complete:
+      name: ai-complete
+      description: "AI 智能补全"
+    ai-config:
+      name: ai-config
+      description: "管理 AI 配置"
