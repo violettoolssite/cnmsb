@@ -11,7 +11,7 @@
  * 5. 配置 cnmsb 使用该 URL：
  *    cnmsb ai-config set base_url "https://your-worker.your-subdomain.workers.dev/"
  *    cnmsb ai-config set api_key "any-value"  # Cloudflare Workers AI 不需要 API Key，但 cnmsb 要求设置
- *    cnmsb ai-config set model "@cf/qwen/qwen1.5-14b-chat-awq"
+ *    cnmsb ai-config set model "@cf/meta/llama-3.1-8b-instruct"
  */
 
 export default {
@@ -40,7 +40,8 @@ export default {
       const { model, messages } = body;
 
       // 使用绑定的 AI (变量名: cnmsb)
-      const response = await env.cnmsb.run(model || "@cf/qwen/qwen1.5-14b-chat-awq", {
+      // 默认使用 Llama 3.1 8B，稳定可用
+      const response = await env.cnmsb.run(model || "@cf/meta/llama-3.1-8b-instruct", {
         messages: messages,
       });
 
@@ -49,7 +50,7 @@ export default {
         id: "chatcmpl-" + Date.now(),
         object: "chat.completion",
         created: Math.floor(Date.now() / 1000),
-        model: model || "@cf/qwen/qwen1.5-14b-chat-awq",
+        model: model || "@cf/meta/llama-3.1-8b-instruct",
         choices: [
           {
             index: 0,

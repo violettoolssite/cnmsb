@@ -575,16 +575,16 @@ cnmsb ai-config set base_url "https://your-worker.your-subdomain.workers.dev/"
 cnmsb ai-config set api_key "any-value"
 
 # 设置 Cloudflare Workers AI 模型
-cnmsb ai-config set model "@cf/qwen/qwen1.5-14b-chat-awq"
+cnmsb ai-config set model "@cf/meta/llama-3.1-8b-instruct"
 ```
 
 **Cloudflare Workers AI 推荐模型：**
 
 | 模型名称 | 说明 |
 |----------|------|
-| `@cf/qwen/qwen1.5-14b-chat-awq` | Qwen 1.5 14B |
-| `@cf/meta/llama-3-8b-instruct` | Llama 3 8B |
-| `@cf/mistral/mistral-7b-instruct-v0.1` | Mistral 7B |
+| `@cf/meta/llama-3.1-8b-instruct` | Llama 3.1 8B（推荐） |
+| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Llama 3.3 70B |
+| `@cf/qwen/qwen2.5-coder-32b-instruct` | Qwen 2.5 代码专用 |
 
 更多模型请查阅 [Cloudflare Workers AI 文档](https://developers.cloudflare.com/workers-ai/models/)
 
