@@ -1,6 +1,6 @@
 [package]
 name = "cnmsb"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["cnmsb contributors"]
 description = "操你妈傻逼 - Linux 命令行智能补全工具，提供类似 IDE 的补全体验"

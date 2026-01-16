@@ -3,7 +3,7 @@
 
 set -e
 
-VERSION="0.1.0"
+VERSION="0.1.1"
 ARCH="amd64"
 PKG_NAME="cnmsb_${VERSION}_${ARCH}"
 SRC_DIR="$(pwd)"
@@ -70,6 +70,7 @@ Depends: zsh
 Maintainer: cnmsb contributors <cnmsb@example.com>
 Description: 操你妈傻逼 - Linux 命令行智能补全工具
  cnmsb 是一个为 Linux 命令行提供类似 IDE 编辑器补全体验的工具。
+ 让终端不再是程序员专属，零基础用户也能用自然语言生成命令。
  .
  主要功能：
   - 智能内联建议（灰色预测文字）
@@ -78,6 +79,7 @@ Description: 操你妈傻逼 - Linux 命令行智能补全工具
   - 组合参数补全（如 tar -zxvf）
   - 问号帮助模式（输入 ? 查看所有选项）
   - 历史命令模式（Alt+H）
+  - AI 智能补全（Alt+L）用自然语言生成命令
  .
  包含命令：
   - cnmsb: 主程序
