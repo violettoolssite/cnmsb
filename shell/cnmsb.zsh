@@ -751,10 +751,9 @@ bindkey '?' _cnmsb_question
 bindkey '^[h' _cnmsb_history_menu
 bindkey '^[H' _cnmsb_history_menu
 
-# Alt+F4 AI 智能补全
-bindkey '^[[1;3S' _cnmsb_ai_complete   # Alt+F4 (xterm)
-bindkey '^[^[[S' _cnmsb_ai_complete    # Alt+F4 (备用)
-bindkey '^[[15;3~' _cnmsb_ai_complete  # Alt+F4 (一些终端)
+# Alt+L AI 智能补全
+bindkey '^[l' _cnmsb_ai_complete   # Alt+l
+bindkey '^[L' _cnmsb_ai_complete   # Alt+L
 
 # ================== 别名 ==================
 
@@ -765,4 +764,4 @@ alias caonimashabi='cnmsb'
 # ================== 完成 ==================
 
 print -P "%F{208}cnmsb%f 已加载 (输入 \x1b[38;5;226m操你妈傻逼\x1b[0m 或 \x1b[38;5;226mcnmsb\x1b[0m 查看帮助)"
-print -P "  %F{226}Tab%f=选择  %F{46}↑↓%f=切换  %F{51}→%f=接受  %F{201}?%f=帮助  %F{245}Alt+H%f=历史  %F{135}Alt+F4%f=AI  %F{196}Esc%f=取消"
+print -P "  %F{226}Tab%f=选择  %F{46}↑↓%f=切换  %F{51}→%f=接受  %F{201}?%f=帮助  %F{245}Alt+H%f=历史  %F{135}Alt+L%f=AI  %F{196}Esc%f=取消"
