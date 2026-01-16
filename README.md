@@ -4,11 +4,46 @@
 
 **Linux 命令行智能补全工具，提供类似 IDE 的补全体验**
 
-[![GitHub stars](https://img.shields.io/github/stars/violettoolssite/cnmsb?style=for-the-badge&logo=github)](https://github.com/violettoolssite/cnmsb/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/violettoolssite/cnmsb?style=for-the-badge&logo=github)](https://github.com/violettoolssite/cnmsb/network/members)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
+<p>
+  <a href="https://github.com/violettoolssite/cnmsb/stargazers">
+    <img src="https://img.shields.io/github/stars/violettoolssite/cnmsb?style=for-the-badge&logo=github&logoColor=white&labelColor=1a1a2e&color=d4ff00" alt="Stars">
+  </a>
+  <a href="https://github.com/violettoolssite/cnmsb/network/members">
+    <img src="https://img.shields.io/github/forks/violettoolssite/cnmsb?style=for-the-badge&logo=github&logoColor=white&labelColor=1a1a2e&color=00d9ff" alt="Forks">
+  </a>
+  <a href="https://github.com/violettoolssite/cnmsb/issues">
+    <img src="https://img.shields.io/github/issues/violettoolssite/cnmsb?style=for-the-badge&logo=github&logoColor=white&labelColor=1a1a2e&color=ff6b6b" alt="Issues">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge&labelColor=1a1a2e&color=a855f7" alt="License">
+  </a>
+</p>
 
-[![Star History Chart](https://api.star-history.com/svg?repos=violettoolssite/cnmsb&type=Date)](https://star-history.com/#violettoolssite/cnmsb&Date)
+<p>
+  <a href="https://github.com/violettoolssite/cnmsb/releases">
+    <img src="https://img.shields.io/github/v/release/violettoolssite/cnmsb?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=1a1a2e&color=22c55e" alt="Release">
+  </a>
+  <a href="https://github.com/violettoolssite/cnmsb">
+    <img src="https://img.shields.io/github/languages/top/violettoolssite/cnmsb?style=for-the-badge&logo=rust&logoColor=white&labelColor=1a1a2e&color=dea584" alt="Language">
+  </a>
+  <a href="https://github.com/violettoolssite/cnmsb/commits/main">
+    <img src="https://img.shields.io/github/last-commit/violettoolssite/cnmsb?style=for-the-badge&logo=git&logoColor=white&labelColor=1a1a2e&color=f97316" alt="Last Commit">
+  </a>
+</p>
+
+<br>
+
+### ⭐ Star 增长趋势
+
+<a href="https://star-history.com/#violettoolssite/cnmsb&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=violettoolssite/cnmsb&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=violettoolssite/cnmsb&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=violettoolssite/cnmsb&type=Date" width="600" />
+  </picture>
+</a>
+
+<br>
 
 </div>
 
