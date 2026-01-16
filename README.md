@@ -553,6 +553,41 @@ cnmsb ai-config set model "gpt-4"
 cnmsb ai-config set enabled false
 ```
 
+### 使用 Cloudflare Workers（进阶）
+
+如果你熟悉 Cloudflare，可以使用 Cloudflare Workers AI 作为后端，享受免费额度：
+
+**部署步骤：**
+
+1. 复制仓库中的 `cloudflare-worker/` 目录
+2. 在 Cloudflare Dashboard 创建新的 Worker
+3. 在 Worker 设置中绑定 AI：
+   - 类型：Workers AI
+   - 变量名称：`cnmsb`
+4. 部署 Worker 并获取 URL
+5. 配置 cnmsb：
+
+```bash
+# 设置 Worker URL
+cnmsb ai-config set base_url "https://your-worker.your-subdomain.workers.dev/"
+
+# 设置任意 API Key（Cloudflare Workers AI 不需要，但 cnmsb 要求设置）
+cnmsb ai-config set api_key "any-value"
+
+# 设置 Cloudflare Workers AI 模型
+cnmsb ai-config set model "@cf/qwen/qwen1.5-14b-chat-awq"
+```
+
+**Cloudflare Workers AI 推荐模型：**
+
+| 模型名称 | 说明 |
+|----------|------|
+| `@cf/qwen/qwen1.5-14b-chat-awq` | Qwen 1.5 14B |
+| `@cf/meta/llama-3-8b-instruct` | Llama 3 8B |
+| `@cf/mistral/mistral-7b-instruct-v0.1` | Mistral 7B |
+
+更多模型请查阅 [Cloudflare Workers AI 文档](https://developers.cloudflare.com/workers-ai/models/)
+
 ### 配置项说明
 
 | 配置项 | 说明 | 默认值 |

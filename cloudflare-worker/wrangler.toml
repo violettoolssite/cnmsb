@@ -1,0 +1,9 @@
+name = "cnmsb-ai-proxy"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# 绑定 Workers AI
+# 变量名称必须为 cnmsb
+[ai]
+binding = "cnmsb"
+
