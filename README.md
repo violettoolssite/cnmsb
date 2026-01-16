@@ -420,6 +420,22 @@ $ 提交代码到仓库     # 输入中文描述
   [Tab=确认  ↑↓=选择  Esc=取消]
 ```
 
+### 关于 ModelScope API-Inference
+
+ModelScope（魔搭社区）通过 API-Inference 将开源模型服务化，让开发者能以更轻量和迅捷的方式体验开源模型。
+
+**使用须知：**
+
+| 项目 | 说明 |
+|------|------|
+| 费用 | 免费 |
+| 每日免费额度 | 2000 次调用 |
+| 单模型上限 | 500 次/天 |
+| 账号要求 | 需绑定阿里云账号并完成实名认证 |
+| 更多额度 | 可使用阿里云百炼等商业 API 服务 |
+
+更多信息请查阅 [ModelScope API-Inference 官方文档](https://modelscope.cn/docs/model-service/API-Inference/intro)
+
 ### 获取 ModelScope API 密钥（图文教程）
 
 **第 1 步：访问 ModelScope 官网**
