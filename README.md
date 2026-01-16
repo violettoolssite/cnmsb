@@ -358,35 +358,49 @@ source /usr/share/cnmsb/cnmsb.zsh
 | **Alt+H** | 打开历史命令选择器 |
 | **Alt+L** | AI 智能补全（需配置 API） |
 | **?** | 查看命令帮助 |
-| **Esc** | 关闭选择器 |
+| **Esc** | 关闭选择器 / 取消 AI 补全 |
 
 ## AI 智能补全（可选功能）
 
 使用大语言模型（默认 Qwen2.5-Coder-32B）生成智能命令补全建议。这是一个**可选功能**，需要配置 API 密钥才能使用。
 
+**为什么需要 AI 补全？**
+- 普通补全只能匹配已知命令和参数
+- AI 补全可以理解你的意图，生成完整的命令
+- 适合不确定具体参数时使用
+
 ### 配置 AI 补全
 
 ```bash
-# 初始化配置文件
-cnmsb ai-config init
-
 # 设置 API 密钥（使用 ModelScope）
 cnmsb ai-config set api_key <your_api_key>
 
 # 查看当前配置
 cnmsb ai-config show
+
+# 获取单个配置项
+cnmsb ai-config get api_key
 ```
 
 ### 使用方式
 
-1. 输入命令的一部分
-2. 按 **Alt+F4** 触发 AI 补全
-3. 选择 AI 建议的命令
+1. 输入命令的一部分（如 `git co`）
+2. 按 **Alt+L** 触发 AI 补全
+3. 使用 ↑↓ 选择建议，按 Tab 确认
+
+```
+$ git co
+  [AI 智能补全]
+  > git checkout  (切换分支或恢复工作树文件)
+    git commit    (提交更改)
+    git config    (获取和设置配置变量)
+  [Tab=确认  ↑↓=选择  Esc=取消]
+```
 
 ### 自定义 API
 
 ```bash
-# 使用自定义 API 地址
+# 使用自定义 API 地址（兼容 OpenAI API 格式）
 cnmsb ai-config set base_url https://your-api-endpoint/v1/
 
 # 使用其他模型
@@ -395,6 +409,15 @@ cnmsb ai-config set model gpt-4
 # 禁用 AI 补全
 cnmsb ai-config set enabled false
 ```
+
+### 配置项说明
+
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| `enabled` | 是否启用 AI 补全 | `true` |
+| `api_key` | API 密钥 | - |
+| `base_url` | API 地址 | `https://api-inference.modelscope.cn/v1/` |
+| `model` | 模型名称 | `Qwen/Qwen2.5-Coder-32B-Instruct` |
 
 配置文件位置：`~/.config/cnmsb/ai.conf`
 
