@@ -408,11 +408,43 @@ _cnmsb_tab() {
             _cnmsb_menu=1
             _cnmsb_show_menu
         else
-            # 检查输入是否包含非 ASCII 字符（中文等自然语言描述）
-            # 方法：比较原字符串和过滤掉非 ASCII 后的字符串
+            # 检测自然语言输入（中文或英文短语）
+            local is_natural_language=0
+            
+            # 方法1：检测非 ASCII 字符（中文等）
             local ascii_only="${BUFFER//[^a-zA-Z0-9 _.\/\-~\$\{\}\[\]\(\)\|\&\;\<\>\"\'\`\!\@\#\%\^\*\+\=\,\?\:\\]/}"
             if [[ -n "$BUFFER" && "$BUFFER" != "$ascii_only" ]]; then
-                # 包含非 ASCII 字符（如中文），提示用户使用 AI 补全
+                is_natural_language=1
+            fi
+            
+            # 方法2：检测英文自然语言短语
+            # 条件：包含空格、没有 - 开头的参数、第一个词不是已知命令
+            if [[ $is_natural_language -eq 0 && -n "$BUFFER" && "$BUFFER" == *" "* ]]; then
+                local words=(${(z)BUFFER})
+                local first="${words[1]}"
+                # 检查第一个词是否是常见的自然语言动词
+                local nl_verbs=("show" "find" "search" "list" "delete" "remove" "create" "make" "copy" "move" "get" "set" "check" "view" "open" "close" "start" "stop" "run" "execute" "install" "update" "upgrade" "download" "upload" "compress" "extract" "convert" "edit" "modify" "change" "add" "commit" "push" "pull" "clone" "merge" "rebase" "reset" "revert" "how" "what" "where" "why" "when" "which" "display" "print" "count" "calculate" "sort" "filter" "compare" "diff" "sync" "backup" "restore" "monitor" "watch" "kill" "process" "file" "folder" "directory" "disk" "memory" "cpu" "network" "port" "user" "permission" "size" "space" "usage" "log" "error" "debug" "test" "build" "deploy" "release")
+                
+                # 如果第一个词看起来像自然语言动词，且不是以 / 或 . 开头（路径）
+                if [[ "$first" != /* && "$first" != ./* && "$first" != ~* ]]; then
+                    # 检查是否匹配自然语言动词
+                    local verb_lower="${first:l}"
+                    for v in "${nl_verbs[@]}"; do
+                        if [[ "$verb_lower" == "$v" ]]; then
+                            is_natural_language=1
+                            break
+                        fi
+                    done
+                    
+                    # 或者：输入看起来像问句
+                    if [[ $is_natural_language -eq 0 && ("$BUFFER" == *"?"* || "$BUFFER" == *" to "* || "$BUFFER" == *" the "* || "$BUFFER" == *" a "* || "$BUFFER" == *" my "* || "$BUFFER" == *" all "* || "$BUFFER" == *" this "* || "$BUFFER" == *" for "* || "$BUFFER" == *" in "* || "$BUFFER" == *" of "*) ]]; then
+                        is_natural_language=1
+                    fi
+                fi
+            fi
+            
+            if [[ $is_natural_language -eq 1 ]]; then
+                # 检测到自然语言，提示用户使用 AI 补全
                 POSTDISPLAY=$'\n'"  [提示] 检测到自然语言输入，按 Alt+L 使用 AI 智能补全生成命令"
                 zle -R
                 return
