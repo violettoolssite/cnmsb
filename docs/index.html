@@ -53,6 +53,7 @@
         <div class="nav-right">
             <a href="#features" class="nav-link">功能</a>
             <a href="#editor" class="nav-link">编辑器</a>
+            <a href="#ai" class="nav-link">AI</a>
             <a href="#commands" class="nav-link">命令</a>
             <a href="#install" class="nav-link">安装</a>
             <span class="version-switch" data-current-version="rude">切换正常版</span>
@@ -166,7 +167,7 @@
                 <div class="section-label">核心功能</div>
                 <h2 class="section-title" data-rude>让命令行<strong>不再那么操蛋</strong>，省得你他妈到处查</h2>
                 <h2 class="section-title" data-normal style="display: none;">让命令行<strong>更高效</strong></h2>
-                <p class="section-desc">12 大核心功能，全面提升命令行使用体验</p>
+                <p class="section-desc">13 大核心功能，全面提升命令行使用体验</p>
             </div>
 
             <div class="features-grid">
@@ -235,6 +236,12 @@
                     <h3>自然语言理解</h3>
                     <p data-rude>系统能理解你的意图。输入 export VAR= 时，根据变量名自动识别类型（Java、Hadoop、Maven 等），然后在系统中查找对应的安装路径。就像有个助手在帮你找东西。妈的，比那些垃圾工具强多了。</p>
                     <p data-normal style="display: none;">系统能理解你的意图。输入 export VAR= 时，根据变量名自动识别类型（Java、Hadoop、Maven 等），然后在系统中查找对应的安装路径，提供智能建议。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">13</div>
+                    <h3>AI 智能补全</h3>
+                    <p data-rude>按 Alt+L 调用大语言模型生成命令建议。不知道用什么命令？用中文描述你想干什么，AI 直接给你生成完整命令。支持 ModelScope 和 Cloudflare Workers AI，免费使用。操，这功能太他妈强了。</p>
+                    <p data-normal style="display: none;">按 Alt+L 调用大语言模型生成命令建议。用自然语言描述需求，AI 生成对应的 shell 命令。支持 ModelScope 和 Cloudflare Workers AI。</p>
                 </div>
             </div>
         </section>
@@ -425,6 +432,95 @@
             </div>
         </section>
 
+        <!-- AI Section -->
+        <section class="section" id="ai">
+            <div class="section-header animate-in">
+                <div class="section-label">AI 智能补全</div>
+                <h2 class="section-title" data-rude>不知道命令？<strong>用中文问 AI</strong></h2>
+                <h2 class="section-title" data-normal style="display: none;">自然语言生成 <strong>Shell 命令</strong></h2>
+                <p class="section-desc">按 Alt+L 调用大语言模型，用自然语言描述需求，AI 生成对应命令</p>
+            </div>
+
+            <div class="feature-detail animate-in">
+                <div class="feature-detail-content">
+                    <div class="feature-detail-label">自然语言转命令</div>
+                    <h3 class="feature-detail-title">用中文描述，AI 生成命令</h3>
+                    <p class="feature-detail-desc" data-rude>
+                        不知道用什么命令？直接用中文描述你想干什么，按 Alt+L，AI 会生成完整的 shell 命令。
+                        比如输入"提交代码到仓库"，AI 就会生成 git add、commit、push 的完整命令。操，这功能太他妈实用了。
+                    </p>
+                    <p class="feature-detail-desc" data-normal style="display: none;">
+                        用自然语言描述需求，按 Alt+L 触发 AI 补全。AI 会理解你的意图并生成对应的 shell 命令。
+                    </p>
+                    <ul class="feature-list">
+                        <li>支持中英文自然语言输入</li>
+                        <li>AI 理解意图并生成完整命令</li>
+                        <li>提供多个候选命令供选择</li>
+                        <li>每个建议都附带简短说明</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="terminal-showcase" style="border-radius: 16px;">
+                        <div class="terminal-bar">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                            <span class="terminal-title">zsh — AI 补全</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-cmd">提交代码到仓库</span>
+                                <span class="terminal-comment" style="margin-left: 1rem;">按 Alt+L</span>
+                            </div>
+                            <div class="terminal-menu" style="margin-top: 0.5rem;">
+                                <div style="color: var(--accent); margin-bottom: 0.5rem; font-size: 0.8rem;">[AI 智能补全]</div>
+                                <div class="terminal-menu-item selected">
+                                    <span class="arrow">›</span>
+                                    <span class="name">git add . && git commit -m "update" && git push</span>
+                                </div>
+                                <div class="terminal-menu-item">
+                                    <span class="arrow"> </span>
+                                    <span class="name">git commit -am "update" && git push</span>
+                                </div>
+                                <div class="terminal-menu-item">
+                                    <span class="arrow"> </span>
+                                    <span class="name">git push origin main</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-detail reverse animate-in">
+                <div class="feature-detail-content">
+                    <div class="feature-detail-label">免费 AI 服务</div>
+                    <h3 class="feature-detail-title">多种 API 选择</h3>
+                    <p class="feature-detail-desc">
+                        支持多种 AI 服务提供商，可根据需求选择。所有服务都有免费额度可用。
+                    </p>
+                    <ul class="feature-list">
+                        <li>ModelScope 魔搭：免费 2000 次/天，需实名认证</li>
+                        <li>Cloudflare Workers AI：自建代理，有免费额度</li>
+                        <li>OpenAI 兼容 API：支持任何 OpenAI 格式的 API</li>
+                        <li>一键切换服务商，配置简单</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="code-block" style="padding: 1.5rem;">
+                        <div style="color: var(--accent); font-size: 0.8rem; margin-bottom: 1rem;">配置 AI 服务</div>
+                        <div style="margin-bottom: 0.5rem;"><span class="comment"># 设置 API 密钥</span></div>
+                        <div style="margin-bottom: 1rem;"><span class="cmd">cnmsb ai-config set api_key</span> "ms-xxx"</div>
+                        <div style="margin-bottom: 0.5rem;"><span class="comment"># 切换模型</span></div>
+                        <div style="margin-bottom: 1rem;"><span class="cmd">cnmsb ai-config set model</span> "Qwen/Qwen2.5-Coder-32B-Instruct"</div>
+                        <div style="margin-bottom: 0.5rem;"><span class="comment"># 查看配置</span></div>
+                        <div><span class="cmd">cnmsb ai-config show</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Commands Section -->
         <section class="section" id="commands">
             <div class="section-header animate-in">
@@ -609,6 +705,10 @@
                 <div class="shortcut-item">
                     <div class="shortcut-keys"><span class="key">Alt</span><span class="key">H</span></div>
                     <div class="shortcut-desc">打开历史命令选择器</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-keys"><span class="key">Alt</span><span class="key">L</span></div>
+                    <div class="shortcut-desc">AI 智能补全（用自然语言生成命令）</div>
                 </div>
                 <div class="shortcut-item">
                     <div class="shortcut-keys"><span class="key">?</span></div>
