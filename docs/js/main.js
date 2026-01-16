@@ -14,6 +14,7 @@ class LetterSwirl {
         this.formedWord = document.getElementById('formedWord');
         this.versionSelector = document.querySelector('.version-selector');
         this.loadingSubtitle = document.querySelector('.loading-subtitle');
+        this.loadingTagline = document.querySelector('.loading-tagline');
         this.loadingProgress = document.querySelector('.loading-progress');
         this.progressFill = document.querySelector('.progress-fill');
         this.progressText = document.querySelector('.progress-text');
@@ -258,6 +259,10 @@ class LetterSwirl {
             if (this.loadingSubtitle) {
                 this.loadingSubtitle.classList.add('visible');
             }
+            // 显示核心标语
+            if (this.loadingTagline) {
+                this.loadingTagline.classList.add('visible');
+            }
         }, 200);
         
         // 显示版本选择按钮（带入场动画）
@@ -464,6 +469,10 @@ class LoadingScreen {
             }
             if (loadingSubtitle) {
                 loadingSubtitle.classList.add('visible');
+            }
+            const loadingTagline = document.querySelector('.loading-tagline');
+            if (loadingTagline) {
+                loadingTagline.classList.add('visible');
             }
         }, 6000);
     }
