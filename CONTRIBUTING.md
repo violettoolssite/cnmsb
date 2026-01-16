@@ -57,6 +57,9 @@ cnmsb-tool/
 │   ├── cnmsb.zsh            # Zsh 集成脚本（内联补全、选择器菜单）
 │   └── cnmsb.bash           # Bash 集成脚本（已废弃，仅 Zsh 支持）
 ├── debian/                  # Debian 打包配置
+├── cloudflare-worker/       # Cloudflare Workers AI 代理
+│   ├── worker.js            # Worker 代码
+│   └── wrangler.toml        # Wrangler 配置
 ├── build-deb.sh             # deb 包构建脚本
 ├── install-universal.sh     # 通用安装脚本
 └── Cargo.toml               # Rust 项目配置
@@ -315,11 +318,67 @@ AI 补全模块在 `src/ai/` 目录：
 - `config.rs` - 配置管理（加载/保存 `~/.config/cnmsb/ai.conf`）
 - `completer.rs` - AI 补全器（构建 prompt、调用 API、解析响应）
 
+**支持的 AI 服务：**
+
+| 服务 | 说明 |
+|------|------|
+| ModelScope | 默认服务，免费 2000 次/天，需实名认证 |
+| Cloudflare Workers AI | 自建代理，有免费额度 |
+| OpenAI 兼容 API | 任何 OpenAI 格式的 API |
+
 **添加新的 AI 提供商：**
 
 1. 修改 `config.rs` 添加新的配置项
 2. 修改 `completer.rs` 的 `complete()` 方法支持新的 API 格式
 3. 测试：`cnmsb ai-complete --line "git co" --cursor 6`
+
+### Cloudflare Workers 代理
+
+如果你熟悉 Cloudflare，可以自建 AI 代理：
+
+**代码位置：** `cloudflare-worker/`
+
+- `worker.js` - Worker 代码（OpenAI 兼容格式转换）
+- `wrangler.toml` - Wrangler 配置
+
+**部署步骤：**
+
+```bash
+# 1. 安装 wrangler
+npm install -g wrangler
+
+# 2. 登录 Cloudflare
+wrangler login
+
+# 3. 进入目录
+cd cloudflare-worker
+
+# 4. 部署
+wrangler deploy
+
+# 5. 在 Cloudflare Dashboard 绑定 AI
+#    - 进入 Worker 设置
+#    - 添加 Workers AI 绑定
+#    - 变量名称：cnmsb
+```
+
+**修改 Worker 代码：**
+
+Worker 将 OpenAI 格式请求转换为 Cloudflare Workers AI 格式。主要逻辑：
+
+1. 接收 POST 请求（OpenAI 格式）
+2. 调用 `env.cnmsb.run(model, { messages })` 执行推理
+3. 将响应转换为 OpenAI 格式返回
+
+**可用的 Cloudflare Workers AI 模型：**
+
+| 模型 | 说明 |
+|------|------|
+| `@cf/meta/llama-3.1-8b-instruct` | Llama 3.1 8B（推荐） |
+| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | Llama 3.3 70B |
+| `@cf/qwen/qwen2.5-coder-32b-instruct` | Qwen 2.5 代码专用 |
+
+注意：Cloudflare 会不定期弃用旧模型，请关注官方文档
 
 ### 构建和测试
 
@@ -547,6 +606,29 @@ A: 这取决于 API 服务的响应速度。可以尝试：
 1. 使用本地部署的模型
 2. 选择响应更快的 API 服务
 3. 修改 `completer.rs` 中的超时设置
+
+### Q: Cloudflare Workers AI 模型报错 "deprecated"？
+
+A: Cloudflare 会不定期弃用旧模型。解决方法：
+1. 查看 Cloudflare 官方模型列表
+2. 更新 `worker.js` 中的默认模型
+3. 更新 cnmsb 配置：`cnmsb ai-config set model "@cf/meta/llama-3.1-8b-instruct"`
+
+### Q: 如何在 ModelScope 和 Cloudflare 之间切换？
+
+A: 切换 `base_url` 和 `api_key` 即可：
+
+```bash
+# 切换到 ModelScope
+cnmsb ai-config set base_url "https://api-inference.modelscope.cn/v1/"
+cnmsb ai-config set api_key "ms-xxxxxxxx"
+cnmsb ai-config set model "Qwen/Qwen2.5-Coder-32B-Instruct"
+
+# 切换到 Cloudflare Workers
+cnmsb ai-config set base_url "https://your-worker.workers.dev/"
+cnmsb ai-config set api_key "any-value"
+cnmsb ai-config set model "@cf/meta/llama-3.1-8b-instruct"
+```
 
 ## 许可证
 
