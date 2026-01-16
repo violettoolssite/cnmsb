@@ -408,6 +408,14 @@ _cnmsb_tab() {
             _cnmsb_menu=1
             _cnmsb_show_menu
         else
+            # 检查输入是否包含中文字符（自然语言描述）
+            if [[ "$BUFFER" =~ [\u4e00-\u9fff] ]]; then
+                # 包含中文，提示用户使用 AI 补全
+                POSTDISPLAY=$'\n'"  [提示] 检测到自然语言输入，按 Alt+L 使用 AI 智能补全生成命令"
+                zle -R
+                return
+            fi
+            
             # 检查是否是前缀命令（sudo, time, env 等）
             local words=(${(z)BUFFER})
             local first_word="${words[1]}"
