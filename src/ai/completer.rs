@@ -102,8 +102,13 @@ impl AiCompleter {
             stream: false,
         };
 
-        // 发送请求
-        let url = format!("{}chat/completions", self.config.base_url);
+        // 发送请求 - 确保 base_url 以 / 结尾
+        let base_url = if self.config.base_url.ends_with('/') {
+            self.config.base_url.clone()
+        } else {
+            format!("{}/", self.config.base_url)
+        };
+        let url = format!("{}chat/completions", base_url);
         let response = self.client
             .post(&url)
             .header("Authorization", format!("Bearer {}", self.config.api_key))
