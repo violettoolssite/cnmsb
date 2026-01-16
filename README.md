@@ -520,14 +520,34 @@ $ git co
   [Tab=确认  ↑↓=选择  Esc=取消]
 ```
 
+### 切换模型
+
+访问 [ModelScope 模型库](https://modelscope.cn/models)，找到支持 API-Inference 的模型，复制模型名称即可切换：
+
+```bash
+# 切换到其他模型（复制模型库中的模型名称）
+cnmsb ai-config set model "Qwen/Qwen2.5-72B-Instruct"
+
+# 查看当前使用的模型
+cnmsb ai-config get model
+```
+
+**推荐模型：**
+
+| 模型名称 | 说明 |
+|----------|------|
+| `Qwen/Qwen2.5-Coder-32B-Instruct` | 代码专用，默认模型 |
+| `Qwen/Qwen2.5-72B-Instruct` | 通用大模型 |
+| `Qwen/Qwen2.5-32B-Instruct` | 通用中等模型 |
+
 ### 自定义 API
 
 ```bash
 # 使用自定义 API 地址（兼容 OpenAI API 格式）
-cnmsb ai-config set base_url https://your-api-endpoint/v1/
+cnmsb ai-config set base_url "https://your-api-endpoint/v1/"
 
-# 使用其他模型
-cnmsb ai-config set model gpt-4
+# 使用其他模型（如 OpenAI）
+cnmsb ai-config set model "gpt-4"
 
 # 禁用 AI 补全
 cnmsb ai-config set enabled false
