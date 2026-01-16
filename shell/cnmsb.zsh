@@ -244,7 +244,7 @@ _cnmsb_show_menu() {
 _cnmsb_reset() {
     _cnmsb_clear
     _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=()
-    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_lastbuf=""
+    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_ai_mode=0 _cnmsb_lastbuf=""
 }
 
 # ================== 钩子 ==================
@@ -316,7 +316,7 @@ _cnmsb_line_init() {
     POSTDISPLAY=""
     region_highlight=()
     _cnmsb_list=() _cnmsb_desc=() _cnmsb_suff=()
-    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_lastbuf="" _cnmsb_skip=0
+    _cnmsb_idx=0 _cnmsb_menu=0 _cnmsb_hist_mode=0 _cnmsb_ai_mode=0 _cnmsb_lastbuf="" _cnmsb_skip=0
 }
 
 zle -N zle-line-init _cnmsb_line_init
@@ -328,7 +328,9 @@ _cnmsb_prev() {
     if [[ ($_cnmsb_menu -eq 1 || $_cnmsb_hist_mode -eq 1) && ${#_cnmsb_list[@]} -gt 0 ]]; then
         ((_cnmsb_idx--))
         [[ $_cnmsb_idx -lt 1 ]] && _cnmsb_idx=${#_cnmsb_list[@]}
-        if [[ $_cnmsb_hist_mode -eq 1 ]]; then
+        if [[ $_cnmsb_ai_mode -eq 1 ]]; then
+            _cnmsb_show_ai_menu
+        elif [[ $_cnmsb_hist_mode -eq 1 ]]; then
             _cnmsb_show_history_menu
         else
             _cnmsb_show_menu
@@ -344,7 +346,9 @@ _cnmsb_next() {
     if [[ ($_cnmsb_menu -eq 1 || $_cnmsb_hist_mode -eq 1) && ${#_cnmsb_list[@]} -gt 0 ]]; then
         ((_cnmsb_idx++))
         [[ $_cnmsb_idx -gt ${#_cnmsb_list[@]} ]] && _cnmsb_idx=1
-        if [[ $_cnmsb_hist_mode -eq 1 ]]; then
+        if [[ $_cnmsb_ai_mode -eq 1 ]]; then
+            _cnmsb_show_ai_menu
+        elif [[ $_cnmsb_hist_mode -eq 1 ]]; then
             _cnmsb_show_history_menu
         else
             _cnmsb_show_menu
@@ -361,8 +365,8 @@ _cnmsb_tab() {
         if [[ ${#_cnmsb_list[@]} -gt 0 && $_cnmsb_idx -gt 0 ]]; then
             local selected="${_cnmsb_list[$_cnmsb_idx]}"
             
-            # 历史模式：直接替换整个 BUFFER（因为历史命令是完整的命令）
-            if [[ $_cnmsb_hist_mode -eq 1 ]]; then
+            # AI 模式或历史模式：直接替换整个 BUFFER（因为是完整命令）
+            if [[ $_cnmsb_ai_mode -eq 1 || $_cnmsb_hist_mode -eq 1 ]]; then
                 BUFFER="$selected"
                 CURSOR=${#BUFFER}
             else
@@ -392,6 +396,7 @@ _cnmsb_tab() {
             CURSOR=${#BUFFER}
             fi
         fi
+        _cnmsb_ai_mode=0
         _cnmsb_reset
         _cnmsb_lastbuf="$BUFFER"
         _cnmsb_fetch "$BUFFER"
@@ -521,9 +526,10 @@ _cnmsb_run() {
 
 _cnmsb_escape() {
     _cnmsb_skip=1
-    if [[ $_cnmsb_menu -eq 1 || $_cnmsb_hist_mode -eq 1 ]]; then
+    if [[ $_cnmsb_menu -eq 1 || $_cnmsb_hist_mode -eq 1 || $_cnmsb_ai_mode -eq 1 ]]; then
         _cnmsb_menu=0
         _cnmsb_hist_mode=0
+        _cnmsb_ai_mode=0
         _cnmsb_fetch "$BUFFER"
         _cnmsb_show_inline
     else
@@ -599,6 +605,42 @@ zle -N _cnmsb_history_menu
 
 # ================== AI 智能补全 ==================
 
+# AI 补全模式标志
+_cnmsb_ai_mode=0
+
+# AI 补全菜单显示（蓝色建议，红色提示）
+_cnmsb_show_ai_menu() {
+    _cnmsb_clear
+    [[ ${#_cnmsb_list[@]} -eq 0 ]] && return
+    
+    local disp=$'\n'
+    local i item desc
+    
+    # 红色标题
+    disp+="\033[1;31m[AI 智能补全]\033[0m"$'\n'
+    
+    for ((i=1; i<=${#_cnmsb_list[@]}; i++)); do
+        item="${_cnmsb_list[$i]}"
+        desc="${_cnmsb_desc[$i]}"
+        
+        [[ ${#item} -gt 50 ]] && item="${item:0:47}..."
+        [[ ${#desc} -gt 30 ]] && desc="${desc:0:27}..."
+        
+        if [[ $i -eq $_cnmsb_idx ]]; then
+            # 选中项：蓝底白字
+            disp+="  \033[1;44;37m> $item\033[0m"
+        else
+            # 未选中：蓝色
+            disp+="  \033[1;34m  $item\033[0m"
+        fi
+        [[ -n "$desc" ]] && disp+="  \033[38;5;245m($desc)\033[0m"
+        disp+=$'\n'
+    done
+    
+    disp+=$'\n'"\033[1;31m[Tab=确认  ↑↓=选择  Esc=取消]\033[0m"
+    POSTDISPLAY="$disp"
+}
+
 _cnmsb_ai_complete() {
     _cnmsb_skip=1
     _cnmsb_clear
@@ -606,121 +648,51 @@ _cnmsb_ai_complete() {
     local line="$BUFFER"
     local cursor=$CURSOR
     
-    # 显示正在调用 AI 的提示（红色显眼）
-    echo ""
-    echo "\033[1;31m[AI 补全] 正在获取智能建议...\033[0m"
+    # 显示正在加载的提示
+    POSTDISPLAY=$'\n'"\033[1;31m[AI] 正在获取智能建议...\033[0m"
+    zle -R
     
     # 调用 AI 补全
     local completions
     completions=$(cnmsb ai-complete --line "$line" --cursor $cursor 2>&1)
     local ret=$?
     
-    # 清除提示
-    echo -ne "\033[2A\033[J"
-    
     if [[ $ret -ne 0 ]]; then
-        echo ""
-        echo "\033[1;31m[AI 错误] $completions\033[0m"
-        echo ""
-        zle reset-prompt
+        POSTDISPLAY=$'\n'"\033[1;31m[AI 错误] $completions\033[0m"
+        zle -R
         return
     fi
     
     if [[ -z "$completions" ]]; then
-        echo ""
-        echo "\033[1;31m[AI 补全] 无建议\033[0m"
-        echo ""
-        zle reset-prompt
+        POSTDISPLAY=$'\n'"\033[1;31m[AI] 无补全建议\033[0m"
+        zle -R
         return
     fi
     
-    # 解析补全结果到数组
-    local -a _ai_items
-    local -a _ai_descs
+    # 解析结果到共用数组
+    _cnmsb_list=()
+    _cnmsb_desc=()
+    _cnmsb_suff=()
     
     while IFS=$'\t' read -r item desc; do
         [[ -z "$item" ]] && continue
-        _ai_items+=("$item")
-        _ai_descs+=("$desc")
+        _cnmsb_list+=("$item")
+        _cnmsb_desc+=("$desc")
+        _cnmsb_suff+=("")
     done <<< "$completions"
     
-    local _ai_count=${#_ai_items[@]}
-    if (( _ai_count == 0 )); then
-        echo ""
-        echo "\033[1;31m[AI 补全] 无建议\033[0m"
-        echo ""
-        zle reset-prompt
+    if [[ ${#_cnmsb_list[@]} -eq 0 ]]; then
+        POSTDISPLAY=$'\n'"\033[1;31m[AI] 无补全建议\033[0m"
+        zle -R
         return
     fi
     
-    # 使用菜单选择（类似普通补全）
-    local _ai_idx=1
-    local _ai_done=0
-    
-    while (( !_ai_done )); do
-        # 显示菜单（蓝色建议，红色提示）
-        echo ""
-        echo "\033[1;31m========== AI 智能补全 ==========\033[0m"
-        
-        local i=1
-        for item in "${_ai_items[@]}"; do
-            if (( i == _ai_idx )); then
-                # 选中项：反色显示
-                printf "  \033[1;44;37m> %s\033[0m  \033[38;5;245m%s\033[0m\n" "$item" "${_ai_descs[$i]}"
-            else
-                # 未选中项：蓝色
-                printf "  \033[1;34m  %s\033[0m  \033[38;5;245m%s\033[0m\n" "$item" "${_ai_descs[$i]}"
-            fi
-            ((i++))
-        done
-        
-        echo ""
-        echo "\033[1;31m[Tab=确认  ↑↓=选择  Esc=取消]\033[0m"
-        
-        # 读取按键
-        local key
-        read -k1 key
-        
-        case "$key" in
-            $'\t')  # Tab - 确认选择
-                BUFFER="${_ai_items[$_ai_idx]}"
-                CURSOR=${#BUFFER}
-                _ai_done=1
-                echo -ne "\033[$((${_ai_count} + 4))A\033[J"
-                ;;
-            $'\e')  # Esc 或方向键
-                read -k1 -t 0.1 key2
-                if [[ -z "$key2" ]]; then
-                    # 纯 Esc - 取消
-                    _ai_done=1
-                    echo -ne "\033[$((${_ai_count} + 4))A\033[J"
-                elif [[ "$key2" == "[" ]]; then
-                    read -k1 key3
-                    case "$key3" in
-                        A)  # 上
-                            (( _ai_idx > 1 )) && (( _ai_idx-- ))
-                            echo -ne "\033[$((${_ai_count} + 4))A\033[J"
-                            ;;
-                        B)  # 下
-                            (( _ai_idx < _ai_count )) && (( _ai_idx++ ))
-                            echo -ne "\033[$((${_ai_count} + 4))A\033[J"
-                            ;;
-                        *)
-                            echo -ne "\033[$((${_ai_count} + 4))A\033[J"
-                            ;;
-                    esac
-                else
-                    echo -ne "\033[$((${_ai_count} + 4))A\033[J"
-                fi
-                ;;
-            *)
-                # 其他键 - 清除重绘
-                echo -ne "\033[$((${_ai_count} + 4))A\033[J"
-                ;;
-        esac
-    done
-    
-    zle reset-prompt
+    # 设置 AI 模式并显示菜单
+    _cnmsb_ai_mode=1
+    _cnmsb_menu=1
+    _cnmsb_idx=1
+    _cnmsb_show_ai_menu
+    zle -R
 }
 
 zle -N _cnmsb_ai_complete
