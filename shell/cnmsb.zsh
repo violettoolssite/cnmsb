@@ -237,7 +237,7 @@ _cnmsb_show_menu() {
         disp+=$'\n'
     done
     
-    disp+=$'\n'"  [Tab=确认  Ctrl+P/N或方向键=选择  Esc=取消]"
+    disp+=$'\n'"  [Tab=确认  ↑↓=选择  →=接受  ?=帮助  Alt+H=历史  Alt+L=AI补全  Esc=取消]"
     POSTDISPLAY="$disp"
 }
 
@@ -606,9 +606,9 @@ _cnmsb_ai_complete() {
     local line="$BUFFER"
     local cursor=$CURSOR
     
-    # 显示正在调用 AI 的提示
+    # 显示正在调用 AI 的提示（红色显眼）
     echo ""
-    echo "\033[1;35m[AI] 正在获取智能补全...\033[0m"
+    echo "\033[1;31m[AI 补全] 正在获取智能建议...\033[0m"
     
     # 调用 AI 补全
     local completions
@@ -628,47 +628,98 @@ _cnmsb_ai_complete() {
     
     if [[ -z "$completions" ]]; then
         echo ""
-        echo "\033[1;33m[AI] 无补全建议\033[0m"
+        echo "\033[1;31m[AI 补全] 无建议\033[0m"
         echo ""
         zle reset-prompt
         return
     fi
     
-    # 显示 AI 补全结果
-    echo ""
-    echo "\033[1;35m========== AI 智能补全 ==========\033[0m"
-    echo ""
-    
-    local -a items
-    local -a descs
-    local i=0
+    # 解析补全结果到数组
+    local -a _ai_items
+    local -a _ai_descs
     
     while IFS=$'\t' read -r item desc; do
         [[ -z "$item" ]] && continue
-        items+=("$item")
-        descs+=("$desc")
-        ((i++))
-        printf "  \033[1;36m%d.\033[0m \033[1;32m%s\033[0m  \033[38;5;245m- %s\033[0m\n" "$i" "$item" "$desc"
+        _ai_items+=("$item")
+        _ai_descs+=("$desc")
     done <<< "$completions"
     
-    echo ""
-    echo "\033[1;35m按数字键选择 (1-$i)，其他键取消\033[0m"
-    
-    # 读取用户选择
-    local choice
-    read -k1 choice
-    
-    if [[ "$choice" =~ ^[1-9]$ ]] && (( choice <= ${#items[@]} )); then
-        BUFFER="${items[$choice]}"
-        CURSOR=${#BUFFER}
+    local _ai_count=${#_ai_items[@]}
+    if (( _ai_count == 0 )); then
         echo ""
-        echo "\033[1;32m已选择: ${items[$choice]}\033[0m"
-    else
+        echo "\033[1;31m[AI 补全] 无建议\033[0m"
         echo ""
-        echo "\033[33m已取消\033[0m"
+        zle reset-prompt
+        return
     fi
     
-    echo ""
+    # 使用菜单选择（类似普通补全）
+    local _ai_idx=1
+    local _ai_done=0
+    
+    while (( !_ai_done )); do
+        # 显示菜单（蓝色建议，红色提示）
+        echo ""
+        echo "\033[1;31m========== AI 智能补全 ==========\033[0m"
+        
+        local i=1
+        for item in "${_ai_items[@]}"; do
+            if (( i == _ai_idx )); then
+                # 选中项：反色显示
+                printf "  \033[1;44;37m> %s\033[0m  \033[38;5;245m%s\033[0m\n" "$item" "${_ai_descs[$i]}"
+            else
+                # 未选中项：蓝色
+                printf "  \033[1;34m  %s\033[0m  \033[38;5;245m%s\033[0m\n" "$item" "${_ai_descs[$i]}"
+            fi
+            ((i++))
+        done
+        
+        echo ""
+        echo "\033[1;31m[Tab=确认  ↑↓=选择  Esc=取消]\033[0m"
+        
+        # 读取按键
+        local key
+        read -k1 key
+        
+        case "$key" in
+            $'\t')  # Tab - 确认选择
+                BUFFER="${_ai_items[$_ai_idx]}"
+                CURSOR=${#BUFFER}
+                _ai_done=1
+                echo -ne "\033[$((${_ai_count} + 4))A\033[J"
+                ;;
+            $'\e')  # Esc 或方向键
+                read -k1 -t 0.1 key2
+                if [[ -z "$key2" ]]; then
+                    # 纯 Esc - 取消
+                    _ai_done=1
+                    echo -ne "\033[$((${_ai_count} + 4))A\033[J"
+                elif [[ "$key2" == "[" ]]; then
+                    read -k1 key3
+                    case "$key3" in
+                        A)  # 上
+                            (( _ai_idx > 1 )) && (( _ai_idx-- ))
+                            echo -ne "\033[$((${_ai_count} + 4))A\033[J"
+                            ;;
+                        B)  # 下
+                            (( _ai_idx < _ai_count )) && (( _ai_idx++ ))
+                            echo -ne "\033[$((${_ai_count} + 4))A\033[J"
+                            ;;
+                        *)
+                            echo -ne "\033[$((${_ai_count} + 4))A\033[J"
+                            ;;
+                    esac
+                else
+                    echo -ne "\033[$((${_ai_count} + 4))A\033[J"
+                fi
+                ;;
+            *)
+                # 其他键 - 清除重绘
+                echo -ne "\033[$((${_ai_count} + 4))A\033[J"
+                ;;
+        esac
+    done
+    
     zle reset-prompt
 }
 
