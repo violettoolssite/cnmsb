@@ -569,6 +569,29 @@ nav.visible {
     line-height: 1.7;
 }
 
+.hero-quote {
+    max-width: 600px;
+    margin: 2rem 0;
+    padding: 1.5rem 2rem;
+    border-left: 3px solid var(--accent);
+    background: rgba(212, 255, 0, 0.05);
+    border-radius: 0 8px 8px 0;
+}
+
+.hero-quote p {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+    font-weight: 500;
+}
+
+.hero-quote cite {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: normal;
+}
+
 .hero-cta {
     display: flex;
     gap: 1rem;
