@@ -408,9 +408,11 @@ _cnmsb_tab() {
             _cnmsb_menu=1
             _cnmsb_show_menu
         else
-            # 检查输入是否包含中文字符（自然语言描述）
-            if [[ "$BUFFER" =~ [\u4e00-\u9fff] ]]; then
-                # 包含中文，提示用户使用 AI 补全
+            # 检查输入是否包含非 ASCII 字符（中文等自然语言描述）
+            # 方法：比较原字符串和过滤掉非 ASCII 后的字符串
+            local ascii_only="${BUFFER//[^a-zA-Z0-9 _.\/\-~\$\{\}\[\]\(\)\|\&\;\<\>\"\'\`\!\@\#\%\^\*\+\=\,\?\:\\]/}"
+            if [[ -n "$BUFFER" && "$BUFFER" != "$ascii_only" ]]; then
+                # 包含非 ASCII 字符（如中文），提示用户使用 AI 补全
                 POSTDISPLAY=$'\n'"  [提示] 检测到自然语言输入，按 Alt+L 使用 AI 智能补全生成命令"
                 zle -R
                 return
