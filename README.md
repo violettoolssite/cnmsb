@@ -356,8 +356,47 @@ source /usr/share/cnmsb/cnmsb.zsh
 | **右箭头** | 接受内联建议 |
 | **上下箭头** | 在选择器中切换选项 |
 | **Alt+H** | 打开历史命令选择器 |
+| **Alt+F4** | 🤖 AI 智能补全（需配置 API） |
 | **?** | 查看命令帮助 |
 | **Esc** | 关闭选择器 |
+
+## 🤖 AI 智能补全（可选功能）
+
+使用大语言模型（默认 Qwen2.5-Coder-32B）生成智能命令补全建议。这是一个**可选功能**，需要配置 API 密钥才能使用。
+
+### 配置 AI 补全
+
+```bash
+# 初始化配置文件
+cnmsb ai-config init
+
+# 设置 API 密钥（使用 ModelScope）
+cnmsb ai-config set api_key <your_api_key>
+
+# 查看当前配置
+cnmsb ai-config show
+```
+
+### 使用方式
+
+1. 输入命令的一部分
+2. 按 **Alt+F4** 触发 AI 补全
+3. 选择 AI 建议的命令
+
+### 自定义 API
+
+```bash
+# 使用自定义 API 地址
+cnmsb ai-config set base_url https://your-api-endpoint/v1/
+
+# 使用其他模型
+cnmsb ai-config set model gpt-4
+
+# 禁用 AI 补全
+cnmsb ai-config set enabled false
+```
+
+配置文件位置：`~/.config/cnmsb/ai.conf`
 
 ## 运行 cnmsb 命令（彩蛋时间）
 
