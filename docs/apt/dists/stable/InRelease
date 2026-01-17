@@ -7,21 +7,33 @@ Suite: stable
 Codename: stable
 Architectures: amd64
 Components: main
-Description: cnmsb Linux command completion tool
+Date: Sat, 17 Jan 2026 08:08:26 +0000
+MD5Sum:
+ b3ff049831f75f46dde236030c0e9e3b             1121 main/binary-amd64/Packages
+ d5b3b19fe64183ee8c10dd50ea6dff00              832 main/binary-amd64/Packages.gz
+SHA1:
+ b56049eff808d4fcda51c1ea0cb370f211d9a027             1121 main/binary-amd64/Packages
+ e03fcf9e8ea24912fb2862f43051aa4caeb865d6              832 main/binary-amd64/Packages.gz
+SHA256:
+ d43bc87799d764aca233bd927f2613f0569efbea8175f2d8383fbdde138222f7             1121 main/binary-amd64/Packages
+ de834244eef3ef5a9f5262452ae9eedabfbcd5020875dad4aed083a6b7d2825f              832 main/binary-amd64/Packages.gz
+SHA512:
+ 1a3ccc297d157ff7a7aa5d9bdf40eefade2b1583faddcd3bd65e5a675bb8826cf72499e0ba17b6a1e09bafb9e857da4d6611fbd10744e377bea53ff97e53fabd             1121 main/binary-amd64/Packages
+ 45d5e4a95f29e59ea41bc98e31bbae5601bedb0f4fc94e397610d90fc87b91d0cb76a334f72a2c4577d296b30ec40182dc433ba3e12695d10d7e2eee9c4a6ed6              832 main/binary-amd64/Packages.gz
 -----BEGIN PGP SIGNATURE-----
 
-iQJPBAEBCgA5FiEEXF1O3Tj0vtUG/PqtwfYVK7vVOEIFAmlrN18bHHZpb2xldHRv
-b2xzLnNpdGVAZ21haWwuY29tAAoJEMH2FSu71ThCBSUP/27wSDwQTmrdYwcyGvSO
-Y2dEnZpfUdDC9oIdmUh7I0RQ2MgVUfHxpSFzqrfuUUYzRagDrqdbkwbPTCN2bsT7
-ZT0pxAK5vt7UNgtst1zhqv86oTfaa3QpYgyT52/EkN3fdIdWkrPjS3XVXWlhJW26
-M5iY0JvAxevs+LfQbL0PleT/50wQAZ9x7x0fy8C60DkKoxyWrQzQcsTz94h8Kp+8
-Z5q8ayKGSbKlq+1rzoBj89YLdiyQEZvcsxwhRo4EQk95hBdtfgltyFQSsw3y0+nh
-SG63d+h1JuDFbItSXB+qGyNQ8XtNxMcHZZFkByWpN/ujpklMj91cch4fervj0GeN
-hh1ffMUCinP0t8oQ4zgwY9h3kmz33D+0OekRCmuGXMdEw608btcEWvEWMPJsnCru
-mfgyreGk32ayZpr0FG/L6LNjyMTVFHhHkK+cEnWd3H6OpxMBQ5rLHS0tekEmHEOd
-MaRszObiYU694Sur8WKjAOHrRtaXJyXeNJdbrYUyFxH0u7XRHXQkzTTbdveZg16I
-8u62SfLDYDgi0PnpZ0gSic4wHRtlFFLJsufv27LXo+Sb7r93Hlqfw89vf/ou2WtN
-z+ZPeh+rsYaYIw1bSg2nuGUTaJA+AW2WXzr3lcdRJjqhZNqbKpDckPzkwpfRU47I
-bKjasVJnpZWbTpdcI55s6pwb
-=99Ff
+iQJPBAEBCgA5FiEEXF1O3Tj0vtUG/PqtwfYVK7vVOEIFAmlrQ/obHHZpb2xldHRv
+b2xzLnNpdGVAZ21haWwuY29tAAoJEMH2FSu71ThClTEP/ibHQA2o+sVVcmI96QEW
+d5a84l5nA3pDZ6PCrOQfPbds655bh1XK5KIdG1pbEBJcQdHrk0ykMRpYUx/P/SL0
+gkqAPeZaNb93iZAUcD3QrHQWYH88QaVOnP8i50ejyTg795GWprx26eBcNxtc/zGK
+XUhTq6Xa1b6l2IAdNR0kliRrKyyCIySpfWLWHJxE9coPtvoSKtak1cB/7GEohuMa
+cEJ5CqW8wQL6Gf/PJibrBcbrk2f5OantnMqaBHNZBMbiJ/HUgqVJ9RoAX7LSLyi4
+OP2yxq9QQii2AfYOaWze7RITUXL1DJNjKXbnAgJ7y28R7MTLc385na8MDpQR9WP/
+hyOhodDTEVSpovfRaUafZQ5MFKNnNRh0hezDQepGPnHEEv/wuFZcjf0EQZIt9q1q
+H/YvIZKIIrBEzadw0OU3MkHf4O4yb/10jliI2J7xDQJludyrxOrv0AWjOntk3igF
+HPO7SwIK7+dYJ1AFQ19Sz05EcIBwKmovXMOyDVtYy25GtbW7Y5WuYqsmBdXujjaj
+lsUJiUABBwjnVy6QSHqItdi5gRkRUobP62WUzX3yyJOGeLquR1XPPRadBsD8Zrgw
+TNMjNnDolgpmaUv8imlcQzpuuN7qwxDtafRShzr0PLkTlQOwD9eNW9/OHoVLW7Dv
+KYebCafDdwjiTDgmIsSbkXAd
+=1FSV
 -----END PGP SIGNATURE-----

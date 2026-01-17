@@ -1,19 +1,17 @@
-Origin: cnmsb
-Label: cnmsb
-Suite: stable
-Codename: stable
-Architectures: amd64
-Components: main
-Date: Sat, 17 Jan 2026 08:08:26 +0000
+Date: Sat, 17 Jan 2026 08:07:15 +0000
 MD5Sum:
+ 7a3f6bb142878a05a5dad955a040d01c              145 Release
  b3ff049831f75f46dde236030c0e9e3b             1121 main/binary-amd64/Packages
  d5b3b19fe64183ee8c10dd50ea6dff00              832 main/binary-amd64/Packages.gz
 SHA1:
+ b10cf38adab83e8649202e1c9ca6869c5d83001d              145 Release
  b56049eff808d4fcda51c1ea0cb370f211d9a027             1121 main/binary-amd64/Packages
  e03fcf9e8ea24912fb2862f43051aa4caeb865d6              832 main/binary-amd64/Packages.gz
 SHA256:
+ 3084acb79bd42b52766bedf567de858d1956db9f1ff8b1385e52a78aad6b55df              145 Release
  d43bc87799d764aca233bd927f2613f0569efbea8175f2d8383fbdde138222f7             1121 main/binary-amd64/Packages
  de834244eef3ef5a9f5262452ae9eedabfbcd5020875dad4aed083a6b7d2825f              832 main/binary-amd64/Packages.gz
 SHA512:
+ a6832fdde2ccd0742103e8a8addb85004fcae3745738ff9e23123bf7bc8c944fff966d663d4fdce5aad6858f4d67632d47a766c3ca01d4378f491df93ff0b5fa              145 Release
  1a3ccc297d157ff7a7aa5d9bdf40eefade2b1583faddcd3bd65e5a675bb8826cf72499e0ba17b6a1e09bafb9e857da4d6611fbd10744e377bea53ff97e53fabd             1121 main/binary-amd64/Packages
  45d5e4a95f29e59ea41bc98e31bbae5601bedb0f4fc94e397610d90fc87b91d0cb76a334f72a2c4577d296b30ec40182dc433ba3e12695d10d7e2eee9c4a6ed6              832 main/binary-amd64/Packages.gz
