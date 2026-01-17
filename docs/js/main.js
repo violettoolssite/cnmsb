@@ -854,34 +854,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingScreen = new LoadingScreen();
     const versionSwitcher = new VersionSwitcher();
 
-    // 检查是否有保存的版本
-    const savedVersion = localStorage.getItem('cnmsb-version');
+    // 每次都显示加载页，让用户选择版本
+    document.body.classList.add('loading');
+    loadingScreen.init();
+    versionSwitcher.init();
     
-    if (savedVersion) {
-        // 有保存的版本，直接显示内容
-        versionSwitcher.init();
-        initAfterLoad();
-    } else {
-        // 没有保存的版本，显示加载屏幕
-        document.body.classList.add('loading');
-        loadingScreen.init();
-        versionSwitcher.init();
-        
-        // 等待版本选择后初始化其他功能
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach(mutation => {
-                if (mutation.target.classList.contains('hidden')) {
-                    initAfterLoad();
-                    observer.disconnect();
-                }
-            });
+    // 等待版本选择后初始化其他功能
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            if (mutation.target.classList.contains('hidden')) {
+                initAfterLoad();
+                observer.disconnect();
+            }
         });
-        
-        observer.observe(document.querySelector('.loading-screen'), {
-            attributes: true,
-            attributeFilter: ['class']
-        });
-    }
+    });
+    
+    observer.observe(document.querySelector('.loading-screen'), {
+        attributes: true,
+        attributeFilter: ['class']
+    });
 });
 
 function initAfterLoad() {

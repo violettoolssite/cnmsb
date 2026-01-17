@@ -366,6 +366,43 @@ sudo apt install cnmsb
 
 以后更新只需要 `sudo apt upgrade cnmsb`。
 
+### CentOS/RHEL/Fedora 用 yum/dnf 安装
+
+**方式一：Cloudflare CDN（国内推荐）**
+
+```bash
+# 添加 yum 源
+sudo tee /etc/yum.repos.d/cnmsb.repo << EOF
+[cnmsb]
+name=cnmsb
+baseurl=https://cnmsb.kami666.xyz/yum
+enabled=1
+gpgcheck=1
+gpgkey=https://cnmsb.kami666.xyz/gpg.key
+EOF
+
+# 安装
+sudo yum install cnmsb   # CentOS/RHEL
+sudo dnf install cnmsb   # Fedora
+```
+
+**方式二：GitHub**
+
+```bash
+# 添加 yum 源
+sudo tee /etc/yum.repos.d/cnmsb.repo << EOF
+[cnmsb]
+name=cnmsb
+baseurl=https://violettoolssite.github.io/cnmsb/yum
+enabled=1
+gpgcheck=1
+gpgkey=https://violettoolssite.github.io/cnmsb/gpg.key
+EOF
+
+# 安装
+sudo yum install cnmsb
+```
+
 ### Debian/Ubuntu 用 deb 包安装
 
 如果你是 Debian、Ubuntu、Mint 这些系统，可以直接用 deb 包：

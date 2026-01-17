@@ -766,6 +766,25 @@
                     </div>
 
                     <div class="install-method">
+                        <h4>CentOS/RHEL/Fedora</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<pre><span class="comment"># 添加 yum 源</span>
+<span class="cmd">sudo tee</span> /etc/yum.repos.d/cnmsb.repo << EOF
+[cnmsb]
+name=cnmsb
+baseurl=https://cnmsb.kami666.xyz/yum
+enabled=1
+gpgcheck=1
+gpgkey=https://cnmsb.kami666.xyz/gpg.key
+EOF
+
+<span class="comment"># 安装</span>
+<span class="cmd">sudo yum install</span> cnmsb  <span class="comment"># 或 dnf</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="install-method">
                         <h4>预编译二进制（免编译）</h4>
                         <div class="code-block">
                             <button class="copy-btn" onclick="copyCode(this)">复制</button>
