@@ -394,7 +394,7 @@ _cnmsb_tab() {
                 BUFFER+="$selected"
             fi
             CURSOR=${#BUFFER}
-            fi
+        fi
         fi
         _cnmsb_ai_mode=0
         _cnmsb_reset

@@ -141,12 +141,32 @@
         <!-- Demo Section -->
         <section class="section" id="demo">
             <div class="section-header animate-in">
-                <div class="section-label">实时演示</div>
-                <h2 class="section-title">看看<strong>实际效果</strong></h2>
+                <div class="section-label">核心体验</div>
+                <h2 class="section-title">三步<strong>上手</strong></h2>
             </div>
 
-            <div class="demo-section animate-in">
-                <img src="demo.gif" alt="cnmsb 使用演示">
+            <div class="quick-start-steps animate-in">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>输入命令</h3>
+                        <p>开始输入任何命令，智能补全自动显示</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>按 Tab 选择</h3>
+                        <p>按 Tab 弹出选择器，方向键选择，再按 Tab 确认</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>自然语言 (可选)</h3>
+                        <p>输入中文/英文/日语描述，按 Alt+L 获取 AI 命令建议</p>
+                    </div>
+                </div>
             </div>
 
             <div style="margin-top: 4rem;" class="animate-in">
@@ -549,6 +569,16 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 获取免费 API 按钮 -->
+            <div class="api-cta animate-in" style="text-align: center; margin-top: 3rem;">
+                <button class="api-tutorial-btn" onclick="openApiModal()">
+                    查看免费 API 获取教程
+                </button>
+                <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    ModelScope 免费 2000 次/天，3 分钟即可完成配置
+                </p>
+            </div>
         </section>
 
         <!-- Commands Section -->
@@ -879,6 +909,126 @@ EOF
             </div>
         </footer>
 
+    </div>
+
+    <!-- 图片放大查看 -->
+    <div id="imageViewer" class="image-viewer">
+        <button class="image-viewer-close" onclick="closeImageViewer()">&times;</button>
+        <img id="imageViewerImg" src="" alt="放大图片">
+    </div>
+
+    <!-- API 教程模态框 -->
+    <div id="apiModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeApiModal()">&times;</button>
+            <h2 class="modal-title">免费获取 ModelScope API 密钥</h2>
+            <p class="modal-subtitle">只需 3 分钟，免费 2000 次/天调用额度</p>
+            
+            <div class="tutorial-steps-modal">
+                <div class="tutorial-step-modal">
+                    <div class="step-header">
+                        <span class="step-num">1</span>
+                        <h3>访问 ModelScope 官网</h3>
+                    </div>
+                    <p>打开 <a href="https://modelscope.cn" target="_blank">modelscope.cn</a>（魔搭社区）</p>
+                    <div class="step-image">
+                        <img src="images/modelscope_home.png" alt="ModelScope 首页" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="tutorial-step-modal">
+                    <div class="step-header">
+                        <span class="step-num">2</span>
+                        <h3>登录账号</h3>
+                    </div>
+                    <p>点击右上角登录，支持手机号、邮箱、支付宝、微信等方式</p>
+                    <div class="step-image">
+                        <img src="images/login.png" alt="登录页面" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="tutorial-step-modal">
+                    <div class="step-header">
+                        <span class="step-num">3</span>
+                        <h3>打开账号设置</h3>
+                    </div>
+                    <p>登录后点击头像，进入「账号设置」</p>
+                    <div class="step-image">
+                        <img src="images/setting.png" alt="账号设置" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="tutorial-step-modal">
+                    <div class="step-header">
+                        <span class="step-num">4</span>
+                        <h3>进入访问令牌页面</h3>
+                    </div>
+                    <p>在左侧菜单找到「访问令牌」（API Token）</p>
+                    <div class="step-image">
+                        <img src="images/api_setting.png" alt="访问令牌设置" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="tutorial-step-modal">
+                    <div class="step-header">
+                        <span class="step-num">5</span>
+                        <h3>新建访问令牌</h3>
+                    </div>
+                    <p>点击「新建令牌」按钮</p>
+                    <div class="step-image">
+                        <img src="images/create_api.png" alt="新建令牌" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="tutorial-step-modal">
+                    <div class="step-header">
+                        <span class="step-num">6</span>
+                        <h3>填写令牌信息</h3>
+                    </div>
+                    <p>输入令牌名称（如 cnmsb），选择有效期（建议长期），点击确定</p>
+                    <div class="step-image">
+                        <img src="images/api_name.png" alt="填写令牌名称" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="tutorial-step-modal">
+                    <div class="step-header">
+                        <span class="step-num">7</span>
+                        <h3>复制令牌</h3>
+                    </div>
+                    <p>创建成功后，点击复制按钮复制令牌</p>
+                    <div class="step-image">
+                        <img src="images/copy_api.png" alt="复制令牌" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="tutorial-step-modal">
+                    <div class="step-header">
+                        <span class="step-num">8</span>
+                        <h3>配置 cnmsb</h3>
+                    </div>
+                    <p>在终端执行以下命令配置 API 密钥：</p>
+                    <div class="code-block-modal">
+                        <code>cnmsb ai-config set api_key "你复制的令牌"</code>
+                    </div>
+                    <div class="step-image">
+                        <img src="images/cnmsb_api_setting.png" alt="cnmsb 配置" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-note">
+                <strong>使用须知：</strong>
+                <ul>
+                    <li>需绑定阿里云账号并完成实名认证</li>
+                    <li>每日 2000 次免费调用额度</li>
+                    <li>单模型上限 500 次/天</li>
+                </ul>
+                <a href="https://modelscope.cn/docs/model-service/API-Inference/intro" target="_blank" class="doc-link">
+                    查看官方文档
+                </a>
+            </div>
+        </div>
     </div>
 
     <script src="js/main.js"></script>

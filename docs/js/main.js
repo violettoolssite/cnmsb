@@ -957,10 +957,53 @@ class TerminalDemo {
         div.className = isOutput ? 'history-output' : 'history-line';
         div.innerHTML = isOutput ? line : `<span class="prompt">$</span> ${line}`;
         this.history.appendChild(div);
+        
+        // 只保留最新的 2 条命令（每条命令包含 1 个命令行 + 若干输出行）
+        if (!isOutput) {
+            this.trimHistory();
+        }
+    }
+    
+    trimHistory() {
+        const maxCommands = 2;
+        const commandLines = this.history.querySelectorAll('.history-line');
+        
+        while (commandLines.length > maxCommands) {
+            // 删除最早的命令及其后续输出
+            const children = Array.from(this.history.children);
+            let deleteCount = 0;
+            
+            for (let i = 0; i < children.length; i++) {
+                if (children[i].classList.contains('history-line')) {
+                    // 找到第一个命令，删除它
+                    children[i].remove();
+                    deleteCount++;
+                    // 继续删除后续的输出行
+                    for (let j = i + 1; j < children.length; j++) {
+                        if (children[j].classList.contains('history-output')) {
+                            children[j].remove();
+                        } else {
+                            break; // 遇到下一个命令行，停止
+                        }
+                    }
+                    break;
+                }
+            }
+            
+            if (deleteCount === 0) break;
+            break; // 每次只删除一条命令
+        }
     }
     
     async clearCommand() {
         this.command.textContent = '';
+    }
+    
+    async countdown(seconds) {
+        for (let i = seconds; i > 0; i--) {
+            await this.showHint(`演示完成，${i} 秒后重新开始...`);
+            await this.sleep(1000);
+        }
     }
     
     async runDemo() {
@@ -975,9 +1018,9 @@ class TerminalDemo {
         
         await this.sleep(800);
         
-        // === 第一条命令：git co ===
-        await this.showHint('正在输入命令...');
-        await this.typeText('git co', 180);  // 慢速打字
+        // === 第一条命令：git co（普通补全）===
+        await this.showHint('输入命令...');
+        await this.typeText('git co', 180);
         
         await this.sleep(600);
         await this.showHint('按 Tab 显示补全');
@@ -1018,8 +1061,8 @@ class TerminalDemo {
         await this.sleep(1500);
         
         // === 第二条命令：中文自然语言 + AI 补全 ===
-        await this.showHint('输入自然语言描述...');
-        await this.typeText('查找大于100M的文件', 120);  // 慢速中文打字
+        await this.showHint('中文自然语言输入...');
+        await this.typeText('查找大于100M的文件', 120);
         
         await this.sleep(600);
         await this.showHint('按 Alt+L 调用 AI 补全');
@@ -1033,7 +1076,7 @@ class TerminalDemo {
         ], true);
         
         await this.sleep(1500);
-        await this.showHint('按 Tab 确认第一个建议');
+        await this.showHint('按 Tab 确认选择');
         await this.sleep(1000);
         
         // 选择并执行
@@ -1050,10 +1093,80 @@ class TerminalDemo {
         await this.addToHistory('./backup/data.tar.gz', true);
         await this.clearCommand();
         
-        await this.sleep(2000);
-        await this.showHint('演示完成，3秒后重新开始...');
+        await this.sleep(1500);
         
-        await this.sleep(3000);
+        // === 第三条命令：英文自然语言 + AI 补全 ===
+        await this.showHint('English natural language...');
+        await this.typeText('list all running docker containers', 80);
+        
+        await this.sleep(600);
+        await this.showHint('Press Alt+L for AI completion');
+        await this.sleep(1000);
+        
+        // 显示 AI 补全
+        await this.showSuggestions([
+            { cmd: 'docker ps', desc: 'list running containers' },
+            { cmd: 'docker ps -a', desc: 'list all containers' },
+            { cmd: 'docker container ls', desc: 'list containers (new syntax)' }
+        ], true);
+        
+        await this.sleep(1500);
+        await this.showHint('Press Tab to confirm');
+        await this.sleep(1000);
+        
+        // 选择并执行
+        this.command.textContent = 'docker ps';
+        await this.hideSuggestions();
+        
+        await this.sleep(600);
+        await this.showHint('Press Enter to execute');
+        await this.sleep(800);
+        
+        // 执行
+        await this.addToHistory('docker ps');
+        await this.addToHistory('CONTAINER ID   IMAGE   STATUS', true);
+        await this.addToHistory('a1b2c3d4e5f6   nginx   Up 2 hours', true);
+        await this.clearCommand();
+        
+        await this.sleep(1500);
+        
+        // === 第四条命令：日语自然语言 + AI 补全 ===
+        await this.showHint('日本語の自然言語入力...');
+        await this.typeText('システムメモリの使用量を確認', 100);
+        
+        await this.sleep(600);
+        await this.showHint('Alt+L で AI 補完');
+        await this.sleep(1000);
+        
+        // 显示 AI 补全
+        await this.showSuggestions([
+            { cmd: 'free -h', desc: 'メモリ使用量表示' },
+            { cmd: 'cat /proc/meminfo', desc: '詳細メモリ情報' },
+            { cmd: 'htop', desc: 'インタラクティブ監視' }
+        ], true);
+        
+        await this.sleep(1500);
+        await this.showHint('Tab で確定');
+        await this.sleep(1000);
+        
+        // 选择并执行
+        this.command.textContent = 'free -h';
+        await this.hideSuggestions();
+        
+        await this.sleep(600);
+        await this.showHint('Enter で実行');
+        await this.sleep(800);
+        
+        // 执行
+        await this.addToHistory('free -h');
+        await this.addToHistory('              total   used   free', true);
+        await this.addToHistory('Mem:           16Gi   8.2Gi  7.8Gi', true);
+        await this.clearCommand();
+        
+        await this.sleep(1500);
+        
+        // 实时倒计时
+        await this.countdown(3);
         
         this.isRunning = false;
         this.runDemo(); // 循环
@@ -1088,4 +1201,101 @@ document.addEventListener('DOMContentLoaded', () => {
         demo.start();
     }
 });
+
+// ========================================
+// API Tutorial Modal
+// ========================================
+
+function openApiModal() {
+    const modal = document.getElementById('apiModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeApiModal() {
+    const modal = document.getElementById('apiModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// 点击模态框外部关闭
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('apiModal');
+    if (modal && e.target === modal) {
+        closeApiModal();
+    }
+});
+
+// ESC 键关闭模态框
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeApiModal();
+    }
+});
+
+// 暴露到全局
+window.openApiModal = openApiModal;
+window.closeApiModal = closeApiModal;
+
+// ========================================
+// Image Viewer (Lightbox)
+// ========================================
+
+function openImageViewer(imgSrc) {
+    const viewer = document.getElementById('imageViewer');
+    const viewerImg = document.getElementById('imageViewerImg');
+    if (viewer && viewerImg) {
+        viewerImg.src = imgSrc;
+        viewer.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeImageViewer() {
+    const viewer = document.getElementById('imageViewer');
+    if (viewer) {
+        viewer.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// 为模态框中的图片添加点击放大功能
+document.addEventListener('DOMContentLoaded', () => {
+    // 延迟绑定，确保模态框内容已加载
+    setTimeout(() => {
+        const stepImages = document.querySelectorAll('.step-image');
+        stepImages.forEach(container => {
+            container.addEventListener('click', (e) => {
+                const img = container.querySelector('img');
+                if (img && img.src) {
+                    openImageViewer(img.src);
+                }
+            });
+        });
+    }, 100);
+});
+
+// 点击查看器背景或图片关闭
+document.addEventListener('click', (e) => {
+    const viewer = document.getElementById('imageViewer');
+    if (viewer && viewer.classList.contains('active')) {
+        if (e.target === viewer || e.target.tagName === 'IMG') {
+            closeImageViewer();
+        }
+    }
+});
+
+// ESC 键关闭图片查看器
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeImageViewer();
+    }
+});
+
+window.openImageViewer = openImageViewer;
+window.closeImageViewer = closeImageViewer;
 
