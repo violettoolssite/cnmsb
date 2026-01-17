@@ -47,7 +47,7 @@
 
 > **"编程不再靠手速，而靠清晰表达。"**
 > 
-> *—— Michael Truell, Cursor 联合创始人*
+> *—— Michael Truell, cursor 联合创始人*
 
 </div>
 
