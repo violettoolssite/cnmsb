@@ -137,13 +137,21 @@ if ! grep -q "cnmsb" "$ZSHRC" 2>/dev/null; then
     echo "已添加 cnmsb 到 $ZSHRC"
 fi
 
-# 提示用户如何改变默认 shell（不自动改变，避免覆盖用户设置）
+# 询问用户是否将 zsh 设置为默认 shell
 CURRENT_SHELL=$(getent passwd "$REAL_USER" | cut -d: -f7)
 
 if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
     echo ""
-    echo "提示: 当前默认 shell 是 $CURRENT_SHELL"
-    echo "如需将默认 shell 改为 zsh，请执行: chsh -s $ZSH_PATH"
+    echo "当前默认 shell: $CURRENT_SHELL"
+    echo ""
+    read -p "是否将 zsh 设置为默认 shell? [Y/n] " -n 1 -r REPLY
+    echo ""
+    if [[ -z "$REPLY" || "$REPLY" =~ ^[Yy]$ ]]; then
+        chsh -s "$ZSH_PATH" "$REAL_USER"
+        echo "已将 zsh 设置为 $REAL_USER 的默认 shell"
+    else
+        echo "保持当前 shell，之后可运行: chsh -s $ZSH_PATH"
+    fi
 fi
 
 echo ""
