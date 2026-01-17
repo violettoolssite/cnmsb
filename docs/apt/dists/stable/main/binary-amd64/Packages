@@ -4,10 +4,10 @@ Architecture: amd64
 Maintainer: cnmsb contributors <cnmsb@example.com>
 Depends: zsh
 Filename: pool/main/cnmsb_0.1.1_amd64.deb
-Size: 3018408
-MD5sum: 018af53bfcf620fa52f69ea505965a28
-SHA1: 784a2ac86608c62aa8502fe889143af8226a544a
-SHA256: 049f296dab61162948ff098f2ff12788b05b59b7b8df1f49219216cd4dbd813f
+Size: 3016064
+MD5sum: 2354c44848b860906044d3c87a9fd1de
+SHA1: df8a124077a94c72a76a573dcc652055c3dbac0b
+SHA256: 27755519ab8a95d576bd9cf4cd286682a03589af176168b7969a46e50764df0d
 Section: utils
 Priority: optional
 Description: 操你妈傻逼 - Linux 命令行智能补全工具
