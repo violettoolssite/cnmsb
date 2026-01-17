@@ -1103,9 +1103,9 @@ nav.visible {
 }
 
 .install-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
     margin-top: 3rem;
 }
 
