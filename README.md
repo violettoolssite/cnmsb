@@ -1,5 +1,9 @@
 <div align="center">
 
+**🌍 Language / 语言：** [简体中文](README.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [English](README.en.md)
+
+---
+
 # cnmsb - 操你妈傻逼
 
 **Linux 命令行智能补全工具，提供类似 IDE 的补全体验**
