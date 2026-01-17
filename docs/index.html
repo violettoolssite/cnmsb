@@ -69,6 +69,7 @@
 
         <!-- Hero Section -->
         <section class="hero">
+            <div class="hero-wrapper">
             <div class="hero-content">
                 <div class="hero-badge">v0.1.1 · Rust · 开源</div>
                 
@@ -110,6 +111,26 @@
                     <a href="#install" class="btn btn-primary">立即安装</a>
                     <a href="#demo" class="btn btn-secondary">查看演示</a>
                 </div>
+            </div>
+            
+            <div class="hero-terminal">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">zsh - cnmsb</span>
+                </div>
+                <div class="terminal-body" id="terminalDemo">
+                    <div class="terminal-line">
+                        <span class="prompt">$</span>
+                        <span class="command" id="demoCommand"></span>
+                        <span class="cursor" id="demoCursor"></span>
+                    </div>
+                    <div class="terminal-suggestions" id="demoSuggestions" style="display: none;"></div>
+                    <div class="terminal-hint" id="demoHint"></div>
+                    <div class="terminal-history" id="demoHistory"></div>
+                </div>
+            </div>
             </div>
             <div class="hero-scroll">
                 <span class="scroll-line"></span>

@@ -879,3 +879,213 @@ function initAfterLoad() {
 // 将 copyCode 暴露到全局作用域
 window.copyCode = copyCode;
 
+// ========================================
+// Terminal Demo Animation
+// ========================================
+
+class TerminalDemo {
+    constructor() {
+        this.command = document.getElementById('demoCommand');
+        this.cursor = document.getElementById('demoCursor');
+        this.suggestions = document.getElementById('demoSuggestions');
+        this.hint = document.getElementById('demoHint');
+        this.history = document.getElementById('demoHistory');
+        
+        if (!this.command) return;
+        
+        this.isRunning = false;
+        this.selectedIndex = 0;
+    }
+    
+    async sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    async typeText(text, speed = 100) {
+        for (const char of text) {
+            this.command.textContent += char;
+            await this.sleep(speed + Math.random() * 50);
+        }
+    }
+    
+    async showSuggestions(items, isAI = false) {
+        this.suggestions.innerHTML = '';
+        this.suggestions.style.display = 'block';
+        
+        const header = isAI ? '<div class="suggestion-header">[AI 智能补全]</div>' : '';
+        this.suggestions.innerHTML = header;
+        
+        items.forEach((item, i) => {
+            const div = document.createElement('div');
+            div.className = 'suggestion' + (i === 0 ? ' active' : '');
+            div.innerHTML = `${i === 0 ? '&gt; ' : '  '}${item.cmd} <span class="dim">(${item.desc})</span>`;
+            this.suggestions.appendChild(div);
+        });
+        
+        this.selectedIndex = 0;
+    }
+    
+    async selectNext() {
+        const items = this.suggestions.querySelectorAll('.suggestion:not(.suggestion-header)');
+        if (items.length === 0) return;
+        
+        items[this.selectedIndex].classList.remove('active');
+        items[this.selectedIndex].innerHTML = items[this.selectedIndex].innerHTML.replace('&gt; ', '  ');
+        
+        this.selectedIndex = (this.selectedIndex + 1) % items.length;
+        
+        items[this.selectedIndex].classList.add('active');
+        items[this.selectedIndex].innerHTML = items[this.selectedIndex].innerHTML.replace(/^  /, '&gt; ');
+    }
+    
+    async hideSuggestions() {
+        this.suggestions.style.display = 'none';
+        this.suggestions.innerHTML = '';
+    }
+    
+    async showHint(text) {
+        this.hint.textContent = text;
+        this.hint.style.opacity = '1';
+    }
+    
+    async hideHint() {
+        this.hint.style.opacity = '0';
+    }
+    
+    async addToHistory(line, isOutput = false) {
+        const div = document.createElement('div');
+        div.className = isOutput ? 'history-output' : 'history-line';
+        div.innerHTML = isOutput ? line : `<span class="prompt">$</span> ${line}`;
+        this.history.appendChild(div);
+    }
+    
+    async clearCommand() {
+        this.command.textContent = '';
+    }
+    
+    async runDemo() {
+        if (this.isRunning) return;
+        this.isRunning = true;
+        
+        // 清空
+        this.command.textContent = '';
+        this.history.innerHTML = '';
+        await this.hideSuggestions();
+        await this.hideHint();
+        
+        await this.sleep(800);
+        
+        // === 第一条命令：git co ===
+        await this.showHint('正在输入命令...');
+        await this.typeText('git co', 180);  // 慢速打字
+        
+        await this.sleep(600);
+        await this.showHint('按 Tab 显示补全');
+        await this.sleep(800);
+        
+        // 显示补全建议
+        await this.showSuggestions([
+            { cmd: 'checkout', desc: '切换分支' },
+            { cmd: 'commit', desc: '提交更改' },
+            { cmd: 'config', desc: '配置设置' }
+        ]);
+        
+        await this.sleep(1200);
+        await this.showHint('按 ↓ 选择下一项');
+        await this.sleep(800);
+        
+        // 按下方向键选择第二个
+        await this.selectNext();
+        await this.sleep(1000);
+        
+        await this.showHint('按 Tab 确认选择');
+        await this.sleep(800);
+        
+        // 补全命令
+        this.command.textContent = 'git commit -m "update"';
+        await this.hideSuggestions();
+        
+        await this.sleep(600);
+        await this.showHint('按 Enter 执行');
+        await this.sleep(800);
+        
+        // 执行命令
+        await this.addToHistory('git commit -m "update"');
+        await this.addToHistory('[main abc1234] update', true);
+        await this.addToHistory('1 file changed, 10 insertions(+)', true);
+        await this.clearCommand();
+        
+        await this.sleep(1500);
+        
+        // === 第二条命令：中文自然语言 + AI 补全 ===
+        await this.showHint('输入自然语言描述...');
+        await this.typeText('查找大于100M的文件', 120);  // 慢速中文打字
+        
+        await this.sleep(600);
+        await this.showHint('按 Alt+L 调用 AI 补全');
+        await this.sleep(1000);
+        
+        // 显示 AI 补全
+        await this.showSuggestions([
+            { cmd: 'find . -size +100M', desc: '查找大于100M的文件' },
+            { cmd: 'find / -size +100M -type f', desc: '全盘查找大文件' },
+            { cmd: 'du -h --max-depth=1 | sort -hr', desc: '按大小排序目录' }
+        ], true);
+        
+        await this.sleep(1500);
+        await this.showHint('按 Tab 确认第一个建议');
+        await this.sleep(1000);
+        
+        // 选择并执行
+        this.command.textContent = 'find . -size +100M';
+        await this.hideSuggestions();
+        
+        await this.sleep(600);
+        await this.showHint('按 Enter 执行');
+        await this.sleep(800);
+        
+        // 执行
+        await this.addToHistory('find . -size +100M');
+        await this.addToHistory('./videos/demo.mp4', true);
+        await this.addToHistory('./backup/data.tar.gz', true);
+        await this.clearCommand();
+        
+        await this.sleep(2000);
+        await this.showHint('演示完成，3秒后重新开始...');
+        
+        await this.sleep(3000);
+        
+        this.isRunning = false;
+        this.runDemo(); // 循环
+    }
+    
+    start() {
+        if (this.command) {
+            this.runDemo();
+        }
+    }
+}
+
+// 页面加载后启动终端演示
+document.addEventListener('DOMContentLoaded', () => {
+    // 等待加载页面完成后启动
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            if (mutation.target.classList.contains('hidden')) {
+                const demo = new TerminalDemo();
+                demo.start();
+                observer.disconnect();
+            }
+        });
+    });
+    
+    const loadingScreen = document.querySelector('.loading-screen');
+    if (loadingScreen) {
+        observer.observe(loadingScreen, { attributes: true, attributeFilter: ['class'] });
+    } else {
+        // 没有加载页，直接启动
+        const demo = new TerminalDemo();
+        demo.start();
+    }
+});
+
