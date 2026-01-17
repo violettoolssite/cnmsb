@@ -593,16 +593,8 @@ class VersionSwitcher {
             this.applyVersion(newVersion);
         });
 
-        // 检查是否有保存的版本偏好
-        const savedVersion = localStorage.getItem('cnmsb-version');
-        if (savedVersion) {
-            this.applyVersion(savedVersion);
-            // 如果有保存的版本，跳过加载屏幕
-            document.querySelector('.loading-screen')?.classList.add('hidden');
-            document.querySelector('.main-content')?.classList.add('visible');
-            document.querySelector('nav')?.classList.add('visible');
-            document.body.classList.remove('loading');
-        }
+        // 每次都显示加载页，不跳过
+        // 版本会在用户选择后应用
     }
 
     applyVersion(version) {
