@@ -1,0 +1,31 @@
+Package: cnmsb
+Version: 0.1.1
+Architecture: amd64
+Maintainer: cnmsb contributors <cnmsb@example.com>
+Depends: zsh
+Filename: pool/main/cnmsb_0.1.1_amd64.deb
+Size: 3018256
+MD5sum: b5306e0dafe9ca7a990ff3a392ae01af
+SHA1: 681d798b3ccd667c60635a6000c18276c2578641
+SHA256: 40700980143027a4fbfca509b19c3f4a3cf18e3c41e45a27d3acdbf107fef99c
+Section: utils
+Priority: optional
+Description: 操你妈傻逼 - Linux 命令行智能补全工具
+ cnmsb 是一个为 Linux 命令行提供类似 IDE 编辑器补全体验的工具。
+ 让终端不再是程序员专属，零基础用户也能用自然语言生成命令。
+ .
+ 主要功能：
+  - 智能内联建议（灰色预测文字）
+  - 交互式补全选择器（Tab 打开，上下选择）
+  - 命令参数和选项补全（支持 300+ 常用命令）
+  - 组合参数补全（如 tar -zxvf）
+  - 问号帮助模式（输入 ? 查看所有选项）
+  - 历史命令模式（Alt+H）
+  - AI 智能补全（Alt+L）用自然语言生成命令
+ .
+ 包含命令：
+  - cnmsb: 主程序
+  - cntmd: 智能补全编辑器（类 vim）
+ .
+ 安装后自动配置 Zsh 为默认 shell。
+

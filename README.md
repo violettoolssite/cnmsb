@@ -332,19 +332,55 @@ curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/install-u
 
 装完重新登录就能用了。
 
+### Debian/Ubuntu 用 APT 仓库安装（推荐）
+
+添加 APT 源后可以用 `apt` 直接安装和更新，最方便：
+
+```bash
+# 添加 GPG 密钥
+curl -fsSL https://violettoolssite.github.io/cnmsb/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/cnmsb-archive-keyring.gpg
+
+# 添加软件源
+echo "deb [signed-by=/usr/share/keyrings/cnmsb-archive-keyring.gpg] https://violettoolssite.github.io/cnmsb/apt stable main" | sudo tee /etc/apt/sources.list.d/cnmsb.list
+
+# 安装
+sudo apt update
+sudo apt install cnmsb
+```
+
+以后更新只需要 `sudo apt upgrade cnmsb`。
+
 ### Debian/Ubuntu 用 deb 包安装
 
-如果你是 Debian、Ubuntu、Mint 这些系统，可以直接用 deb 包，更快：
+如果你是 Debian、Ubuntu、Mint 这些系统，可以直接用 deb 包：
 
 ```bash
 # 下载 deb 包
-wget https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb_0.1.0_amd64.deb
+wget https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb_0.1.1_amd64.deb
 
 # 安装
-sudo dpkg -i cnmsb_0.1.0_amd64.deb
+sudo dpkg -i cnmsb_0.1.1_amd64.deb
 
 # 如果有依赖问题
 sudo apt-get install -f
+```
+
+### 预编译二进制安装（免编译）
+
+不想装 Rust？直接下载编译好的二进制：
+
+```bash
+# 下载并解压
+wget https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb-linux-amd64.tar.gz
+tar -xzf cnmsb-linux-amd64.tar.gz
+
+# 安装
+sudo cp cnmsb /usr/local/bin/
+sudo mkdir -p /usr/share/cnmsb
+sudo cp cnmsb.zsh /usr/share/cnmsb/
+
+# 添加到 zshrc
+echo 'source /usr/share/cnmsb/cnmsb.zsh' >> ~/.zshrc
 ```
 
 ### 手动安装

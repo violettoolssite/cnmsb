@@ -1,0 +1,7 @@
+Origin: cnmsb
+Label: cnmsb
+Suite: stable
+Codename: stable
+Architectures: amd64
+Components: main
+Description: cnmsb Linux command completion tool

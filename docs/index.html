@@ -741,17 +741,42 @@
 
                 <div class="install-grid">
                     <div class="install-method">
-                        <h4>Debian / Ubuntu</h4>
+                        <h4>APT 仓库（推荐）</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<pre><span class="comment"># 添加 GPG 密钥和软件源</span>
+<span class="cmd">curl -fsSL</span> https://violettoolssite.github.io/cnmsb/gpg.key | <span class="cmd">sudo gpg</span> --dearmor -o /usr/share/keyrings/cnmsb.gpg
+<span class="cmd">echo</span> "deb [signed-by=/usr/share/keyrings/cnmsb.gpg] https://violettoolssite.github.io/cnmsb/apt stable main" | <span class="cmd">sudo tee</span> /etc/apt/sources.list.d/cnmsb.list
+
+<span class="comment"># 安装</span>
+<span class="cmd">sudo apt update</span> && <span class="cmd">sudo apt install</span> cnmsb</pre>
+                        </div>
+                    </div>
+
+                    <div class="install-method">
+                        <h4>deb 包安装</h4>
                         <div class="code-block">
                             <button class="copy-btn" onclick="copyCode(this)">复制</button>
 <pre><span class="comment"># 下载 deb 包</span>
 <span class="cmd">wget</span> https://github.com/violettoolssite/cnmsb/releases/download/v0.1.1/cnmsb_0.1.1_amd64.deb
 
 <span class="comment"># 安装</span>
-<span class="cmd">sudo dpkg -i</span> cnmsb_0.1.1_amd64.deb
+<span class="cmd">sudo dpkg -i</span> cnmsb_0.1.1_amd64.deb</pre>
+                        </div>
+                    </div>
 
-<span class="comment"># 重新登录后生效</span>
-<span class="comment"># 包含: cnmsb, cntmd 编辑器</span></pre>
+                    <div class="install-method">
+                        <h4>预编译二进制（免编译）</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<pre><span class="comment"># 下载并解压</span>
+<span class="cmd">wget</span> https://github.com/violettoolssite/cnmsb/releases/latest/download/cnmsb-linux-amd64.tar.gz
+<span class="cmd">tar -xzf</span> cnmsb-linux-amd64.tar.gz && <span class="cmd">cd</span> cnmsb-*
+
+<span class="comment"># 安装</span>
+<span class="cmd">sudo cp</span> cnmsb /usr/local/bin/
+<span class="cmd">sudo mkdir -p</span> /usr/share/cnmsb && <span class="cmd">sudo cp</span> cnmsb.zsh /usr/share/cnmsb/
+<span class="cmd">echo</span> 'source /usr/share/cnmsb/cnmsb.zsh' >> ~/.zshrc</pre>
                         </div>
                     </div>
 

@@ -1,0 +1,27 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: cnmsb
+Label: cnmsb
+Suite: stable
+Codename: stable
+Architectures: amd64
+Components: main
+Description: cnmsb Linux command completion tool
+-----BEGIN PGP SIGNATURE-----
+
+iQJPBAEBCgA5FiEEXF1O3Tj0vtUG/PqtwfYVK7vVOEIFAmlrN18bHHZpb2xldHRv
+b2xzLnNpdGVAZ21haWwuY29tAAoJEMH2FSu71ThCBSUP/27wSDwQTmrdYwcyGvSO
+Y2dEnZpfUdDC9oIdmUh7I0RQ2MgVUfHxpSFzqrfuUUYzRagDrqdbkwbPTCN2bsT7
+ZT0pxAK5vt7UNgtst1zhqv86oTfaa3QpYgyT52/EkN3fdIdWkrPjS3XVXWlhJW26
+M5iY0JvAxevs+LfQbL0PleT/50wQAZ9x7x0fy8C60DkKoxyWrQzQcsTz94h8Kp+8
+Z5q8ayKGSbKlq+1rzoBj89YLdiyQEZvcsxwhRo4EQk95hBdtfgltyFQSsw3y0+nh
+SG63d+h1JuDFbItSXB+qGyNQ8XtNxMcHZZFkByWpN/ujpklMj91cch4fervj0GeN
+hh1ffMUCinP0t8oQ4zgwY9h3kmz33D+0OekRCmuGXMdEw608btcEWvEWMPJsnCru
+mfgyreGk32ayZpr0FG/L6LNjyMTVFHhHkK+cEnWd3H6OpxMBQ5rLHS0tekEmHEOd
+MaRszObiYU694Sur8WKjAOHrRtaXJyXeNJdbrYUyFxH0u7XRHXQkzTTbdveZg16I
+8u62SfLDYDgi0PnpZ0gSic4wHRtlFFLJsufv27LXo+Sb7r93Hlqfw89vf/ou2WtN
+z+ZPeh+rsYaYIw1bSg2nuGUTaJA+AW2WXzr3lcdRJjqhZNqbKpDckPzkwpfRU47I
+bKjasVJnpZWbTpdcI55s6pwb
+=99Ff
+-----END PGP SIGNATURE-----
