@@ -744,9 +744,9 @@
                         <h4>APT 仓库（推荐）</h4>
                         <div class="code-block">
                             <button class="copy-btn" onclick="copyCode(this)">复制</button>
-<pre><span class="comment"># 添加 GPG 密钥和软件源</span>
-<span class="cmd">curl -fsSL</span> https://violettoolssite.github.io/cnmsb/gpg.key | <span class="cmd">sudo gpg</span> --dearmor -o /usr/share/keyrings/cnmsb.gpg
-<span class="cmd">echo</span> "deb [signed-by=/usr/share/keyrings/cnmsb.gpg] https://violettoolssite.github.io/cnmsb/apt stable main" | <span class="cmd">sudo tee</span> /etc/apt/sources.list.d/cnmsb.list
+<pre><span class="comment"># 添加 GPG 密钥和软件源（Cloudflare CDN，国内推荐）</span>
+<span class="cmd">curl -fsSL</span> https://cnmsb.kami666.xyz/gpg.key | <span class="cmd">sudo gpg</span> --dearmor -o /usr/share/keyrings/cnmsb.gpg
+<span class="cmd">echo</span> "deb [signed-by=/usr/share/keyrings/cnmsb.gpg] https://cnmsb.kami666.xyz/apt stable main" | <span class="cmd">sudo tee</span> /etc/apt/sources.list.d/cnmsb.list
 
 <span class="comment"># 安装</span>
 <span class="cmd">sudo apt update</span> && <span class="cmd">sudo apt install</span> cnmsb</pre>

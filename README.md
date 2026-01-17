@@ -336,6 +336,22 @@ curl -sSL https://raw.githubusercontent.com/violettoolssite/cnmsb/main/install-u
 
 添加 APT 源后可以用 `apt` 直接安装和更新，最方便：
 
+**方式一：Cloudflare CDN（国内推荐，速度快）**
+
+```bash
+# 添加 GPG 密钥
+curl -fsSL https://cnmsb.kami666.xyz/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/cnmsb-archive-keyring.gpg
+
+# 添加软件源
+echo "deb [signed-by=/usr/share/keyrings/cnmsb-archive-keyring.gpg] https://cnmsb.kami666.xyz/apt stable main" | sudo tee /etc/apt/sources.list.d/cnmsb.list
+
+# 安装
+sudo apt update
+sudo apt install cnmsb
+```
+
+**方式二：GitHub Pages**
+
 ```bash
 # 添加 GPG 密钥
 curl -fsSL https://violettoolssite.github.io/cnmsb/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/cnmsb-archive-keyring.gpg
